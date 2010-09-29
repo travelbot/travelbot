@@ -10,7 +10,7 @@ Cvičící: **Ing. Tomáš Černý**
 Spolupracovníci
 ---------------
 
-**Ondřej Mirtes** - mirteond@fel.cvut.cz
+**[Ondřej Mirtes](http://github.com/ondrejmirtes)** - mirteond@fel.cvut.cz
 
 **Petr Dušek** - dusekpe4@fel.cvut.cz
 
