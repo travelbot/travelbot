@@ -14,7 +14,7 @@ Spolupracovníci
 
 **Petr Dušek** - dusekpe4@fel.cvut.cz
 
-**Petr Valeš** - valespe3@fel.cvut.cz
+**[Petr Valeš](http://github.com/valespe3)** - valespe3@fel.cvut.cz
 
 
 Cíl
