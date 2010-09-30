@@ -12,7 +12,7 @@ Spolupracovníci
 
 **[Ondřej Mirtes](http://github.com/ondrejmirtes)** - mirteond@fel.cvut.cz
 
-**Petr Dušek** - dusekpe4@fel.cvut.cz
+**[Petr Dušek](http://github.com/dusekpe4)** - dusekpe4@fel.cvut.cz
 
 **[Petr Valeš](http://github.com/valespe3)** - valespe3@fel.cvut.cz
 
