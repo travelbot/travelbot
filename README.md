@@ -7,7 +7,7 @@ Předměty: Y36SI2, Y36SI3
 
 Cvičící: **Ing. Tomáš Černý**
 
-Spolupracovníci
+Členové
 ---------------
 
 **[Ondřej Mirtes](http://github.com/ondrejmirtes)** - mirteond@fel.cvut.cz
