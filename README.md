@@ -23,7 +23,7 @@ Cíl
 Vybudování prototypu webové aplikace, která uživateli naplánuje dovolenou.
 
 - Naplánování cesty [Google Maps API](http://code.google.com/intl/cs/apis/maps/index.html)
-- Rezervace ubytování ([cleartrip.com](http://www.cleartrip.com/) nebo podobná služba)
+- Rezervace ubytování ([cleartrip.com](http://www.cleartrip.com/), [api.previo.cz](http://api.previo.cz/) nebo podobná služba)
 - Vyhledání zajímavostí v okolí destinace ([Geocaching.com](http://www.geocaching.com/), [Wikipedia](http://en.wikipedia.org/), [poifriend.com](http://www.poifriend.com/))
 - Implementace peněžního limitu s nejlepším poměrem cena/výkon
 
