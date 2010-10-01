@@ -32,7 +32,7 @@ Technology
 ---------------
 
 - [Apache HTTP Server](http://httpd.apache.org/), [PHP 5.3](http://www.php.net/)
-- [MySQL 5](http://www.mysql.com/) či [PostgreSQL 8.4](http://www.postgresql.org/)
+- [MySQL 5](http://www.mysql.com/) or [PostgreSQL 8.4](http://www.postgresql.org/)
 - [Nette Framework 2](http://nette.org/)
 - [Doctrine 2 ORM](http://www.doctrine-project.org/)
 - [jQuery 1.4](http://jquery.com/)
