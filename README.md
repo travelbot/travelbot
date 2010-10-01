@@ -24,7 +24,7 @@ Goal
 Building web application, which plans the user his vacation and so on...
 
 - Planning the journey [Google Maps API](http://code.google.com/intl/cs/apis/maps/index.html)
-- reservation of acommodation ([cleartrip.com](http://www.cleartrip.com/), [api.previo.cz](http://api.previo.cz/) nebo podobná služba)
+- reservation of acommodation ([cleartrip.com](http://www.cleartrip.com/), [api.previo.cz](http://api.previo.cz/) or some similar service)
 - searching interesting places and events near the place of placement([Geocaching.com](http://www.geocaching.com/), [Wikipedia](http://en.wikipedia.org/), [poifriend.com](http://www.poifriend.com/))
 - implementation of money limit with rate price/service
 
