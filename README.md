@@ -16,6 +16,7 @@ Cvičící: **Ing. Tomáš Černý**
 
 **[Petr Valeš](http://github.com/valespe3)** - valespe3@fel.cvut.cz
 
+**[Javi Cullera](http://github.com/jff15)** - javi.cullera@gmail.com
 
 Cíl
 ---------------
