@@ -1,13 +1,13 @@
-Projekt Travelbot
+Project Travelbot
 ===============
 
-ČVUT FEL, zimní semestr 2010/2011
+ČVUT FEL, winter term 2010/2011
 
-Předměty: Y36SI2, Y36SI3
+Classes: Y36SI2, Y36SI3
 
-Cvičící: **Ing. Tomáš Černý**
+Supervisor: **Ing. Tomáš Černý**
 
-Členové
+Members
 ---------------
 
 **[Ondřej Mirtes](http://github.com/ondrejmirtes)** - mirteond@fel.cvut.cz
@@ -18,17 +18,17 @@ Cvičící: **Ing. Tomáš Černý**
 
 **[Javi Cullera](http://github.com/jff15)** - javi.cullera@gmail.com
 
-Cíl
+Goal
 ---------------
 
-Vybudování prototypu webové aplikace, která uživateli naplánuje dovolenou.
+Building web application, which plans the user his vacation and so on...
 
-- Naplánování cesty [Google Maps API](http://code.google.com/intl/cs/apis/maps/index.html)
-- Rezervace ubytování ([cleartrip.com](http://www.cleartrip.com/), [api.previo.cz](http://api.previo.cz/) nebo podobná služba)
-- Vyhledání zajímavostí v okolí destinace ([Geocaching.com](http://www.geocaching.com/), [Wikipedia](http://en.wikipedia.org/), [poifriend.com](http://www.poifriend.com/))
-- Implementace peněžního limitu s nejlepším poměrem cena/výkon
+- Planning the journey [Google Maps API](http://code.google.com/intl/cs/apis/maps/index.html)
+- reservation of acommodation ([cleartrip.com](http://www.cleartrip.com/), [api.previo.cz](http://api.previo.cz/) nebo podobná služba)
+- searching interesting places and events near the place of placement([Geocaching.com](http://www.geocaching.com/), [Wikipedia](http://en.wikipedia.org/), [poifriend.com](http://www.poifriend.com/))
+- implementation of money limit with rate price/service
 
-Technologie
+Technology
 ---------------
 
 - [Apache HTTP Server](http://httpd.apache.org/), [PHP 5.3](http://www.php.net/)
@@ -37,7 +37,7 @@ Technologie
 - [Doctrine 2 ORM](http://www.doctrine-project.org/)
 - [jQuery 1.4](http://jquery.com/)
 
-Komunikace
+Communication
 ---------------
 
 - Issues: [GitHub](http://github.com/travelbot/travelbot/issues)
