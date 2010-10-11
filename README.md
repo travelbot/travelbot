@@ -16,7 +16,7 @@ Members
 
 **[Petr Valeš](http://github.com/valespe3)** - valespe3@fel.cvut.cz
 
-**[Javi Cullera](http://github.com/jff15)** - javi.cullera@gmail.com
+**[Javi Flores Font](http://github.com/jff15)** - javi.cullera@gmail.com
 
 Goal
 ---------------
