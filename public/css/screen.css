@@ -9,6 +9,12 @@ h1 {
 	font-size: 150%;
 	color: #3484D2;
 	margin: 0;
+	line-height: 45px;
+}
+
+a {
+	color: #3484D2;
+	text-decoration: none;
 }
 
 #ajax-spinner {
@@ -29,15 +35,9 @@ div.flash {
 	margin: 1em 0;
 }
 
-a[href^="error:"] {
-	background: red;
-	color: white;
-}
-
 #header {
 	background-color: #fff3ba;
-	line-height: 75px;
-	padding: 0px 25px;
+	padding: 13px 25px 16px;
 	border-bottom: 2px solid #ebc200;
 }
 
