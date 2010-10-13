@@ -8,18 +8,25 @@
 
 	<title>Project Travelbot</title>
 
-	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
-	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
+	<link rel="stylesheet" href="{$basePath}/css/screen.css" type="text/css">
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAAlg1WOiaaW_k8WYoVR1eO-RRrPYXs5Xp6xYkOfz_-imUsX-2tzRQNF8z1aFACCykMNbEvbuRV1eJXaw"></script>
+	<!-- <script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAAlg1WOiaaW_k8WYoVR1eO-RRrPYXs5Xp6xYkOfz_-imUsX-2tzRQNF8z1aFACCykMNbEvbuRV1eJXaw&sensor=false"></script> -->
+	<script type="text/javascript" src="{$basePath}/js/jquery.geolocator.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/netteForms.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/travelbot.js"></script>
 </head>
 
 <body>
+	<div id="header">
+		<h1>Travelbot - trip planning</h1>
+	</div>
 	{foreach $flashes as $flash}<div class="flash {$flash->type}">{$flash->message}</div>{/foreach}
 
-	{include #content}
+	<div id="content">
+		{include #content}
+	</div>
 </body>
 </html>

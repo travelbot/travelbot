@@ -1,14 +1,1 @@
-<?php
-
-/**
- * Homepage presenter.
- */
-class HomepagePresenter extends BasePresenter
-{
-
-	public function renderDefault()
-	{
-		
-	}
-
-}
+<?phpuse Nette\Application\AppForm;use Nette\Application\JsonResponse;use Nette\Web\Uri;/** * Homepage presenter. */class HomepagePresenter extends BasePresenter{	protected function createComponentLocationsForm()	{		$form = new AppForm;				$form->addText('from', 'From')			->setRequired('Fill the "from" location, please.');				$form->addText('to', 'To')			->setRequired('Fill the "to" location, please.');				$form->addSubmit('okFindDirections', 'Find directions');		$form->addSubmit('okSubmit', 'Save trip');		$form->onSubmit[] = function() {					};				return $form;	}		public function handleLocation()	{		$latitude = $this->request->post['latitude'];		$longitude = $this->request->post['longitude'];				$c = curl_init();		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));		curl_setopt($c, CURLOPT_URL, 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' . $latitude . ',' . $longitude . '&sensor=false');		$result = curl_exec($c);		curl_close($c);				$json = json_decode($result);		$locality = $this->getLocality($json);				$this->terminate(new JsonResponse(array('location' => $locality)));	}		private function getLocality($json)	{		$comps = get_object_vars($json);		$city = '';		$country = '';		$street = '';		foreach($comps['results'][0]->address_components as $comp) {			if ($comp->types == array('locality', 'political')) {				$city = $comp->short_name;			}			if ($comp->types == array('country', 'political')) {				$country = $comp->long_name;			}			if ($comp->types == array('route')) {				$street = $comp->long_name;			}		}		return $street . ', ' . $city . ', ' . $country;		}		public function handleDirections()	{		$from = $this->request->post['from'];		$to = $this->request->post['to'];				$c = curl_init();		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));				$uri = new Uri('http://maps.googleapis.com/maps/api/directions/json');		$uri->setQuery(array(			'origin' => $from,			'destination' => $to,			'sensor' => 'false',		));				curl_setopt($c, CURLOPT_URL, (string) $uri);		$result = curl_exec($c);		curl_close($c);				$json = json_decode($result);		if ($json->status == 'OK') {			$legs = $json->routes[0]->legs[0];		}				$this->terminate(new JsonResponse(array(			'status' => $json->status,			'steps' => isset($legs) ? $legs->steps : array(),			'duration' => isset($legs) ? $legs->duration->text : '',			'distance' => isset($legs) ? $legs->distance->text : '',		)));	}		private function getStepsInstructions(array $steps)	{		$texts = array();		foreach($steps as $step) {			$texts[] = $step->html_instructions;		}		return $texts;	}	public function renderDefault()	{		$this->template->locationsForm = $this['locationsForm'];	}}

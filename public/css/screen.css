@@ -1,18 +1,21 @@
 body {
-	font: 16px/1.5 "Trebuchet MS", "Geneva CE", lucida, sans-serif;
+	font: 16px/1.6 "Trebuchet MS", "Geneva CE", lucida, sans-serif;
 	color: #333;
 	background-color: #fff;
+	margin: 0;
 }
 
 h1 {
 	font-size: 150%;
 	color: #3484D2;
+	margin: 0;
 }
 
 #ajax-spinner {
 	margin: 15px 0 0 15px;
 	padding: 13px;
 	background: white url('../images/spinner.gif') no-repeat 50% 50%;
+	border: 1px solid #aaaaaa;
 	font-size: 0;
 	z-index: 123456;
 	display: none;
@@ -29,4 +32,53 @@ div.flash {
 a[href^="error:"] {
 	background: red;
 	color: white;
+}
+
+#header {
+	background-color: #fff3ba;
+	line-height: 75px;
+	padding: 0px 25px;
+	border-bottom: 2px solid #ebc200;
+}
+
+#content {
+	width: 650px;
+	margin: 0 auto;
+}
+
+form {
+	width: 400px;
+	margin: 0 auto;
+}
+
+label {
+	padding-right: 50px;
+	text-align: left;
+}
+
+input {
+	font: 16px/1.6 "Trebuchet MS", "Geneva CE", lucida, sans-serif;
+	padding: 5px;
+	width: 300px;
+}
+
+input[type=submit] {
+	padding: 2px;
+	width: 130px;
+}
+
+th {
+	text-align: left;
+}
+
+th, td {
+	padding-bottom: 10px;
+}
+
+th.directions {
+	vertical-align: top;
+}
+
+#directions-text p {
+	font-size: 13px;
 }
