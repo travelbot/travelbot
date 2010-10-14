@@ -51,6 +51,10 @@ $router[] = new Route('index.php', array(
 	'action' => 'default',
 ), Route::ONE_WAY);
 
+$router[] = new Route('<presenter>/<id [0-9]+>', array(
+	'action' => 'show',
+));
+
 $router[] = new Route('<presenter>/<action>/<id>', array(
 	'presenter' => 'Homepage',
 	'action' => 'default',

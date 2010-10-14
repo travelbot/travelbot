@@ -1,8 +1,9 @@
 <?php
 
+use Nette\Application\BadRequestException;
 use Nette\Web\Uri;
 
-class TripService extends Service
+class TripService extends EntityService
 {
 
 	/**
@@ -46,6 +47,43 @@ class TripService extends Service
 			);
 		}
 		return new Trip($departure, $arrival, $steps);
+	}
+	
+	/**
+	 * Persist trip to the database.
+	 * @param Trip
+	 * @return Trip	 	 
+	 */
+	public function save(Trip $trip)
+	{
+		$this->entityManager->persist($trip);
+		$this->entityManager->flush();
+		
+		return $trip;
+	}
+	
+	/**
+	 * @param int
+	 * @return Trip
+	 * @throws Nette\Application\BadRequestException	 	 
+	 */
+	public function find($id)
+	{
+		$trip = $this->entityManager->find('Trip', (int) $id);
+		if ($trip == NULL) {
+			throw new BadRequestException('Trip not found.');
+		}
+		return $trip;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function findAll()
+	{
+		return $this->entityManager
+			->createQuery('SELECT t FROM Trip t ORDER BY t.id ASC')
+			->getResult();
 	}
 
 }

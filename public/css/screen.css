@@ -80,6 +80,6 @@ th.directions {
 	vertical-align: top;
 }
 
-#directions-text p {
+#directions-text p, #directions-text li {
 	font-size: 13px;
 }
