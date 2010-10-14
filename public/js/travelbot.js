@@ -90,7 +90,7 @@ function formatDistance(value) {
 function formatDuration(value) {
 	seconds = value;
 	minutes = Math.round(seconds / 60);
-	hours = Math.round(minutes / 60);
+	hours = Math.floor(parseFloat(minutes) / 60);
 	if (minutes < 1) {
 		return seconds + ' seconds';
 	}

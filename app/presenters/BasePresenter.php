@@ -45,7 +45,7 @@ abstract class BasePresenter extends Presenter
 		$template->registerHelper('duration', function($value) {
 			$seconds = $value;
 			$minutes = round($seconds / 60);
-			$hours = round($minutes / 60);
+			$hours = floor($minutes / 60);
 			if ($minutes < 1) {
 				return $seconds . ' seconds';
 			}
