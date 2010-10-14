@@ -1,0 +1,25 @@
+{block #content}
+
+<p><a href="{link default}">Saved trips</a> &gt; <strong>Trip {$trip->id}</strong></p>
+
+<table>
+	<tr class="required">
+		<th>From</th>
+		<td>{$trip->departure}</td>
+	</tr>
+	
+	<tr class="required">
+		<th>To</th>
+		<td>{$trip->arrival}</td>
+	</tr>
+	<tr>
+		<td id="directions-text" colspan="2">
+			<p>The trip will take <strong>{$trip->duration |duration}</strong> to complete and its distance is <strong>{$trip->distance |distance}</strong>.</p>
+			<ol>
+				{foreach $trip->steps as $step}
+					<li>{!$step->instructions} ({$step->distance |distance}).</li>
+				{/foreach}
+			</ol>
+		</td>
+	</tr>
+</table>
