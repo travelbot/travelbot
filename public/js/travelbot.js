@@ -38,10 +38,10 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
 		}
 		$.post("?do=directions", {from: from.val(), to: to.val()}, function(data, textStatus) {
 			if (data.status == 'OK') {
-				text = $('<p>The trip will take <strong>' + data['duration'] + '</strong> to complete and its distance is <strong>' + data['distance'] + '.</strong></p>');
+				text = $('<p>The trip will take <strong>' + formatDuration(data['duration']) + '</strong> to complete and its distance is <strong>' + formatDistance(data['distance']) + '.</strong></p>');
 				ol = $('<ol>');
 				$.each(data.steps, function(i, el) {
-					ol.append($('<li>').html(el['instructions'] + ' (' + el['distance'] + ')'));
+					ol.append($('<li>').html(el['instructions'] + ' (' + formatDistance(el['distance']) + ')'));
 				});
 			} else {
 				text = $('<p>Can not find the destination or the trip can not be finished.</p>');
@@ -78,4 +78,24 @@ function showSpinner(event) {
 		return true;
 	}
 	return false;
-}
+};
+
+function formatDistance(value) {
+	if ((value / 1000) > 1) {
+		return Math.round(value / 1000) + ' kilometers';
+	}
+	return value + ' meters';
+};
+
+function formatDuration(value) {
+	seconds = value;
+	minutes = Math.round(seconds / 60);
+	hours = Math.round(minutes / 60);
+	if (minutes < 1) {
+		return seconds + ' seconds';
+	}
+	if (hours < 1) {
+		return minutes + ' minutes';
+	}
+	return hours + ' hours and ' + (minutes%60) + ' minutes';
+};
