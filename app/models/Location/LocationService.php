@@ -24,8 +24,12 @@ class LocationService extends Service
 		$street = '';
 		
 		// parsing json results
-		$comps = get_object_vars(json_decode($result));
-		foreach($comps['results'][0]->address_components as $comp) {
+		$json = json_decode($result);
+		if ($json == FALSE || $json->status != 'OK') {
+			throw new InvalidStateException('Malformed JSON data.');
+		}
+
+		foreach($json->results[0]->address_components as $comp) {
 			if ($comp->types == array('locality', 'political')) {
 				$city = $comp->short_name;
 			}

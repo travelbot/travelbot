@@ -10,11 +10,13 @@ $(function() {
 				$("#frmlocationsForm-to").focus();
 			} else {
 				$.post("?do=location", {latitude: data.latitude, longitude: data.longitude}, function(gData, textStatus) {
-					if (form.val() == "") {
-						$("#frmlocationsForm-from").val(gData['location']);
+					if (gData.status == 'OK') {
+						if (form.val() == "") {
+							$("#frmlocationsForm-from").val(gData['location']);
+						}
+						
+						$("#frmlocationsForm-to").focus();
 					}
-					
-					$("#frmlocationsForm-to").focus();
 				}, "json");
 			}
 		}
@@ -36,7 +38,7 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
 				text = $('<p>The trip will take <strong>' + data['duration'] + '</strong> to complete and its distance is <strong>' + data['distance'] + '.</strong></p>');
 				ol = $('<ol>');
 				$.each(data.steps, function(i, el) {
-					ol.append($('<li>' + el['html_instructions'] + ' (' + el['distance']['text'] + ').</li>'));
+					ol.append($('<li>').html(el['instructions'] + ' (' + el['distance'] + ')'));
 				});
 				text.append(ol);
 			} else {
