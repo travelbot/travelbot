@@ -2,12 +2,13 @@ $(function() {
 	$.geolocator.geolocate({
 		callback: function(data) {
 			form = $("#frmlocationsForm-from");
-			if (data.latitude == null || typeof(data.client) !== 'undefined') {
-				if (form.val() == "") {
+			if (data.latitude == null || data.client !== undefined) {
+				if (form.val() == "" && data.client != null) {
 					$("#frmlocationsForm-from").val(data.client.address.city + ", " + data.client.address.country)
+					$("#frmlocationsForm-to").focus();
+				} else {
+					$("#frmlocationsForm-from").focus();
 				}
-				
-				$("#frmlocationsForm-to").focus();
 			} else {
 				$.post("?do=location", {latitude: data.latitude, longitude: data.longitude}, function(gData, textStatus) {
 					if (gData.status == 'OK') {
@@ -16,6 +17,8 @@ $(function() {
 						}
 						
 						$("#frmlocationsForm-to").focus();
+					} else {
+						$("#frmlocationsForm-from").focus();
 					}
 				}, "json");
 			}
@@ -40,7 +43,6 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
 				$.each(data.steps, function(i, el) {
 					ol.append($('<li>').html(el['instructions'] + ' (' + el['distance'] + ')'));
 				});
-				text.append(ol);
 			} else {
 				text = $('<p>Can not find the destination or the trip can not be finished.</p>');
 			}
@@ -48,6 +50,7 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
 			textEl = $("#directions-text");
 				textEl.text('');
 			textEl.append(text);
+			textEl.append(ol);
 			
 			button.val('Find directions').removeAttr('disabled');
 		});
@@ -66,7 +69,7 @@ $(function () {
 });
 
 function showSpinner(event) {
-	if (event.pageX && event.pageY) {
+	if (event !== undefined && event.pageX && event.pageY) {
 		$("#ajax-spinner").show().css({
 			position: "absolute",
 			left: event.pageX,
