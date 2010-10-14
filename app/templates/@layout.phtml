@@ -17,9 +17,9 @@
 		<h1><a href="{link Homepage:}">Travelbot</a></h1>
 		<span>
 			{ifCurrent Homepage:}
-				<strong>Find directions</strong> -
+				<strong>Plan new trip</strong> -
 			{else}
-				<a href="{link Homepage:}">Find directions</a> -
+				<a href="{link Homepage:}">Plan new trip</a> -
 			{/if} 
 			
 			{* {ifCurrent Trip:}
@@ -35,9 +35,9 @@
 			{/if}
 		</span>
 	</div>
-	{foreach $flashes as $flash}<div class="flash {$flash->type}">{$flash->message}</div>{/foreach}
 
 	<div id="content">
+		{foreach $flashes as $flash}<div class="flash {$flash->type}">{$flash->message}</div>{/foreach}
 		{include #content}
 	</div>
 	

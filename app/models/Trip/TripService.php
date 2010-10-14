@@ -11,7 +11,7 @@ class TripService extends Service
 	 * @param string
 	 * @return array	 	 	 
 	 */
-	public function buildTrip($from, $to)
+	public function buildTrip($departure, $arrival)
 	{
 		// curl initialization
 		$c = curl_init();
@@ -21,8 +21,8 @@ class TripService extends Service
 		// using Nette\Web\Uri for escaping GET parameters
 		$uri = new Uri('http://maps.googleapis.com/maps/api/directions/json');
 		$uri->setQuery(array(
-			'origin' => $from,
-			'destination' => $to,
+			'origin' => $departure,
+			'destination' => $arrival,
 			'sensor' => 'false',
 		));
 		
@@ -45,7 +45,7 @@ class TripService extends Service
 				htmlspecialchars_decode($step->html_instructions, ENT_QUOTES)
 			);
 		}
-		return new Trip($from, $to, $steps);
+		return new Trip($departure, $arrival, $steps);
 	}
 
 }

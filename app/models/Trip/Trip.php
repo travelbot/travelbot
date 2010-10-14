@@ -3,36 +3,53 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Class representing trip with origin, destination and steps. 
+ * Class representing trip with origin, destination and steps.
+ * @entity 
  */ 
 class Trip extends SimpleEntity
 {
 
 	/**
 	 * @var string
+	 * @column	 
 	 */
-	private $from;
+	private $departure;
 	
 	/**
 	 * @var string
+	 * @column	 
 	 */
-	private $to;
+	private $arrival;
 	
 	/**
-	 * @var array
+	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @oneToMany(targetEntity="Step", mappedBy="trip", cascade={"persist"})	 
 	 */
 	private $steps;
+	
+	/**
+	 * @var int
+	 */
+	private $lastSequenceOrder = 0;
 	
 	/**
 	 * @param string
 	 * @param string
 	 * @param array	 	 
 	 */
-	public function __construct($from, $to, array $steps = array()) {
-		$this->from = (string) $from;
-		$this->to = (string) $to;
+	public function __construct($departure, $arrival, array $steps = array()) {
+		$this->departure = (string) $departure;
+		$this->arrival = (string) $arrival;
 		
-		$this->steps = new ArrayCollection($steps);
+		$this->steps = new ArrayCollection;
+		
+		foreach($steps as $step) {
+			$this->addStep($step);	
+		}
+		
+		if ($this->steps->last() != NULL) {
+			$this->lastSequenceOrder = $this->steps->last()->sequenceOrder;
+		}
 	}
 	
 	/**
@@ -64,17 +81,17 @@ class Trip extends SimpleEntity
 	/**
 	 * @return string
 	 */
-	public function getFrom()
+	public function getDeparture()
 	{
-		return $this->from;
+		return $this->departure;
 	}
 	
 	/**
 	 * @return string
 	 */
-	public function getTo()
+	public function getArrival()
 	{
-		return $this->to;
+		return $this->arrival;
 	}
 	
 	/**
@@ -92,7 +109,9 @@ class Trip extends SimpleEntity
 	public function addStep(Step $step)
 	{
 		if (!$this->steps->contains($step)) {
+			$step->sequenceOrder = ++$this->lastSequenceOrder;
 			$this->steps->add($step);
+			$step->trip = $this;
 		}
 		
 		return $this; // fluent interface
@@ -106,6 +125,7 @@ class Trip extends SimpleEntity
 	{
 		if ($this->steps->contains($step)) {
 			$this->steps->removeElement($step);
+			$step->trip = NULL;
 		}
 		
 		return $this; // fluent interface
