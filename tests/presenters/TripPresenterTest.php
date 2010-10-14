@@ -16,8 +16,8 @@ class TripPresenterTest extends TestCase
 	public function testRenderShow()
 	{
 		$trip = new Trip('Praha (test)', 'Brno (test)');
-		$this->entityManager->persist($trip);
-		$this->entityManager->flush();
+		$service = new TripService($this->entityManager);
+		$service->save($trip);
 		
 		$presenter = new TripPresenter;
 		$request = new PresenterRequest('Trip', 'GET', array('action' => 'show', 'id' => $trip->id));
