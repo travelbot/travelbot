@@ -2,7 +2,8 @@
 
 /**
  * Class representing one step (direction) of a trip.
- * @entity 
+ * @entity
+ * @table(name="step") 
  */
 class Step extends SimpleEntity
 {

@@ -22,7 +22,7 @@ use Nette\Application\SimpleRouter;
 // you don't have to litter your code with 'require' statements
 require LIBS_DIR . '/Nette/loader.php';
 
-
+//Environment::setMode(Environment::PRODUCTION);
 
 // Step 2: Configure environment
 // 2a) enable Nette\Debug for better exception and error visualisation
