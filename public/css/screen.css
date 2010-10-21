@@ -47,11 +47,6 @@ div.flash {
 	margin: 0 auto;
 }
 
-form {
-	width: 400px;
-	margin: 0 auto;
-}
-
 label {
 	padding-right: 50px;
 	text-align: left;
@@ -68,6 +63,11 @@ input[type=submit] {
 	width: 130px;
 }
 
+table {
+	width: 400px;
+	margin: 0 auto;
+}
+
 th {
 	text-align: left;
 }
@@ -82,4 +82,10 @@ th.directions {
 
 #directions-text p, #directions-text li {
 	font-size: 13px;
+}
+
+#map_canvas {
+	width: 600px;
+	height: 500px;
+	margin: 0 auto;
 }

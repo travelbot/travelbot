@@ -52,12 +52,14 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
             from: from.val(),
             to: to.val()
         }, function(data, textStatus) {
+        	showMap = false;
             if (data.status == 'OK') {
                 text = $('<p>The trip will take <strong>' + formatDuration(data['duration']) + '</strong> to complete and its distance is <strong>' + formatDistance(data['distance']) + '.</strong></p>');
                 ol = $('<ol>');
                 $.each(data.steps, function(i, el) {
                     ol.append($('<li>').html(el['instructions'] + ' (' + formatDistance(el['distance']) + ')'));
                 });
+                showMap = true;
             } else {
                 text = $('<p>Can not find the destination or the trip can not be finished.</p>');
             }
@@ -68,6 +70,8 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
             textEl.append(ol);
 
             button.val('Find directions').removeAttr('disabled');
+            
+            if (showMap) showTrip(from.val(), to.val(), getDirectionsDisplay());
         });
     }
 });
@@ -75,17 +79,15 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
 //@author Petr Valeš
 //@version 20.10.2010
 $(function() {
-    // coordinates where map will center
-    var from = new google.maps.LatLng(41.850033, -87.6500523);
-    var map = createMap(from);
-    var directionsDisplay = createPanel(map);
-
-    // coordinates of star and end of trip
-    var from = $("#frmlocationsForm-from").val();
-    var to = $("#frmlocationsForm-to").val();
-    showTrip(from, to, directionsDisplay);
-
+	showTrip($("#trip-from").text(), $("#trip-to").text(), getDirectionsDisplay());
 });
+
+function getDirectionsDisplay() {
+	// coordinates where map will center
+    from = new google.maps.LatLng(50.093847, 14.413261);
+    map = createMap(from);
+    return createPanel(map);
+};
 
 //@author Petr Valeš
 //@version 20.10.2010
@@ -95,11 +97,6 @@ function createMap(from)  {
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         center: from
     }
-    $("#map_canvas").css({
-        width: "80%",
-        height: "500px",
-        float: "left"
-    });
     var element = $("#map_canvas");
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
     return map;
@@ -115,7 +112,7 @@ function createPanel(map)   {
         height: "500px",
         float: "right"
     });
-    directionsDisplay.setPanel(document.getElementById("panel"));
+    //directionsDisplay.setPanel(document.getElementById("panel"));
     return directionsDisplay;
 }
 
