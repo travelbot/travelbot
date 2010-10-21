@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Presenter for listing and showing details of saved trips.
+ * @author mirteond 
+ */
 class TripPresenter extends BasePresenter
 {
 

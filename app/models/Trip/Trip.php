@@ -4,6 +4,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class representing trip with origin, destination and steps.
+ * @author mirteond 
+ *  
  * @entity
  * @table(name="trip")  
  */ 

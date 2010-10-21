@@ -3,7 +3,8 @@
 use Doctrine\ORM\EntityManager;
 
 /**
- * Base service for entity operations. It contains injected Doctrine EntityManager. 
+ * Base service for entity operations. It contains injected Doctrine EntityManager.
+ * @author mirteond  
  */ 
 abstract class EntityService extends Service
 {

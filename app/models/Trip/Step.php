@@ -2,6 +2,8 @@
 
 /**
  * Class representing one step (direction) of a trip.
+ * @author mirteond
+ *  
  * @entity
  * @table(name="step") 
  */

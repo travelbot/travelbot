@@ -7,6 +7,7 @@ use Nette\Debug,
 
 /**
  * Error presenter.
+ * @author Nette Framework 
  */
 class ErrorPresenter extends BasePresenter
 {

@@ -2,6 +2,8 @@
 
 /**
  * Base entity class with primary key (id).
+ * @author mirteond 
+ *  
  * @mappedSuperclass
  */
 abstract class SimpleEntity extends Entity

@@ -2,6 +2,10 @@
 
 use Nette\Application\BadRequestException;
 
+/**
+ * Service for working with Trip objects.
+ * @author mirteond 
+ */
 class TripService extends EntityService
 {
 

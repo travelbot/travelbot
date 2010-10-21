@@ -1,3 +1,7 @@
+/**
+ * Geolocation callback handler.
+ * @author mirteond 
+ */
 $(function() {
     $.geolocator.geolocate({
         callback: function(data) {
@@ -30,6 +34,10 @@ $(function() {
 
 });
 
+/**
+ * Find directions handler.
+ * @author mirteond 
+ */
 $("#frmlocationsForm-okFindDirections").live("click", function(event) {
     event.preventDefault();
 	

@@ -6,6 +6,7 @@ use Nette\Environment;
 
 /**
  * Base class for all application presenters.
+ * @author mirteond 
  */
 abstract class BasePresenter extends Presenter
 {

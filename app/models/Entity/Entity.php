@@ -2,6 +2,8 @@
 
 /**
  * Base entity class.
+ * @author mirteond
+ *   
  * @mappedSuperclass
  * @hasLifecycleCallbacks   
  */ 

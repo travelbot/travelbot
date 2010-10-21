@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Class for working with Location object.
+ * @author mirteond 
+ */
 class LocationService extends Service
 {
 

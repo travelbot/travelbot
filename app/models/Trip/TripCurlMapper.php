@@ -2,6 +2,10 @@
 
 use Nette\Web\Uri;
 
+/**
+ * Mapper for getting trip directions via curl and Google Web Services Directions API.
+ * @author mirteond 
+ */
 class TripCurlMapper extends Nette\Object implements ITripMapper
 {
 

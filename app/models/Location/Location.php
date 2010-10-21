@@ -2,6 +2,7 @@
 
 /**
  * Class representing a location in the world.
+ * @author mirteond 
  */
 class Location extends Nette\Object
 {
