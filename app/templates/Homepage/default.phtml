@@ -5,35 +5,39 @@
 
 {widget locationsForm begin}
 	{widget locationsForm errors}
-	
-	<table>
-	<tr class="required">
-		<th>{$locationsForm['from']->label}</th>
-		<td>{$locationsForm['from']->control}</td>
-	</tr>
-	
-	<tr class="required">
-		<th>{$locationsForm['to']->label}</th>
-		<td>{$locationsForm['to']->control}</td>
-	</tr>
-	
-	<tr>
-		<th>&nbsp;</th>
-		<td>
+
+<table>
+    <tr class="required">
+        <th>{$locationsForm['from']->label}</th>
+        <td>{$locationsForm['from']->control}</td>
+    </tr>
+
+    <tr class="required">
+        <th>{$locationsForm['to']->label}</th>
+        <td>{$locationsForm['to']->control}</td>
+    </tr>
+
+    <tr>
+        <th>&nbsp;</th>
+        <td>
 			{$locationsForm['okFindDirections']->control} or <a href="{link this}">reset</a>
-		</td>
-	</tr>
-	<tr>
-		<td id="directions-text" colspan="2">
-			<p>Fill the locations and press <strong>Find directions</strong> button.</p>
-		</td>
-	</tr>
-	<tr>
-		<th>...and...</th>
-		<td>
+        </td>
+    </tr>
+    <tr>
+        <td id="directions-text" colspan="2">
+            <p>Fill the locations and press <strong>Find directions</strong> button.</p>
+        </td>
+    </tr>
+    <tr>
+        <th>...and...</th>
+        <td>
 			{$locationsForm['okSubmit']->control}
-		</td>
-	</tr>
-	</table>
+        </td>
+    </tr>
+    
+</table>
 
 {widget locationsForm end}
+
+<div id="map_canvas"></div>
+<div id="panel"></div>
