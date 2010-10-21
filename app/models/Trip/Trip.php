@@ -24,7 +24,8 @@ class Trip extends SimpleEntity
 	
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @oneToMany(targetEntity="Step", mappedBy="trip", cascade={"persist"})	 
+	 * @oneToMany(targetEntity="Step", mappedBy="trip", cascade={"persist"})
+	 * @orderBy({'sequenceOrder' = 'ASC'})	 	 
 	 */
 	private $steps;
 	
