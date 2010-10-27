@@ -7,7 +7,7 @@ use Nette\Application\BadRequestException;
  *
  * @author Petr Valeš
  */
-class ArcticleService extends EntityService {
+class ArticleService extends EntityService {
 
     /**
      *
@@ -66,4 +66,3 @@ class ArcticleService extends EntityService {
 
 }
 
-?>

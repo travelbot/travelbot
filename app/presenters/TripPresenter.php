@@ -17,6 +17,9 @@ class TripPresenter extends BasePresenter
 	{
 		$service = new TripService($this->entityManager);
 		$this->template->trip = $service->find($id);
+                $articleService = new ArticleService($this->entityManager);
+                $this->template->article = $articleService->buildArticle($this->template->trip->arrival,
+                        new WikipediaArticleMapper());
 	}
 
 }
