@@ -15,6 +15,7 @@ class TripCurlMapper extends Nette\Object implements ITripMapper
 		$c = curl_init();
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
+		curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 		
 		// using Nette\Web\Uri for escaping GET parameters
 		$uri = new Uri('http://maps.googleapis.com/maps/api/directions/json');
