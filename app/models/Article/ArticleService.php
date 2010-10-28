@@ -15,13 +15,14 @@ class ArticleService extends EntityService {
      * @param IArticleMapper $mapper
      * @return Article
      */
-    public function buildeArticle($destination, IArticleMapper $mapper) {
-        $article = $this->findByDestination($destination);
-        if ($article == NULL)   {
-                $text = $mapper->getDestinationArticle($destination);
-                $article = new Article($destination, $text);
-        }
-        return $article;
+    public function buildArticle($destination, IArticleMapper $mapper) {
+    	try {
+        	return $this->findByDestination($destination);
+        } catch (\Nette\Application\BadRequestException $e) {
+			$text = $mapper->getDestinationArticle($destination);
+			$article = new Article($destination, $text);
+			return $this->save($article);
+		}
     }
 
     /**
@@ -41,7 +42,7 @@ class ArticleService extends EntityService {
      * @return Article
      * @throws Nette\Application\BadRequestException
      */
-    public function findById($id) {
+    public function find($id) {
         $article = $this->entityManager->find('Article', (int) $id);
         if ($article == NULL) {
             throw new BadRequestException('Article not found.');
@@ -49,9 +50,19 @@ class ArticleService extends EntityService {
         return $article;
     }
 
+	/**
+     * @param int $id
+     * @return Article
+     * @throws Nette\Application\BadRequestException
+     */     
     public function findByDestination($destination) {
-        $query = $this->entityManager->createQuery("SELECT a FROM Article a WHERE a.destination = \'".$destination."\'");
-        return $query->getResult();
+        try {
+			return $this->entityManager->createQuery('SELECT a FROM Article a WHERE a.destination = ?1')
+	        	->setParameter(1, $destination)
+	        	->getSingleResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+			throw new BadRequestException('Article not found.', NULL, $e);
+		}
     }
 
     /**

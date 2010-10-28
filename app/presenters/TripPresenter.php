@@ -16,10 +16,14 @@ class TripPresenter extends BasePresenter
 	public function renderShow($id)
 	{
 		$service = new TripService($this->entityManager);
-		$this->template->trip = $service->find($id);
-                $articleService = new ArticleService($this->entityManager);
-                $this->template->article = $articleService->buildArticle($this->template->trip->arrival,
-                        new WikipediaArticleMapper());
+		$trip = $service->find($id);
+		$this->template->trip = $trip;
+		
+        $articleService = new ArticleService($this->entityManager);
+        $this->template->article = $articleService->buildArticle(
+			$trip->arrival,
+			new ArticleWikipediaMapper()
+		);
 	}
 
 }
