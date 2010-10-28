@@ -13,6 +13,11 @@
         <td id="trip-to">{$trip->arrival}</td>
     </tr>
     <tr>
+    	<td colspan="2">
+		<div id="article">{!$article->text}</div>
+		</td>
+    </tr>
+    <tr>
         <td id="directions-text" colspan="2">
             <p>The trip will take <strong>{$trip->duration |duration}</strong> to complete and its distance is <strong>{$trip->distance |distance}</strong>.</p>
             <ol>
@@ -25,4 +30,3 @@
 </table>
 <div id="map_canvas"></div>
 <div id="panel"></div>
-<div id="article">{!$article->text}</div>
