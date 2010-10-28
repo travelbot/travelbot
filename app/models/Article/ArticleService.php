@@ -6,6 +6,7 @@ use Nette\Application\BadRequestException;
  * Service for Article objects
  *
  * @author Petr Valeš
+ * @author Reviewed by mirteond  
  */
 class ArticleService extends EntityService {
 
@@ -15,13 +16,19 @@ class ArticleService extends EntityService {
      * @param IArticleMapper $mapper
      * @return Article
      */
-    public function buildArticle($destination, IArticleMapper $mapper) {
+    public function buildArticle($destination, IArticleMapper $mapper)
+	{
     	try {
         	return $this->findByDestination($destination);
         } catch (\Nette\Application\BadRequestException $e) {
-			$text = $mapper->getDestinationArticle($destination);
-			$article = new Article($destination, $text);
-			return $this->save($article);
+        	try {
+				$text = $mapper->getDestinationArticle($destination);
+				$article = new Article($destination, $text);
+				return $this->save($article);
+			} catch (ArticleException $e) {
+				return new Article($destination, 'Article about the destination was not found.');
+			}
+			
 		}
     }
 
@@ -30,7 +37,8 @@ class ArticleService extends EntityService {
      * @param Article $article
      * @return Article
      */
-    public function save(Article $article) {
+    public function save(Article $article)
+    {
         $this->entityManager->persist($article);
         $this->entityManager->flush();
         return $article;
@@ -42,7 +50,8 @@ class ArticleService extends EntityService {
      * @return Article
      * @throws Nette\Application\BadRequestException
      */
-    public function find($id) {
+    public function find($id)
+	{
         $article = $this->entityManager->find('Article', (int) $id);
         if ($article == NULL) {
             throw new BadRequestException('Article not found.');
@@ -55,7 +64,8 @@ class ArticleService extends EntityService {
      * @return Article
      * @throws Nette\Application\BadRequestException
      */     
-    public function findByDestination($destination) {
+    public function findByDestination($destination)
+	{
         try {
 			return $this->entityManager->createQuery('SELECT a FROM Article a WHERE a.destination = ?1')
 	        	->setParameter(1, $destination)
@@ -69,7 +79,8 @@ class ArticleService extends EntityService {
      *
      * @return array
      */
-    public function findAll() {
+    public function findAll()
+	{
         return $this->entityManager
                 ->createQuery('SELECT a FROM Article a ORDER BY a.id ASC')
                 ->getResult();

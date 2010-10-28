@@ -12,3 +12,9 @@ CREATE TABLE step (
 	duration INTEGER NOT NULL,
 	instructions TEXT NOT NULL
 ) WITHOUT OIDS;
+
+CREATE TABLE article (
+	id SERIAL PRIMARY KEY,
+	destination VARCHAR(256) NOT NULL,
+	text TEXT NOT NULL
+) WITHOUT OIDS;

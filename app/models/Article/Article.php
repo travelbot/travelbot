@@ -4,6 +4,7 @@
  * Class for persisting article about destination
  *
  * @author Petr Valeš
+ * @author Reviewed by mirteond 
  *
  * @entity
  * @table(name="article")
@@ -16,20 +17,23 @@ class Article extends SimpleEntity {
      * @column
      */
     private $destination;
+    
     /**
-     *
-     * @var text
+     * @var string
      * @column
      */
-    private $article;
+    private $text;
 
-    public function __construct($destination, $article) {
+	/**
+	 * @param string
+	 * @param string	 
+	 */
+    public function __construct($destination, $text) {
         $this->destination = $destination;
-        $this->article = $article;
+        $this->text = $text;
     }
 
     /**
-     *
      * @return string
      */
     public function getDestination() {
@@ -37,12 +41,17 @@ class Article extends SimpleEntity {
     }
 
     /**
-     *
-     * @return text
+     * @return string
      */
-    public function getArticle() {
-        return $this->article;
+    public function getText() {
+        return $this->text;
     }
+    
+    public function setText($text)
+    {
+		$this->text = $text;
+		return $this;
+	}
 
 }
 
