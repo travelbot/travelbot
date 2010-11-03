@@ -13,12 +13,12 @@ class ArticleWikipediaMapper extends Nette\Object implements IArticleMapper {
 
     public function getDestinationArticle($destination) {
     	$destination = $this->canonicalizeDestination($destination);
-    	
         $c = curl_init();
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
 		curl_setopt($c, CURLOPT_USERAGENT, 'Travelbot 1.0 beta');
 		curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+		curl_setopt($c, CURLOPT_MAXREDIRS, 100);
 		
 		// using Nette\Web\Uri for escaping GET parameters
 		$uri = new Uri('http://en.wikipedia.org/w/index.php');
@@ -57,6 +57,7 @@ class ArticleWikipediaMapper extends Nette\Object implements IArticleMapper {
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
 		curl_setopt($c, CURLOPT_USERAGENT, 'Travelbot 1.0 beta');
 		curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+		curl_setopt($c, CURLOPT_MAXREDIRS, 100);
 		
 		$uri = new Uri('http://en.wikipedia.org/w/api.php');
 		$uri->setQuery(array(
@@ -79,12 +80,15 @@ class ArticleWikipediaMapper extends Nette\Object implements IArticleMapper {
 			throw new ArticleException('Article not found.');
 		}
 		
+		$destination = $json[1][0];
+		
 		// canonization (redirection to the final article)
 		$c = curl_init();
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
 		curl_setopt($c, CURLOPT_USERAGENT, 'Travelbot 1.0 beta');
 		curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+		curl_setopt($c, CURLOPT_MAXREDIRS, 100);
 		
 		$uri = new Uri('http://en.wikipedia.org/w/api.php');
 		$uri->setQuery(array(
@@ -105,6 +109,8 @@ class ArticleWikipediaMapper extends Nette\Object implements IArticleMapper {
 		
 		if (isset($json->query->redirects[0])) {
 			return $json->query->redirects[0]->to;
+		} else if (isset($json->query->normalized[0])) {
+			return String::capitalize($json->query->normalized[0]->to);
 		}
 		
 		return $destination;

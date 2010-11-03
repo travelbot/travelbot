@@ -67,7 +67,7 @@ class ArticleService extends EntityService {
     public function findByDestination($destination)
 	{
         try {
-			return $this->entityManager->createQuery('SELECT a FROM Article a WHERE a.destination = ?1')
+			return $this->entityManager->createQuery('SELECT a FROM Article a WHERE LOWER(a.destination) = LOWER(?1)')
 	        	->setParameter(1, $destination)
 	        	->getSingleResult();
         } catch (\Doctrine\ORM\NoResultException $e) {
