@@ -10,11 +10,16 @@ class POICurlMapper extends Nette\Object implements IPOIMapper {
     private $clientID;
     private $key;
 
-    public function setClientID($id)    {
+    public function __construct($id, $key){
+        $this->setClientID($id);
+        $this->setKey($key);
+    }
+
+    private function setClientID($id)    {
         $this->clientID = id;
     }
 
-    public function setKey($key) {
+    private function setKey($key) {
         $this->key = $key;
     }
 
