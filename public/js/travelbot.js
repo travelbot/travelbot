@@ -133,6 +133,42 @@ function showTrip(from, to, directionsDisplay) {
 }
 
 
+function showPOI() {
+    $.POI.showPOI({
+        callback: function(data) {
+
+
+                $.post("?do=positions", {
+                                                        //lat a lng cilove destinace
+                }, function(gData, textStatus) {
+                    if (gData.status == 'OK') {
+
+                    }
+                }, "json");
+            }
+    });
+};
+
+function showMarker(lat, lng, map, icon, name, address, types) {
+      // create a new LatLng point for the marker
+      var point = new google.maps.LatLng(lat,lng);
+      var marker = new google.maps.Marker({
+        position: point,
+        icon: icon,
+        map: map
+      });
+      // create the tooltip and its text
+      var infoWindow = new google.maps.InfoWindow();
+      var html='<b>'+name+'</b><br />'+address+'<br />'+types;
+
+      // add a listener to open the tooltip when a user clicks on one of the markers
+      google.maps.event.addListener(marker, 'click', function() {
+        infoWindow.setContent(html);
+        infoWindow.open(map, marker);
+      });
+}
+
+
 // AJAX spinner appending and hiding
 $(function () {
     $('<div id="ajax-spinner"></div>').appendTo("body").ajaxStop(function () {

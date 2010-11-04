@@ -5,18 +5,29 @@
  *
  * @author Petr Vales
  */
-class POICurlMapper implements IPOIMapper {
+class POICurlMapper extends Nette\Object implements IPOIMapper {
 
-    public function getPointsOfInterest($location) {
+    private $clientID;
+    private $key;
+
+    public function setClientID($id)    {
+        $this->clientID = id;
+    }
+
+    public function setKey($key) {
+        $this->key = $key;
+    }
+
+    public function getPointsOfInterest($lat,$lng) {
         $json_details = array();
-        $json = searchPlaces($location);
+        $json = $this->searchPlaces($lat.", ".$lng);
         foreach ($json->results as $result) {
-            $json_details[] = searchDetails($result->reference);
+            $json_details[] = $this->searchDetails($result->reference);
         }
         return $json_details;
     }
 
-    function searchPlaces($location) {
+    private function searchPlaces($location) {
         // curl initialization
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
@@ -29,17 +40,17 @@ class POICurlMapper implements IPOIMapper {
             'location' => $location,
             'radius ' => '250',
             'sensor' => 'false',
-            'client' => 'travelbot',            // VYPLINT CLIENT ID
+            'client' => $this->clientID,
         ));
 
-        $signature = hash_hmac ( 'sha1' , (string) $uri , 'key' ); // VYPLNIT KLIC
+        $signature = hash_hmac ( 'sha1' , (string) $uri , $this->key );
 
         $uri = new Uri('https://maps.googleapis.com/maps/api/place/search/json');
         $uri->setQuery(array(
             'location' => $location,
             'radius ' => '250',
             'sensor' => 'false',
-            'client' => 'travelbot',            // VYPLINT CLIENT ID
+            'client' => $this->clientID,
             'signature' => $signature
         ));
 
@@ -54,7 +65,7 @@ class POICurlMapper implements IPOIMapper {
         return $json;
     }
 
-    function searchDetails($reference)  {
+    private function searchDetails($reference)  {
         // curl initialization
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
@@ -66,16 +77,16 @@ class POICurlMapper implements IPOIMapper {
         $uri->setQuery(array(
             'reference' => $reference,
             'sensor' => 'false',
-            'client' => 'travelbot',            // VYPLINT CLIENT ID
+            'client' => $this->clientID,
         ));
 
-        $signature = hash_hmac ( 'sha1' , (string) $uri , 'key' ); // VYPLNIT KLIC
+        $signature = hash_hmac ( 'sha1' , (string) $uri , $this->key );
 
         $uri = new Uri('https://maps.googleapis.com/maps/api/place/details/json');
         $uri->setQuery(array(
             'reference' => $reference,
             'sensor' => 'false',
-            'client' => 'travelbot',            // VYPLINT CLIENT ID
+            'client' => $this->clientID,
             'signature' => $signature
         ));
 
