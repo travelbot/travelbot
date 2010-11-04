@@ -5,7 +5,7 @@
  *
  * @author Petr Vales
  */
-class PointOfInterest {
+class PointOfInterest extends Nette\Object {
 
     private $name;
     private $vicinity;
@@ -18,21 +18,6 @@ class PointOfInterest {
     private $url;
     private $icon;
     private $reference;
-
-    public function __construct($name, $vicinity, $types, $phoneNumber,
-            $address, $lat, $lng, $rating, $url, $icon, $reference) {
-        $this->name = $name;
-        $this->vicinity = $vicinity;
-        $this->types = $types;
-        $this->phoneNumber = $phoneNumber;
-        $this->address = $address;
-        $this->lat = $lat;
-        $this->lng = $lng;
-        $this->rating = $rating;
-        $this->url = $url;
-        $this->icon = $icon;
-        $this->reference =$reference;
-    }
 
     public function getName()   {
         return $this->name;

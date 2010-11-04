@@ -1,5 +1,7 @@
 <?php
 
+use Nette\Web\Uri;
+
 /**
  * Description of POICurlMapper
  *
@@ -14,16 +16,26 @@ class POICurlMapper extends Nette\Object implements IPOIMapper {
         $this->setClientID($id);
         $this->setKey($key);
     }
+    
+    public function getClientId()
+    {
+		return $this->clientID;
+	}
 
-    private function setClientID($id)    {
-        $this->clientID = id;
+    public function setClientId($id) {
+        $this->clientID = $id;
     }
+    
+    public function getKey()
+    {
+		return $this->key;
+	}
 
     private function setKey($key) {
         $this->key = $key;
     }
 
-    public function getPointsOfInterest($lat,$lng) {
+    public function getPointsOfInterest($lat, $lng) {
         $json_details = array();
         $json = $this->searchPlaces($lat.", ".$lng);
         foreach ($json->results as $result) {
@@ -39,25 +51,16 @@ class POICurlMapper extends Nette\Object implements IPOIMapper {
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
         curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
-        // using Nette\Web\Uri for escaping GET parameters
-        $uri = new Uri('/maps/api/place/search/json');
-        $uri->setQuery(array(
-            'location' => $location,
-            'radius ' => '250',
-            'sensor' => 'false',
-            'client' => $this->clientID,
-        ));
-
-        $signature = hash_hmac ( 'sha1' , (string) $uri , $this->key );
-
         $uri = new Uri('https://maps.googleapis.com/maps/api/place/search/json');
         $uri->setQuery(array(
             'location' => $location,
-            'radius ' => '250',
-            'sensor' => 'false',
-            'client' => $this->clientID,
-            'signature' => $signature
+			'radius ' => '250',
         ));
+        
+        $uri->appendQuery(array(
+			'signature' => $this->getSignature($uri),
+		));
+
 
         curl_setopt($c, CURLOPT_URL, (string) $uri);
         $result = curl_exec($c);
@@ -77,23 +80,14 @@ class POICurlMapper extends Nette\Object implements IPOIMapper {
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
         curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
-        // using Nette\Web\Uri for escaping GET parameters
-        $uri = new Uri('/maps/api/place/details/json');
-        $uri->setQuery(array(
-            'reference' => $reference,
-            'sensor' => 'false',
-            'client' => $this->clientID,
-        ));
-
-        $signature = hash_hmac ( 'sha1' , (string) $uri , $this->key );
-
         $uri = new Uri('https://maps.googleapis.com/maps/api/place/details/json');
         $uri->setQuery(array(
             'reference' => $reference,
-            'sensor' => 'false',
-            'client' => $this->clientID,
-            'signature' => $signature
         ));
+        
+        $uri->appendQuery(array(
+			'signature' => $this->getSignature($uri),
+		));
 
         curl_setopt($c, CURLOPT_URL, (string) $uri);
         $result = curl_exec($c);
@@ -106,6 +100,15 @@ class POICurlMapper extends Nette\Object implements IPOIMapper {
         return $json;
     }
 
+    private function getSignature(Uri $absoluteUri)
+    {
+		$uri = new Uri($absoluteUri->path . $absoluteUri->query);
+        $uri->setQuery(array(
+            'sensor' => 'false',
+            'client' => $this->clientID,
+        ));
+
+        return hash_hmac('sha1', $uri->path . '?' . $uri->query, $this->key);
+	}
 
 }
-

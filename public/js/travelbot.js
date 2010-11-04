@@ -128,42 +128,35 @@ function showTrip(from, to, directionsDisplay) {
     directionsService.route(request, function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
             directionsDisplay.setDirections(response);
+            showPOI(to);
         }
     });
 }
 
 
-function showPOI() {
-    $.POI.showPOI({
-        callback: function(data) {
-
-
-                $.post("?do=positions", {
-                                                        //lat a lng cilove destinace
-                }, function(gData, textStatus) {
-                    if (gData.status == 'OK') {
-
-                    }
-                }, "json");
-            }
-    });
+function showPOI(location) {
+	$.post("?do=positions", { location: location }, function(data, textStatus) {
+		if (data['status'] != 'FAIL') {
+			
+		} else {
+			showMarker(50.088033, 14.220432, '', 'test', 'test', 'types');
+		}
+	}, "json");
 };
 
-function showMarker(lat, lng, map, icon, name, address, types) {
+function showMarker(lat, lng, icon, name, address, types) {
       // create a new LatLng point for the marker
-      var point = new google.maps.LatLng(lat,lng);
       var marker = new google.maps.Marker({
-        position: point,
+        position: new google.maps.LatLng(lat,lng),
         icon: icon,
         map: map
       });
       // create the tooltip and its text
-      var infoWindow = new google.maps.InfoWindow();
-      var html='<b>'+name+'</b><br />'+address+'<br />'+types;
+      infoWindow = new google.maps.InfoWindow();
 
       // add a listener to open the tooltip when a user clicks on one of the markers
       google.maps.event.addListener(marker, 'click', function() {
-        infoWindow.setContent(html);
+        infoWindow.setContent(html='<b>'+name+'</b><br />'+address+'<br />'+types);
         infoWindow.open(map, marker);
       });
 }

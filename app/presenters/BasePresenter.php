@@ -65,5 +65,10 @@ abstract class BasePresenter extends Presenter
 		
 		return $template;
 	}
+	
+	protected function beforeRender()
+	{
+		$this->template->mapsKey = Environment::getConfig('api')->googleMaps;
+	}
 
 }
