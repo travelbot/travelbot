@@ -7,7 +7,7 @@ use Nette\Web\Uri;
  *
  * @author Petr Vales
  */
-class POICurlMapper extends Nette\Object implements IPOIMapper {
+class PoiGoogleMapper extends Nette\Object implements IPoiMapper {
 
     private $clientID;
     private $key;

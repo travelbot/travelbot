@@ -14,16 +14,16 @@ class TripPresenter extends BasePresenter
      * @author Petr Vales
      * @version 4.11.2010
      */
-    public function handlePositions() {
+    public function handlePois() {
         $location = $this->request->post['location'];
         $service = new LocationService;
         $coords = $service->getCoordinates($location);
         
-        $service = new POIService($this->entityManager);
+        $service = new PoiService($this->entityManager);
 
         try {
-        	$config = Environment::getConfig('api');
-            $POIs = $service->getPOIs($coords['latitude'], $coords['longitude'], new POICurlMapper($config->placesId, $config->placesKey));
+        	$key = Environment::getConfig('api')->gowallaKey;
+            $pois = $service->getPois($coords['latitude'], $coords['longitude'], new PoiGowallaMapper($key));
         } catch (InvalidStateException $e) {
             $this->terminate(new JsonResponse(array(
 				'status' => 'FAIL',
@@ -31,22 +31,21 @@ class TripPresenter extends BasePresenter
         }
 
         $jsonResponse = array();
-        foreach ($POIs as $POI) {
-            $jsonResponse[] = array(
-                'name' => $POI->name,
-                'vicinity' => $POI->vicinity,
-                'types' => $POI->types,
-                'phoneNumber' => $POI->phoneNumber,
-                'address' => $POI->address,
-                'lat' => $POI->lat,
-                'lng' => $POI->lng,
-                'rating' => $POI->rating,
-                'url' => $POI->url,
-                'icon' => $POI->icon,
-                'reference' => $POI->reference
+        foreach ($pois as $poi) {
+            $jsonResponse['pois'][] = array(
+                'name' => $poi->name,
+                'types' => $poi->types,
+                'address' => $poi->address,
+                'latitude' => $poi->latitude,
+                'longitude' => $poi->longitude,
+                'url' => $poi->url,
+                'icon' => $poi->imageUrl,
             );
         }
 
+		$jsonResponse['status'] = 'OK';
+		$jsonResponse['latitude'] = $coords['latitude'];
+		$jsonResponse['longitude'] = $coords['longitude'];
         $this->terminate(new JsonResponse($jsonResponse));
     }
 
