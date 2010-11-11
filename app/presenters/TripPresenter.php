@@ -67,6 +67,11 @@ class TripPresenter extends BasePresenter
 			$trip->arrival,
 			new ArticleWikipediaMapper()
 		);
+
+        $flightMapper = new FlightKayakMapper();
+        $flightService = new FlightService($this->entityManager);
+        $this->template->flights = $flightService->buildFlights($flightMapper, 'PRG','PAR',"11/11/2010","11/14/2010",'1','e','n');
+//        $this->template->flights = $flight->searchFlights('PRG','PAR',"11/11/2010","11/14/2010",'1','e','n');
 	}
 
 }
