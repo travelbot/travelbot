@@ -79,6 +79,20 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
 //@author Petr Valeš
 //@version 20.10.2010
 $(function() {
+	$("#directions-text ol").hide();
+	directionsLink = $("<a>").attr('href', '#').text("Click to show directions.").click(function(event) {
+		event.preventDefault();
+		$("#directions-text ol").show();
+		$(this).hide();
+	});
+	$("#directions-text").append($("<p>").append(directionsLink));
+	
+	poisLink = $("<a>").attr('href', '#').text("Click to show POIs in the destination.").click(function(event) {
+		event.preventDefault();
+		showPOI($("#trip-to").text());
+	});
+	$("#directions-text").append($("<p>").append(poisLink));
+	
 	showTrip($("#trip-from").text(), $("#trip-to").text(), getDirectionsDisplay());
 });
 
@@ -128,18 +142,21 @@ function showTrip(from, to, directionsDisplay) {
     directionsService.route(request, function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
             directionsDisplay.setDirections(response);
-            showPOI(to);
         }
     });
 }
 
 
 function showPOI(location) {
-	$.post("?do=positions", { location: location }, function(data, textStatus) {
+	$.post("?do=pois", { location: location }, function(data, textStatus) {
 		if (data['status'] != 'FAIL') {
-			
+			map.panTo(new google.maps.LatLng(data['latitude'], data['longitude']));
+			map.setZoom(15);
+			$.each(data['pois'], function(i, el) {
+				showMarker(el.latitude, el.longitude, el.icon, '<a href="' + el.url + '">' + el.name + '</a>', el.address, el.types);
+			});
 		} else {
-			showMarker(50.088033, 14.220432, '', 'test', 'test', 'types');
+			
 		}
 	}, "json");
 };
