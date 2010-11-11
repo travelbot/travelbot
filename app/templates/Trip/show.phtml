@@ -30,3 +30,17 @@
 </table>
 <div id="map_canvas"></div>
 <div id="panel"></div>
+
+<h2>Events</h2>
+
+{if count($events) > 0}
+	{foreach $events as $event}
+		<h3><a href="{$event->url}">{$event->title}</a> {$event->date->format('j. n. Y')}</h3>
+		<div class="small">
+			<p><strong>Where:</strong> <a href="{$event->venue->url}">{$event->venue->name}</a></p>
+			{!$event->description}
+		</div>
+	{/foreach}
+{else}
+	<p>No events available.</p>
+{/if}
