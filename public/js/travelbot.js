@@ -89,6 +89,7 @@ $(function() {
 	
 	poisLink = $("<a>").attr('href', '#').text("Click to show POIs in the destination.").click(function(event) {
 		event.preventDefault();
+		showSpinner(event);
 		showPOI($("#trip-to").text());
 	});
 	$("#directions-text").append($("<p>").append(poisLink));
