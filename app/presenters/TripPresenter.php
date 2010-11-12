@@ -60,6 +60,20 @@ class TripPresenter extends BasePresenter
 		$service = new TripService($this->entityManager);
 		$trip = $service->find($id);
 		$this->template->trip = $trip;
+
+		try {
+			// fallback in case of failed loading
+			$eventService = new EventService;
+			$config = Environment::getConfig('api');
+			$events = $eventService->getEvents(
+				$trip->arrival,
+				new DateTime,
+				new EventfulMapper($config->eventfulUser, $config->eventfulPassword, $config->eventfulKey)
+			);
+			$this->template->events = $events;
+		} catch (InvalidStateException $e) {
+			$this->template->events = array();
+		}
 		
         $articleService = new ArticleService($this->entityManager);
         $this->template->article = $articleService->buildArticle(
@@ -69,7 +83,7 @@ class TripPresenter extends BasePresenter
          try{
             $flightMapper = new FlightKayakMapper();
             $flightService = new FlightService($this->entityManager);
-            $this->template->flights = $flightService->buildFlights($flightMapper, 'PRG','PAR',"11/12/2010","11/14/2010",'1','e','n');
+            $this->template->flights = $flightService->buildFlights($flightMapper, 'PRG','PAR',"12/29/2010","12/30/2010",'1','e','n');
          } catch(FlightException $e)  {
 
          }

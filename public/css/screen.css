@@ -80,7 +80,7 @@ th.directions {
 	vertical-align: top;
 }
 
-#directions-text p, #directions-text li {
+#directions-text p, #directions-text li, .small {
 	font-size: 13px;
 }
 
@@ -88,6 +88,10 @@ th.directions {
 	width: 600px;
 	height: 500px;
 	margin: 0 auto;
+}
+
+#panel {
+    display: none;
 }
 
 #flights {
