@@ -18,17 +18,18 @@ define("S", 'duration');                   //sort key: price, duration, depart, 
  *
  * @author Petr
  */
-class FlightKayakMapper implements IFlightMapper {
+class FlightKayakMapper implements IFlightMapper
+{
 
     private $sessionId;
 
-    public function __construct() {
+    public function __construct()
+    {
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
         curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
-        // using Nette\Web\Uri for escaping GET parameters
         $uri = new Uri('http://www.kayak.com/k/ident/apisession');
         $uri->setQuery(array(
             'token' => TOKEN,
@@ -42,21 +43,22 @@ class FlightKayakMapper implements IFlightMapper {
         $this->setSessrionId($result);
     }
 
-    public function searchFlights($from, $to, $depart_dat, $return_date, $travelers, $cabin, $oneWay) {
+    public function searchFlights($from, $to, $depart_dat, $return_date,
+            $travelers, $cabin, $oneWay)
+    {
         $xml = $this->startFlightSearch($from, $to, $depart_dat, $return_date, $travelers, $cabin);
         $searchId = $this->getSearchId($xml);
         return $this->getFlightResults($searchId);
     }
 
-    protected function startFlightSearch($from, $to, $depart_date, $return_date, $travelers, $cabin, $oneWay = 'y') {
-        // curl initialization
+    protected function startFlightSearch($from, $to, $depart_date, $return_date,
+            $travelers, $cabin, $oneWay = 'y')
+    {
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
         curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
-
-        // using Nette\Web\Uri for escaping GET parameters
         $uri = new Uri('http://www.kayak.com/s/apisearch');
         $uri->setQuery(array(
             'basicmode' => BASIC_MODE,
@@ -65,12 +67,13 @@ class FlightKayakMapper implements IFlightMapper {
             'destination' => $to,
             'depart_date' => $depart_date,
         ));
-        if ($return_date != null) {
+        if ($return_date != null)
+        {
             $uri->appendQuery(array('$return_date' => $return_date));
         }
         $uri->appendQuery(array('depart_time' => ANY_TIME));
         if ($return_date != null)
-            $uri->appendQuery(array('return_time' => ANY_TIME));
+                $uri->appendQuery(array('return_time' => ANY_TIME));
         $uri->appendQuery(array(
             'travelers' => $travelers,
             'cabin' => $cabin,
@@ -80,21 +83,19 @@ class FlightKayakMapper implements IFlightMapper {
             'version' => VERSION
         ));
 
-        curl_setopt($c, CURLOPT_URL, (string)$uri);
+        curl_setopt($c, CURLOPT_URL, (string) $uri);
         $result = curl_exec($c);
         curl_close($c);
         return $result;
     }
 
-    protected function getFlightResults($searchid) {
-
-        // curl initialization
+    protected function getFlightResults($searchid)
+    {
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
         curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
-        // using Nette\Web\Uri for escaping GET parameters
         $uri = new Uri('http://www.kayak.com/s/apibasic/flight');
         $uri->setQuery(array(
             'searchid' => $searchid,
@@ -114,18 +115,29 @@ class FlightKayakMapper implements IFlightMapper {
         return $result;
     }
 
-    protected function getSessionId() {
+    protected function getSessionId()
+    {
         return $this->sessionId;
     }
 
-    protected function setSessrionId($xml) {
-        $simpleXMLElement = new SimpleXMLElement($xml);
-        $this->sessionId = (string)$simpleXMLElement->sid;
+    protected function setSessrionId($xml)
+    {
+        $xmlSessionId = new SimpleXMLElement($xml);
+        if (!$xmlSessionId)
+        {
+            throw new FlightException("Session ID error", null, null);
+        }
+        $this->sessionId = (string) $xmlSessionId->sid;
     }
 
-    protected function getSearchId($xml)    {
-        $simpleXMLElement = new SimpleXMLElement($xml);
-        return (string)$simpleXMLElement->searchid;
+    protected function getSearchId($xml)
+    {
+        $xmlSearchId = new SimpleXMLElement($xml);
+        if (!$xmlSearchId)
+        {
+            throw new FlightException("Search ID error", null, null);
+        }
+        return (string) $xmlSearchId->searchid;
     }
 
 }

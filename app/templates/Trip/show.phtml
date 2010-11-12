@@ -13,9 +13,9 @@
         <td id="trip-to">{$trip->arrival}</td>
     </tr>
     <tr>
-    	<td colspan="2">
-		<div id="article">{!$article->text}</div>
-		</td>
+        <td colspan="2">
+            <div id="article">{!$article->text}</div>
+        </td>
     </tr>
     <tr>
         <td id="directions-text" colspan="2">
@@ -30,3 +30,27 @@
 </table>
 <div id="map_canvas"></div>
 <div id="panel"></div>
+<table border="2" id="flights">
+    {foreach $flights as $flight}
+    <tr>
+    <td>
+        <a href="http://kayak.com{$flight->getBook()}">{$flight->getPrice()} {$flight->getCurrency()}</a>
+    </td>
+        
+        {foreach $flight->getLegs() as $leg}
+        <td>
+            <p>Airline: <strong>{$leg->getAirlineDisplay()}</strong></p>
+            <p>From:  <strong>{$leg->getOrig()} {$leg->getDepart()} </strong></p>
+            <p>To:  <strong>{$leg->getDest()} {$leg->getArrive()} </strong></p>
+            <p>Duration: {$leg->getDurationTime()}</p>
+            <p>Cabin: {$leg->getCabin()}</p>
+
+            {foreach $leg->getSegments() as $segment}
+
+            {/foreach}
+        </td>
+        {/foreach}
+        
+    </tr>
+    {/foreach}
+</table>

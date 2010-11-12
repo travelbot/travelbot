@@ -5,7 +5,8 @@
  *
  * @author Petr
  */
-class FlightLeg {
+class FlightLeg
+{
 
     private $airline;
     private $airlineDisplay;
@@ -18,7 +19,9 @@ class FlightLeg {
     private $cabin;
     private $segments;
 
-    public function  __construct($airline,$airlineDisplay, $orig, $dest, $depart, $arrive, $stops, $durationMinutes, $cabin, $segments) {
+    public function __construct($airline, $airlineDisplay, $orig, $dest,
+            $depart, $arrive, $stops, $durationMinutes, $cabin, $segments)
+    {
         $this->airline = $airline;
         $this->airlineDisplay = $airlineDisplay;
         $this->orig = $orig;
@@ -31,85 +34,109 @@ class FlightLeg {
         $this->segments = $segments;
     }
 
-    public function getAirline()   {
+    public function getAirline()
+    {
         return $this->airline;
     }
 
-    public function getAirlineDisplay()   {
+    public function getAirlineDisplay()
+    {
         return $this->airlineDisplay;
     }
 
-    public function getOrig()   {
+    public function getOrig()
+    {
         return $this->orig;
     }
 
-    public function getDest()   {
+    public function getDest()
+    {
         return $this->dest;
     }
 
-    public function getDepart()   {
+    public function getDepart()
+    {
         return $this->depart;
     }
 
-    public function getArrive()   {
+    public function getArrive()
+    {
         return $this->arrive;
     }
 
-    public function getStops()   {
+    public function getStops()
+    {
         return $this->stops;
     }
 
-    public function getDurationMinutes()   {
+    public function getDurationMinutes()
+    {
         return $this->durationMinutes;
     }
 
-    public function getCabin()   {
+    public function getDurationTime()
+    {
+        return floor($this->getDurationMinutes()/60) . "h " . $this->getDurationMinutes()%60 . "min";
+    }
+
+    public function getCabin()
+    {
         return $this->cabin;
     }
 
-    public function getSegments()   {
+    public function getSegments()
+    {
         return $this->segments;
     }
 
-    public function setAirline($airline)  {
+    public function setAirline($airline)
+    {
         $this->airline = $airline;
     }
 
-    public function setAirlineDisplay($airlineDisplay)  {
+    protected function setAirlineDisplay($airlineDisplay)
+    {
         $this->airlineDisplay = $airlineDisplay;
     }
 
-    public function setOrig($orig)  {
+    protected function setOrig($orig)
+    {
         $this->orig = $orig;
     }
 
-    public function setDest($dest)  {
+    protected function setDest($dest)
+    {
         $this->dest = $dest;
     }
 
-    public function setDepart($depart)  {
+    protected function setDepart($depart)
+    {
         $this->depart = $depart;
     }
 
-    public function setArrive($arrive)  {
+    protected function setArrive($arrive)
+    {
         $this->arrive = $arrive;
     }
 
-    public function setStops($stops)  {
+    protected function setStops($stops)
+    {
         $this->stops = $stops;
     }
 
-    public function setDurationMinutes($durationMinutes)  {
+    protected function setDurationMinutes($durationMinutes)
+    {
         $this->durationMinutes = $durationMinutes;
     }
 
-    public function setCabin($cabin)  {
+    protected function setCabin($cabin)
+    {
         $this->cabin = $cabin;
     }
 
-    public function setSegments($segments)  {
+    protected function setSegments($segments)
+    {
         $this->segments = $segments;
     }
-
 
 }
