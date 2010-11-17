@@ -60,6 +60,7 @@ abstract class Component extends Object implements IComponent
 	 */
 	public function lookup($type, $need = TRUE)
 	{
+		/*5.2* if ($a = strrpos($type, '\\')) $type = substr($type, $a + 1); // fix namespace*/
 		if (!isset($this->monitors[$type])) { // not monitored or not processed yet
 			$obj = $this->parent;
 			$path = self::NAME_SEPARATOR . $this->name;
@@ -98,6 +99,7 @@ abstract class Component extends Object implements IComponent
 	 */
 	public function lookupPath($type, $need = TRUE)
 	{
+		/*5.2* if ($a = strrpos($type, '\\')) $type = substr($type, $a + 1); // fix namespace*/
 		$this->lookup($type, $need);
 		return $this->monitors[$type][2];
 	}
@@ -111,6 +113,7 @@ abstract class Component extends Object implements IComponent
 	 */
 	public function monitor($type)
 	{
+		/*5.2* if ($a = strrpos($type, '\\')) $type = substr($type, $a + 1); // fix namespace*/
 		if (empty($this->monitors[$type][3])) {
 			if ($obj = $this->lookup($type, FALSE)) {
 				$this->attached($obj);
@@ -128,6 +131,7 @@ abstract class Component extends Object implements IComponent
 	 */
 	public function unmonitor($type)
 	{
+		/*5.2* if ($a = strrpos($type, '\\')) $type = substr($type, $a + 1); // fix namespace*/
 		unset($this->monitors[$type]);
 	}
 

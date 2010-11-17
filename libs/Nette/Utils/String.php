@@ -387,6 +387,9 @@ final class String
 	{
 		Debug::tryError();
 		if (is_object($replacement) || is_array($replacement)) {
+			/*5.2*if ($replacement instanceof Callback) {
+				$replacement = $replacement->getNative();
+			}*/
 			if (!is_callable($replacement, FALSE, $textual)) {
 				Debug::catchError($foo);
 				throw new \InvalidStateException("Callback '$textual' is not callable.");

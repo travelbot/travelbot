@@ -196,6 +196,7 @@ class ComponentContainer extends Component implements IComponentContainer
 			$iterator = new \RecursiveIteratorIterator($iterator, $deep);
 		}
 		if ($filterType) {
+			/*5.2* if ($a = strrpos($filterType, '\\')) $filterType = substr($filterType, $a + 1); // fix namespace*/
 			$iterator = new InstanceFilterIterator($iterator, $filterType);
 		}
 		return $iterator;

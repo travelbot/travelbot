@@ -28,7 +28,7 @@ final class Framework
 
 	const VERSION = '2.0-dev';
 
-	const REVISION = '52b1fd0 released on 2010-10-06';
+	const REVISION = '$WCREV$ released on $WCDATE$';
 	/**#@-*/
 
 

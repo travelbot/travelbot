@@ -480,7 +480,7 @@ final class Debug
 		}
 
 		if (isset($exception)) {
-			$hash = md5($exception );
+			$hash = md5($exception /*5.2*. (method_exists($exception, 'getPrevious') ? $exception->getPrevious() : (isset($exception->previous) ? $exception->previous : ''))*/);
 			foreach (new \DirectoryIterator(self::$logDirectory) as $entry) {
 				if (strpos($entry, $hash)) {
 					$skip = TRUE; break;

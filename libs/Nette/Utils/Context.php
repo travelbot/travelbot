@@ -114,6 +114,7 @@ class Context extends FreezableObject implements IContext
 			}
 
 			if (is_string($factory) && strpos($factory, ':') === FALSE) { // class name
+				/*5.2* if ($a = strrpos($factory, '\\')) $factory = substr($factory, $a + 1); // fix namespace*/
 				if (!class_exists($factory)) {
 					throw new AmbiguousServiceException("Cannot instantiate service '$name', class '$factory' not found.");
 				}
@@ -127,7 +128,7 @@ class Context extends FreezableObject implements IContext
 				if (!$factory->isCallable()) {
 					throw new \InvalidStateException("Cannot instantiate service '$name', handler '$factory' is not callable.");
 				}
-				$service = $factory($options);
+				$service = $factory/*5.2*->invoke*/($options);
 				if (!is_object($service)) {
 					throw new AmbiguousServiceException("Cannot instantiate service '$name', value returned by '$factory' is not object.");
 				}

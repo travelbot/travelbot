@@ -85,20 +85,6 @@ abstract class Template extends Nette\Object implements ITemplate
 
 
 	/**
-	 * Renders template to file.
-	 * @param  string
-	 * @return void
-	 */
-	public function save($file)
-	{
-		if (file_put_contents($file, $this->__toString(TRUE)) === FALSE) {
-			throw new \IOException("Unable to save file '$file'.");
-		}
-	}
-
-
-
-	/**
 	 * Renders template to string.
 	 * @param  bool  can throw exceptions? (hidden parameter)
 	 * @return string
@@ -137,7 +123,7 @@ abstract class Template extends Nette\Object implements ITemplate
 		try {
 			foreach ($this->filters as $filter) {
 				$content = self::extractPhp($content, $blocks);
-				$content = $filter($content);
+				$content = $filter/*5.2*->invoke*/($content);
 				$content = strtr($content, $blocks); // put PHP code back
 			}
 		} catch (\Exception $e) {
@@ -204,7 +190,7 @@ abstract class Template extends Nette\Object implements ITemplate
 		$lname = strtolower($name);
 		if (!isset($this->helpers[$lname])) {
 			foreach ($this->helperLoaders as $loader) {
-				$helper = $loader($lname);
+				$helper = $loader/*5.2*->invoke*/($lname);
 				if ($helper) {
 					$this->registerHelper($lname, $helper);
 					return $this->helpers[$lname]->invokeArgs($args);

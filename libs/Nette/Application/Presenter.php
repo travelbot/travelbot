@@ -834,7 +834,7 @@ abstract class Presenter extends Control implements IPresenter
 		// PROCESS ARGUMENTS
 		if (is_subclass_of($presenterClass, __CLASS__)) {
 			if ($action === '') {
-				$action = $presenterClass::$defaultAction;
+				$action = /**/$presenterClass/**//*5.2*self*/::$defaultAction;
 			}
 
 			$current = ($action === '*' || $action === $this->action) && $presenterClass === get_class($this); // TODO
@@ -842,9 +842,11 @@ abstract class Presenter extends Control implements IPresenter
 			$reflection = new PresenterComponentReflection($presenterClass);
 			if ($args || $destination === 'this') {
 				// counterpart of run() & tryCall()
-				$method = $presenterClass::formatActionMethod($action);
+				/**/$method = $presenterClass::formatActionMethod($action);/**/
+				/*5.2* $method = call_user_func(array($presenterClass, 'formatActionMethod'), $action);*/
 				if (!$reflection->hasCallableMethod($method)) {
-					$method = $presenterClass::formatRenderMethod($action);
+					/**/$method = $presenterClass::formatRenderMethod($action);/**/
+					/*5.2* $method = call_user_func(array($presenterClass, 'formatRenderMethod'), $action);*/
 					if (!$reflection->hasCallableMethod($method)) {
 						$method = NULL;
 					}
@@ -1009,7 +1011,7 @@ abstract class Presenter extends Control implements IPresenter
 	 */
 	public static function getPersistentComponents()
 	{
-		return (array) Nette\Reflection\ClassReflection::from(get_called_class())->getAnnotation('persistent');
+		return (array) Nette\Reflection\ClassReflection::from(/*5.2*func_get_arg(0)*//**/get_called_class()/**/)->getAnnotation('persistent');
 	}
 
 

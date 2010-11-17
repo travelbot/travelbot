@@ -172,10 +172,204 @@ if (headers_sent()) {
 		while ((method_exists($ex, 'getPrevious') && $ex = $ex->getPrevious()) || (isset($ex->previous) && $ex = $ex->previous)) echo '; caused by ', get_class($ex), ' ', $ex->getMessage(), ($ex->getCode() ? ' #' . $ex->getCode() : '');
 	?> -->
 
-	<style type="text/css">body{margin:0 0 2em;padding:0}#netteBluescreen{font:9pt/1.5 Verdana,sans-serif;background:white;color:#333;position:absolute;left:0;top:0;width:100%;z-index:23178;text-align:left}#netteBluescreen *{color:inherit;background:transparent;border:none;margin:0;padding:0;text-align:inherit;text-indent:0}#netteBluescreenIcon{position:absolute;right:.5em;top:.5em;z-index:23179;text-decoration:none;background:#CD1818;padding:3px}#netteBluescreenError{background:#CD1818;color:white;font-weight:bold;font-style:normal;display:block}#netteBluescreen h1{font:18pt/1.5 Verdana,sans-serif!important;text-shadow:1px 1px 0 rgba(0,0,0,.4);margin:.7em 0}#netteBluescreen h2{font:14pt/1.5 sans-serif!important;color:#888;margin:.6em 0}#netteBluescreen a{text-decoration:none;color:#328ADC;padding:2px 4px;margin:-2px -4px}#netteBluescreen a abbr{font-family:sans-serif;color:#BBB}#netteBluescreen h3{font:bold 10pt/1.5 Verdana,sans-serif!important;margin:1em 0;padding:0}#netteBluescreen p,#netteBluescreen pre{margin:.8em 0}#netteBluescreen pre,#netteBluescreen code,#netteBluescreen table{font:9pt/1.5 Consolas,monospace!important}#netteBluescreen pre,#netteBluescreen table{background:#FDF5CE;padding:.4em .7em;border:1px dotted silver;overflow:auto}#netteBluescreen table pre{padding:0;margin:0;border:none}#netteBluescreen pre.nette-dump span{color:#C22}#netteBluescreen pre.nette-dump a{color:#333}#netteBluescreen div.panel{padding:1px 2em}#netteBluescreen div.inner{background:#F4F3F1;padding:.1em 1em 1em;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px}#netteBluescreen table{border-collapse:collapse;width:100%}#netteBluescreen .outer{overflow:auto}#netteBluescreen td,#netteBluescreen th{vertical-align:top;text-align:left;padding:2px 6px;border:1px solid #e6dfbf}#netteBluescreen th{width:10%;font-weight:bold}#netteBluescreen tr:nth-child(2n),#netteBluescreen tr:nth-child(2n) pre{background-color:#F7F0CB}#netteBluescreen ol{margin:1em 0;padding-left:2.5em}#netteBluescreen ul{font:7pt/1.5 Verdana,sans-serif!important;padding:2em 4em;margin:1em 0 0;color:#777;background:#F6F5F3 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFEAAAAjCAMAAADbuxbOAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADBQTFRF/fz24d7Y7Onj5uLd9vPu3drUzMvG09LN39zW8e7o2NbQ3NnT29jS0M7J1tXQAAAApvmsFgAAABB0Uk5T////////////////////AOAjXRkAAAKlSURBVHja7FbbsqQgDAwENEgc//9vN+SCWDtbtXPmZR/Wc6o02mlC58LA9ckFAOszvMV8xNgyUjyXhojfMVKvRL0ZHavxXYy5JrmchMdzou8YlTClxajtK8ZGGpWRoBr1+gFjKfHkJPbizabLgzE3pH7Iu4K980xgFvlrVzMZoVBWhtvouCDdcTDmTgMCJdVxJ9MKO6XxnliM7hxi5lbj2ZVM4l8DqYyKoNLYcfqBB1/LpHYxEcfVG6ZpMDgyFUVWY/Q1sSYPpIdSAKWqLWL0XqWiMWc4hpH0OQOMOAgdycY4N9Sb7wWANQs3rsDSdLAYiuxi5siVfOhBWIrtH0G3kNaF/8Q4kCPE1kMucG/ZMUBUCOgiKJkPuWWTLGVgLGpwns1DraUayCtoBqERyaYtVsm85NActRooezvSLO/sKZP/nq8n4+xcyjNsRu8zW6KWpdb7wjiQd4WrtFZYFiKHENSmWp6xshh96c2RQ+c7Lt+qbijyEjHWUJ/pZsy8MGIUuzNiPySK2Gqoh6ZTRF6ko6q3nVTkaA//itIrDpW6l3SLo8juOmqMXkYknu5FdQxWbhCfKHEGDhxxyTVaXJF3ZjSl3jMksjSOOKmne9pI+mcG5QvaUJhI9HpkmRo2NpCrDJvsktRhRE2MM6F2n7dt4OaMUq8bCctk0+PoMRzL+1l5PZ2eyM/Owr86gf8z/tOM53lom5+nVcFuB+eJVzlXwAYy9TZ9s537tfqcsJWbEU4nBngZo6FfO9T9CdhfBtmk2dLiAy8uS4zwOpMx2HqYbTC+amNeAYTpsP4SIgvWfUBWXxn3CMHW3ffd7k3+YIkx7w0t/CVGvcPejoeOlzOWzeGbawOHqXQGUTMZRcfj4XPCgW9y/fuvVn8zD9P1QHzv80uAAQA0i3Jer7Jr7gAAAABJRU5ErkJggg==') 99% 10px no-repeat;border-top:1px solid #DDD}#netteBluescreen .highlight{background:#CD1818;color:white;font-weight:bold;font-style:normal;display:block;padding:0 .4em;margin:0 -.4em}#netteBluescreen .line{color:#9F9C7F;font-weight:normal;font-style:normal}#netteBluescreen a[href^=editor:]{color:inherit;border-bottom:1px dotted #328ADC}</style>
+	<style type="text/css">
+
+		body {
+			margin: 0 0 2em;
+			padding: 0;
+		}
+
+		#netteBluescreen {
+			font: 9pt/1.5 Verdana, sans-serif;
+			background: white;
+			color: #333;
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			z-index: 23178;
+			text-align: left;
+		}
+
+		#netteBluescreen * {
+			color: inherit;
+			background: transparent;
+			border: none;
+			margin: 0;
+			padding: 0;
+			text-align: inherit;
+			text-indent: 0;
+		}
+
+		#netteBluescreenIcon {
+			position: absolute;
+			right: .5em;
+			top: .5em;
+			z-index: 23179;
+			text-decoration: none;
+			background: #CD1818;
+			padding: 3px;
+		}
+
+		#netteBluescreenError {
+			background: #CD1818;
+			color: white;
+			font-weight: bold;
+			font-style: normal;
+			display: block;
+		}
+
+		#netteBluescreen h1 {
+			font: 18pt/1.5 Verdana, sans-serif !important;
+			text-shadow: 1px 1px 0 rgba(0, 0, 0, .4);
+			margin: .7em 0;
+		}
+
+		#netteBluescreen h2 {
+			font: 14pt/1.5 sans-serif !important;
+			color: #888;
+			margin: .6em 0;
+		}
+
+		#netteBluescreen a {
+			text-decoration: none;
+			color: #328ADC;
+			padding: 2px 4px;
+			margin: -2px -4px;
+		}
+
+		#netteBluescreen a abbr {
+			font-family: sans-serif;
+			color: #BBB;
+		}
+
+		#netteBluescreen h3 {
+			font: bold 10pt/1.5 Verdana, sans-serif !important;
+			margin: 1em 0;
+			padding: 0;
+		}
+
+		#netteBluescreen p, #netteBluescreen pre {
+			margin: .8em 0
+		}
+
+		#netteBluescreen pre, #netteBluescreen code, #netteBluescreen table {
+			font: 9pt/1.5 Consolas, monospace !important;
+		}
+
+		#netteBluescreen pre, #netteBluescreen table {
+			background: #FDF5CE;
+			padding: .4em .7em;
+			border: 1px dotted silver;
+			overflow: auto;
+		}
+
+		#netteBluescreen table pre {
+			padding: 0;
+			margin: 0;
+			border: none;
+		}
+
+		#netteBluescreen pre.nette-dump span {
+			color: #C22;
+		}
+
+		#netteBluescreen pre.nette-dump a {
+			color: #333;
+		}
+
+		#netteBluescreen div.panel {
+			padding: 1px 2em;
+		}
+
+		#netteBluescreen div.inner {
+			background: #F4F3F1;
+			padding: .1em 1em 1em;
+			border-radius: 8px;
+			-moz-border-radius: 8px;
+			-webkit-border-radius: 8px;
+		}
+
+		#netteBluescreen table {
+			border-collapse: collapse;
+			width: 100%;
+		}
+
+		#netteBluescreen .outer {
+			overflow: auto;
+		}
+
+		#netteBluescreen td, #netteBluescreen th {
+			vertical-align: top;
+			text-align: left;
+			padding: 2px 6px;
+			border: 1px solid #e6dfbf;
+		}
+
+		#netteBluescreen th {
+			width: 10%;
+			font-weight: bold;
+		}
+
+		#netteBluescreen tr:nth-child(2n), #netteBluescreen tr:nth-child(2n) pre {
+			background-color: #F7F0CB;
+		}
+
+		#netteBluescreen ol {
+			margin: 1em 0;
+			padding-left: 2.5em;
+		}
+
+		#netteBluescreen ul {
+			font: 7pt/1.5 Verdana, sans-serif !important;
+			padding: 2em 4em;
+			margin: 1em 0 0;
+			color: #777;
+			background: #F6F5F3 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFEAAAAjCAMAAADbuxbOAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADBQTFRF/fz24d7Y7Onj5uLd9vPu3drUzMvG09LN39zW8e7o2NbQ3NnT29jS0M7J1tXQAAAApvmsFgAAABB0Uk5T////////////////////AOAjXRkAAAKlSURBVHja7FbbsqQgDAwENEgc//9vN+SCWDtbtXPmZR/Wc6o02mlC58LA9ckFAOszvMV8xNgyUjyXhojfMVKvRL0ZHavxXYy5JrmchMdzou8YlTClxajtK8ZGGpWRoBr1+gFjKfHkJPbizabLgzE3pH7Iu4K980xgFvlrVzMZoVBWhtvouCDdcTDmTgMCJdVxJ9MKO6XxnliM7hxi5lbj2ZVM4l8DqYyKoNLYcfqBB1/LpHYxEcfVG6ZpMDgyFUVWY/Q1sSYPpIdSAKWqLWL0XqWiMWc4hpH0OQOMOAgdycY4N9Sb7wWANQs3rsDSdLAYiuxi5siVfOhBWIrtH0G3kNaF/8Q4kCPE1kMucG/ZMUBUCOgiKJkPuWWTLGVgLGpwns1DraUayCtoBqERyaYtVsm85NActRooezvSLO/sKZP/nq8n4+xcyjNsRu8zW6KWpdb7wjiQd4WrtFZYFiKHENSmWp6xshh96c2RQ+c7Lt+qbijyEjHWUJ/pZsy8MGIUuzNiPySK2Gqoh6ZTRF6ko6q3nVTkaA//itIrDpW6l3SLo8juOmqMXkYknu5FdQxWbhCfKHEGDhxxyTVaXJF3ZjSl3jMksjSOOKmne9pI+mcG5QvaUJhI9HpkmRo2NpCrDJvsktRhRE2MM6F2n7dt4OaMUq8bCctk0+PoMRzL+1l5PZ2eyM/Owr86gf8z/tOM53lom5+nVcFuB+eJVzlXwAYy9TZ9s537tfqcsJWbEU4nBngZo6FfO9T9CdhfBtmk2dLiAy8uS4zwOpMx2HqYbTC+amNeAYTpsP4SIgvWfUBWXxn3CMHW3ffd7k3+YIkx7w0t/CVGvcPejoeOlzOWzeGbawOHqXQGUTMZRcfj4XPCgW9y/fuvVn8zD9P1QHzv80uAAQA0i3Jer7Jr7gAAAABJRU5ErkJggg==') 99% 10px no-repeat;
+			border-top: 1px solid #DDD;
+		}
+
+		#netteBluescreen .highlight {
+			background: #CD1818;
+			color: white;
+			font-weight: bold;
+			font-style: normal;
+			display: block;
+			padding: 0 .4em;
+			margin: 0 -.4em;
+		}
+
+		#netteBluescreen .line {
+			color: #9F9C7F;
+			font-weight: normal;
+			font-style: normal;
+		}
+
+		#netteBluescreen a[href^=editor\:] {
+			color: inherit;
+			border-bottom: 1px dotted #328ADC;
+		}
+	</style>
 
 
-	<script type="text/javascript">/*<![CDATA[*/document.write("<style> .collapsed { display: none; } </style>");function netteToggle(b,c){for(var e=b.getElementsByTagName("abbr")[0],a=c?document.getElementById(c):b.nextSibling;a.nodeType!==1;)a=a.nextSibling;var d=a.currentStyle?a.currentStyle.display=="none":getComputedStyle(a,null).display=="none";try{e.innerHTML=String.fromCharCode(d?9660:9658)}catch(f){}a.style.display=d?a.tagName.toLowerCase()==="code"?"inline":"block":"none";return true};/*]]>*/</script>
+	<script type="text/javascript">
+	/* <![CDATA[ */
+		document.write('<style> .collapsed { display: none; } <\/style>');
+
+		function netteToggle(link, panelId)
+		{
+			var arrow = link.getElementsByTagName('abbr')[0];
+			var panel = panelId ? document.getElementById(panelId) : link.nextSibling;
+			while (panel.nodeType !== 1) panel = panel.nextSibling;
+			var collapsed = panel.currentStyle ? panel.currentStyle.display == 'none' : getComputedStyle(panel, null).display == 'none';
+
+			try { arrow.innerHTML = String.fromCharCode(collapsed ? 0x25bc : 0x25ba); } catch(e){} // ie6
+			panel.style.display = collapsed ? (panel.tagName.toLowerCase() === 'code' ? 'inline' : 'block') : 'none';
+
+			return true;
+		}
+	/* ]]> */
+	</script>
 </head>
 
 
@@ -418,6 +612,14 @@ if (headers_sent()) {
 	</div>
 </div>
 
-<script type="text/javascript">document.body.appendChild(document.getElementById("netteBluescreen"));document.onkeypress=function(a){a=a||window.event;if(a.keyCode==27)return document.getElementById("netteBluescreenIcon").onclick()};</script>
+<script type="text/javascript">
+	document.body.appendChild(document.getElementById('netteBluescreen'));
+	document.onkeypress = function(e) {
+		e = e || window.event;
+		if (e.keyCode == 27) {
+			return document.getElementById('netteBluescreenIcon').onclick();
+		}
+	};
+</script>
 </body>
 </html>

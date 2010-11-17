@@ -72,9 +72,9 @@ class ParameterReflection extends \ReflectionParameter
 	/**
 	 * @return Nette\Reflection\ClassReflection
 	 */
-	public static function getReflection()
+	public /**/static/**/ function getReflection()
 	{
-		return new Nette\Reflection\ClassReflection(get_called_class());
+		return new Nette\Reflection\ClassReflection(/*5.2*$this*//**/get_called_class()/**/);
 	}
 
 

@@ -54,7 +54,7 @@ abstract class TextBase extends FormControl
 	{
 		$value = $this->value;
 		foreach ($this->filters as $filter) {
-			$value = (string) $filter($value);
+			$value = (string) $filter/*5.2*->invoke*/($value);
 		}
 		return $value === $this->translate($this->emptyValue) ? '' : $value;
 	}
