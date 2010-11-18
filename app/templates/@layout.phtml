@@ -8,38 +8,40 @@
 
 	<title>Project Travelbot</title>
 
+	<link rel="stylesheet" href="{$basePath}/css/reset.css" type="text/css">
 	<link rel="stylesheet" href="{$basePath}/css/screen.css" type="text/css">
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
+	<script type="text/javascript">
+		var basePath = {$basePath};
+		var isTripPage = false;
+	</script>
+	{block #js}{/block}
 </head>
 
 <body>
-	<div id="header">
-		<h1><a href="{link Homepage:}">Travelbot</a></h1>
-		<span>
-			{ifCurrent Homepage:}
-				<strong>Plan new trip</strong> -
-			{else}
-				<a href="{link Homepage:}">Plan new trip</a> -
-			{/if} 
+	<div id="header" class="clearfix">
+		<div class="left">
+			<h1><a href="{link Homepage:}">Travelbot</a><span>beta</span></h1>
+			<span class="clear"></span>
+		</div>
+		
+		{block #header}
 			
-			{ifCurrent Trip:}
-				<strong>Saved trips</strong> -
-			{else}
-				<a href="{link Trip:}">Saved trips</a> -
-			{/if}
-			
-			{ifCurrent About:}
-				<strong>About</strong>
-			{else}
-				<a href="{link About:}">About</a>
-			{/if}
-		</span>
+		{/block}
+		
+		<span class="clear"></span>
 	</div>
 
-	<div id="content">
-		{foreach $flashes as $flash}<div class="flash {$flash->type}">{$flash->message}</div>{/foreach}
-		{include #content}
+	
+	<div id="left">
+		<div id="content" class="inner">
+			{include #content}
+		</div>
 	</div>
+	
+	<div id="map"></div>
+	
+	
 	
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	<script type="text/javascript" src="http://www.google.com/jsapi?key={$mapsKey}"></script>
