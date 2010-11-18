@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html>
+{block #htmlTag}<html>{/block}
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 	<meta name="description" content="Nette Framework web application skeleton">
 	<meta name="robots" content="{$robots}" n:ifset="$robots">
+	{block #meta}{/block}
 
-	<title>Project Travelbot</title>
+	<title>{block #title}{/block} | Travelbot</title>
 
 	<link rel="stylesheet" href="{$basePath}/css/reset.css" type="text/css">
 	<link rel="stylesheet" href="{$basePath}/css/screen.css" type="text/css">

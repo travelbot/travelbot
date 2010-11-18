@@ -155,6 +155,16 @@ a.unwrap.minus {
 	margin-left: 14px;
 }
 
+p.nav {
+	float: left;
+}
+
+#left iframe {
+	float: right;
+	position: relative;
+	top: 2px;
+}
+
 hr {
 	border: none;
 	height: 2px;

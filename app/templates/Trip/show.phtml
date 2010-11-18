@@ -1,3 +1,10 @@
+{block #htmlTag}<html xmlns:og="http://opengraphprotocol.org/schema/">{/block}
+{block #meta}
+	<meta property="og:title" content="{block #title}Trip from {$trip->departure} to {$trip->arrival}{/block}">
+	<meta property="og:url" content="{link //this}">
+	<meta property="og:site_name" content="Travelbot">
+{/block}
+
 {block #header}
 	<strong class="departure">From</strong>
 	<span class="trip departure">{$trip->departure}</span>
@@ -13,8 +20,12 @@
 {/block}
 
 {block #content}
-	<p><a href="{link Homepage:}">← Plan new trip</a> | <a href="{link this}">permalink</a></p>
-	<p>The trip will take <strong>{$trip->duration |duration}</strong> to complete and its distance is <strong>{$trip->distance |distance}</strong>.</p>
+	
+	<p class="nav"><a href="{link Homepage:}">← Plan new trip</a> | <a href="{link this}">permalink</a></p>
+	
+	<iframe src="http://www.facebook.com/plugins/like.php?locale=en_GB&amp;href={link //this}&amp;layout=button_count&amp;action=like&amp;font=trebuchet+ms&amp;colorscheme=light&amp;" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width: 90px; height: 30px;" allowTransparency="true"></iframe>
+	
+	<p class="clear">The trip will take <strong>{$trip->duration |duration}</strong> to complete and its distance is <strong>{$trip->distance |distance}</strong>.</p>
 	
 	<div>
 		<div id="article">{!$article->text}</div>
