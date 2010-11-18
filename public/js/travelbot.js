@@ -1,9 +1,131 @@
-/**
- * Geolocation callback handler.
- * @author mirteond 
- */
+var travelbot = {
+	map: null,
+	directionsRenderer: null,
+	markers: new Array(),
+	
+	getMap: function() {
+		if (travelbot.map == null) {
+			map = new google.maps.Map(document.getElementById("map"), {
+		        zoom:7,
+		        mapTypeId: google.maps.MapTypeId.ROADMAP,
+		        center: new google.maps.LatLng(50.093847, 14.413261)
+	    	});
+	    	travelbot.map = map;
+    	}
+    	return travelbot.map;
+	},
+	
+	getDirectionsRenderer: function() {
+		if (travelbot.directionsRenderer == null) {
+	    	directionsRenderer = new google.maps.DirectionsRenderer();
+		    directionsRenderer.setMap(travelbot.getMap());
+		    travelbot.directionsRenderer = directionsRenderer;
+	    }
+	    return travelbot.directionsRenderer;
+	},
+	
+	showTrip: function(from, to) {
+	    service = new google.maps.DirectionsService();
+	    service.route({
+	        origin:from,
+	        destination:to,
+	        travelMode: google.maps.DirectionsTravelMode.DRIVING
+	    }, function(response, status) {
+	        if (status == google.maps.DirectionsStatus.OK) {
+	        	travelbot.getDirectionsRenderer().setMap(null);
+	        	travelbot.getDirectionsRenderer().setMap(travelbot.map);
+	            travelbot.getDirectionsRenderer().setDirections(response);
+	        }
+	    });
+	},
+	
+	showPoi: function(latitude, longitude, icon, name, address, types) {
+		var marker = new google.maps.Marker({
+			position: new google.maps.LatLng(latitude, longitude),
+			icon: icon,
+			map: travelbot.map
+		});
+		travelbot.markers.push(marker);
+		infoWindow = new google.maps.InfoWindow();
+		
+		
+		// add a listener to open the tooltip when a user clicks on one of the markers
+		google.maps.event.addListener(marker, 'click', function() {
+			infoWindow.setContent('<b>'+name+'</b><br />'+address+'<br />'+types);
+			infoWindow.open(travelbot.map, marker);
+		});
+	},
+	
+	loadPois: function(location) {
+		$.post(basePath + "/ajax/?do=pois", { location: location }, function(data, textStatus) {
+			if (data['status'] != 'FAIL') {
+				travelbot.getMap().panTo(new google.maps.LatLng(data['latitude'], data['longitude']));
+				travelbot.getMap().setZoom(15);
+				$.each(data['pois'], function(i, el) {
+					travelbot.showPoi(el.latitude, el.longitude, el.icon, '<a href="' + el.url + '">' + el.name + '</a>', el.address, el.types);
+				});
+				return data['pois'];
+			} else {
+				
+			}
+		}, "json");
+	},
+	
+	clearPois: function() {
+		for (i in travelbot.markers) {
+			travelbot.markers[i].setMap(null);
+		}
+	},
+	
+	loadEvents: function() {
+		events = $('.event');
+		
+		$.each(events, function(i, el) {
+			event = $(el);
+			if (i == 0) {
+				travelbot.getMap().panTo(new google.maps.LatLng(event.attr('data-latitude'), event.attr('data-longitude')));
+				travelbot.getMap().setZoom(12);
+			}
+			travelbot.showPoi(parseFloat(event.attr('data-latitude')) + (Math.random()/100), parseFloat(event.attr('data-longitude')) + (Math.random()/100), null, event.attr('data-title'), event.attr('data-venue'), event.attr('data-date'));
+		});
+	}
+}
+
 $(function() {
-    $.geolocator.geolocate({
+	travelbot.getMap();
+	
+	if (isTripPage) {
+		travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+		
+		directions = $('#directions');
+		directions.before(createUnwrapLink('Directions', directions));
+		
+		$("#showing-pois").hide();
+		
+		var shownEvents = false;
+		
+		events = $('#events');
+		eventsLink = createUnwrapLink('Events', events);
+		eventsLink.click(function(event) {
+			event.preventDefault();
+			travelbot.clearPois();
+			if (shownEvents) {
+				travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+				shownEvents = false;
+			} else {
+				travelbot.loadEvents();
+				shownEvents = true;
+			}
+		});
+		events.before(eventsLink);
+		
+		article = $('#article');
+		article.before(createUnwrapLink('Article', article));
+		
+		flights = $('#flights');
+		flights.before(createUnwrapLink('Flights', flights));
+	} else {
+		$.geolocator.geolocate({
         callback: function(data) {
             form = $("#frmlocationsForm-from");
             if (data.latitude == null || data.client !== undefined) {
@@ -14,7 +136,7 @@ $(function() {
                     $("#frmlocationsForm-from").focus();
                 }
             } else {
-                $.post("?do=location", {
+                $.post(basePath + "/ajax/?do=location", {
                     latitude: data.latitude,
                     longitude: data.longitude
                 }, function(gData, textStatus) {
@@ -31,7 +153,30 @@ $(function() {
             }
         }
     });
+	}
+});
 
+$("#pois-link").click(function(event) {
+	event.preventDefault();
+	link = $(this);
+	
+	if (link.hasClass('plus')) {
+		showSpinner(event);
+		travelbot.loadPois($('span.trip.arrival').text());
+		$("#showing-pois").show();
+		link.removeClass('plus');
+		link.addClass('minus');
+	} else {
+		travelbot.clearPois();
+		travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+		$("#showing-pois").hide();
+		link.removeClass('minus');
+		link.addClass('plus');
+	}
+});
+
+$("#frmlocationsForm-from, #frmlocationsForm-to").keyup(function() {
+	$("#frmlocationsForm-okSubmit").attr('disabled', 'disabled');
 });
 
 /**
@@ -48,136 +193,41 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
         if (!showSpinner(event)) {
             button.val('working...').attr('disabled', 'disabled');
         }
-        $.post("?do=directions", {
+        $.post(basePath + "/ajax/?do=directions", {
             from: from.val(),
             to: to.val()
         }, function(data, textStatus) {
         	showMap = false;
+        	
+        	panel = $("#content");
+        	
             if (data.status == 'OK') {
-                text = $('<p>The trip will take <strong>' + formatDuration(data['duration']) + '</strong> to complete and its distance is <strong>' + formatDistance(data['distance']) + '.</strong></p>');
                 ol = $('<ol>');
                 $.each(data.steps, function(i, el) {
                     ol.append($('<li>').html(el['instructions'] + ' (' + formatDistance(el['distance']) + ')'));
                 });
-                showMap = true;
+                
+                panel.html('');
+                panel.append($('<p>The trip will take <strong>' + formatDuration(data['duration']) + '</strong> to complete and its distance is <strong>' + formatDistance(data['distance']) + '.</strong></p>'));
+                panel.append($("<p>If you're satisfied with the trip, click on <strong>Save trip</strong> for further modifications.</p>"));
+                
+                panel.append(createUnwrapLink('Directions', ol));
+                panel.append(ol);
+                
+                travelbot.showTrip(from.val(), to.val());
+				$("#frmlocationsForm-okSubmit").removeAttr('disabled');
             } else {
-                text = $('<p>Can not find the destination or the trip can not be finished.</p>');
+                panel.html('<p>Error occured. Please try again.</p>');
             }
-			
-            textEl = $("#directions-text");
-            textEl.text('');
-            textEl.append(text);
-            textEl.append(ol);
 
             button.val('Find directions').removeAttr('disabled');
-            
-            if (showMap) showTrip(from.val(), to.val(), getDirectionsDisplay());
         });
     }
 });
 
-//@author Petr Valeš
-//@version 20.10.2010
-$(function() {
-	$("#directions-text ol").hide();
-	directionsLink = $("<a>").attr('href', '#').text("Click to show directions.").click(function(event) {
-		event.preventDefault();
-		$("#directions-text ol").show();
-		$(this).hide();
-	});
-	$("#directions-text").append($("<p>").append(directionsLink));
-	
-	poisLink = $("<a>").attr('href', '#').text("Click to show POIs in the destination.").click(function(event) {
-		event.preventDefault();
-		showSpinner(event);
-		showPOI($("#trip-to").text());
-	});
-	$("#directions-text").append($("<p>").append(poisLink));
-	
-	showTrip($("#trip-from").text(), $("#trip-to").text(), getDirectionsDisplay());
-});
-
-function getDirectionsDisplay() {
-	// coordinates where map will center
-    from = new google.maps.LatLng(50.093847, 14.413261);
-    map = createMap(from);
-    return createPanel(map);
-};
-
-//@author Petr Valeš
-//@version 20.10.2010
-function createMap(from)  {
-    var myOptions = {
-        zoom:7,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        center: from
-    }
-    var element = $("#map_canvas");
-    var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    return map;
-};
-
-//@author Petr Valeš
-//@version 20.10.2010
-function createPanel(map)   {
-    var directionsDisplay = new google.maps.DirectionsRenderer();
-    directionsDisplay.setMap(map);
-    $("#panel").css({
-        width: "20%",
-        height: "500px",
-        float: "right"
-    });
-    //directionsDisplay.setPanel(document.getElementById("panel"));
-    return directionsDisplay;
-}
-
-//@author Petr Valeš
-//@version 20.10.2010
-function showTrip(from, to, directionsDisplay) {
-    var directionsService = new google.maps.DirectionsService();
-    var request = {
-        origin:from,
-        destination:to,
-        travelMode: google.maps.DirectionsTravelMode.DRIVING
-    };
-    directionsService.route(request, function(response, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(response);
-        }
-    });
-}
-
-
-function showPOI(location) {
-	$.post("?do=pois", { location: location }, function(data, textStatus) {
-		if (data['status'] != 'FAIL') {
-			map.panTo(new google.maps.LatLng(data['latitude'], data['longitude']));
-			map.setZoom(15);
-			$.each(data['pois'], function(i, el) {
-				showMarker(el.latitude, el.longitude, el.icon, '<a href="' + el.url + '">' + el.name + '</a>', el.address, el.types);
-			});
-		} else {
-			
-		}
-	}, "json");
-};
-
-function showMarker(lat, lng, icon, name, address, types) {
-      // create a new LatLng point for the marker
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(lat,lng),
-        icon: icon,
-        map: map
-      });
-      // create the tooltip and its text
-      infoWindow = new google.maps.InfoWindow();
-
-      // add a listener to open the tooltip when a user clicks on one of the markers
-      google.maps.event.addListener(marker, 'click', function() {
-        infoWindow.setContent(html='<b>'+name+'</b><br />'+address+'<br />'+types);
-        infoWindow.open(map, marker);
-      });
-}
+// --------------------------------------
+// --------------------------------------
+// --------------------------------------
 
 
 // AJAX spinner appending and hiding
@@ -191,6 +241,22 @@ $(function () {
     }).hide();
 });
 
+function createUnwrapLink(label, list) {
+	list.hide();
+	return $('<a class="unwrap plus" href="#">' + label + '</a>').click(function(event) {
+		event.preventDefault();
+		link = $(this);
+		if (link.hasClass('plus')) {
+			link.removeClass('plus');
+			link.addClass('minus');
+			list.show();
+		} else {
+			link.removeClass('minus');
+			link.addClass('plus');
+			list.hide();
+		}
+	});
+}
 
 
 function showSpinner(event) {
@@ -209,7 +275,7 @@ function formatDistance(value) {
     if ((value / 1000) > 1) {
         return Math.round(value / 1000) + ' kilometers';
     }
-    return value + ' meters';
+    return value + '&nbsp;meters';
 };
 
 function formatDuration(value) {
@@ -222,6 +288,6 @@ function formatDuration(value) {
     if (hours < 1) {
         return minutes + ' minutes';
     }
-    return hours + ' hours and ' + (minutes%60) + ' minutes';
+    return hours + '&nbsp;hours and ' + (minutes%60) + '&nbsp;minutes';
 };
 

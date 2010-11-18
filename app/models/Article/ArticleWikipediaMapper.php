@@ -40,6 +40,7 @@ class ArticleWikipediaMapper extends Nette\Object implements IArticleMapper {
 			$cropped = mb_substr($result, $pos);
 			$paragraph = mb_substr($cropped, 0, mb_strpos($cropped, '</p>') + 4);
 			if (String::startsWith(strip_tags($paragraph), $destination)) {
+				$paragraph = str_replace('/wiki', 'http://en.wikipedia.org/wiki', $paragraph);
 				return $paragraph . '<p><a href="' . (string) $uri . '">(more)</a></p>';
 			}
 			$i++;

@@ -1,79 +1,86 @@
+{block #htmlTag}<html xmlns:og="http://opengraphprotocol.org/schema/">{/block}
+{block #meta}
+	<meta property="og:title" content="{block #title}Trip from {$trip->departure} to {$trip->arrival}{/block}">
+	<meta property="og:url" content="{link //this}">
+	<meta property="og:site_name" content="Travelbot">
+{/block}
+
+{block #header}
+	<strong class="departure">From</strong>
+	<span class="trip departure">{$trip->departure}</span>
+	
+	<strong class="arrival">To</strong>
+	<span class="trip arrival">{$trip->arrival}</span>
+{/block}
+
+{block #js}
+	<script type="text/javascript">
+		var isTripPage = true;
+	</script>
+{/block}
+
 {block #content}
-
-<p><a href="{link default}">Saved trips</a> &gt; <strong>Trip {$trip->id}</strong></p>
-
-<table>
-    <tr class="required">
-        <th>From</th>
-        <td id="trip-from">{$trip->departure}</td>
-    </tr>
-
-    <tr class="required">
-        <th>To</th>
-        <td id="trip-to">{$trip->arrival}</td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <div id="article">{!$article->text}</div>
-        </td>
-    </tr>
-    <tr>
-        <td id="directions-text" colspan="2">
-            <p>The trip will take <strong>{$trip->duration |duration}</strong> to complete and its distance is <strong>{$trip->distance |distance}</strong>.</p>
-            <ol>
-				{foreach $trip->steps as $step}
-                <li>{!$step->instructions} ({$step->distance |distance}).</li>
-				{/foreach}
-            </ol>
-        </td>
-    </tr>
-</table>
-<div id="map_canvas"></div>
-<div id="panel"></div>
-
-<h2>Flights</h2>
-{ifset $flights}
-    <table border="2" id="flights">
-        {foreach $flights as $flight}
-        <tr>
-        <td>
-    <!--        <a href="http://kayak.com{$flight->getBook()}">{$flight->getPrice()} {$flight->getCurrency()}</a>-->
-    <a href="{link booking, $iterator->getCounter()}">{$flight->getPrice()} {$flight->getCurrency()}</a>
-        </td>
-
-            {foreach $flight->getLegs() as $leg}
-            <td>
-                <p>Airline: <strong>{$leg->getAirlineDisplay()}</strong></p>
-                <p>From:  <strong>{$leg->getOrig()} {$leg->getFormatDepart()} </strong></p>
-                <p>To:  <strong>{$leg->getDest()} {$leg->getFormatArrive()} </strong></p>
-                <p>Duration: {$leg->getDurationTime()}</p>
-                <p>Cabin: {$leg->getCabin()}</p>
-
-                {foreach $leg->getSegments() as $segment}
-
-                {/foreach}
-            </td>
-            {/foreach}
-
-        </tr>
-        {/foreach}
-    </table>
-{/ifset}
-{ifset $flightsError}
-<div>    {$flightsError} </div>
-{/ifset}
-
-<h2>Events</h2>
-
-{if count($events) > 0}
-	{foreach $events as $event}
-		<h3><a href="{$event->url}">{$event->title}</a> {$event->date->format('j. n. Y')}</h3>
-		<div class="small">
-			<p><strong>Where:</strong> <a href="{$event->venue->url}">{$event->venue->name}</a></p>
-			{!$event->description}
+	
+	<p class="nav"><a href="{link Homepage:}">← Plan new trip</a> | <a href="{link this}">permalink</a></p>
+	
+	<iframe src="http://www.facebook.com/plugins/like.php?locale=en_GB&amp;href={link //this}&amp;layout=button_count&amp;action=like&amp;font=trebuchet+ms&amp;colorscheme=light&amp;" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width: 90px; height: 30px;" allowTransparency="true"></iframe>
+	
+	<p class="clear">The trip will take <strong>{$trip->duration |duration}</strong> to complete and its distance is <strong>{$trip->distance |distance}</strong>.</p>
+	
+	<div>
+		<div id="article">{!$article->text}</div>
+	</div>
+	
+	<div>
+		<ol id="directions">
+			{foreach $trip->steps as $step}
+				<li>{!$step->instructions} ({$step->distance |distance}).</li>
+			{/foreach}
+		</ol>
+	</div>
+	
+	<div>
+		<a id="pois-link" class="unwrap plus" href="#">Points of interest</a>
+		<p id="showing-pois">Showing POIs in the map.</p>
+	</div>
+	
+	<div>
+		<div id="events">
+		{if count($events) > 0}
+			{foreach $events as $event}
+				<div class="event" data-latitude="{$event->latitude}" data-longitude="{$event->longitude}" data-title="{$event->title}"
+					data-date="{$event->date->format('j. n. Y')}" data-venue="{$event->venue->name}">
+					<h3><a href="{$event->url}">{$event->title}</a> {$event->date->format('j. n. Y')}</h3>
+					<div class="small">
+						<p><strong>Where:</strong> <a href="{$event->venue->url}">{$event->venue->name}</a></p>
+						{!$event->description}
+					</div>
+				</div>
+				{sep}<hr />{/sep}
+			{/foreach}
+		{else}
+			<p>No events available.</p>
+		{/if}
 		</div>
-	{/foreach}
-{else}
-	<p>No events available.</p>
-{/if}
-
+	</div>
+	
+	<div>
+		<div id="flights">
+			{if count($flights) > 0}
+				{foreach $flights as $flight}
+					<h3><a href="{link booking, $iterator->getCounter()}">{$flight->price} {$flight->currency}</a></h3>
+					{foreach $flight->legs as $leg}
+						<ul>
+							<li>Airline: {$leg->getAirlineDisplay()}</li>
+				            <li>From: {$leg->getOrig()} {$leg->getDepart()->format('j. n. Y G:i')}</li>
+				            <li>To: {$leg->getDest()} {$leg->getArrive()->format('j. n. Y G:i')}</li>
+				            <li>Duration: {$leg->getDurationTime()}</li>
+				            <li>Cabin: {$leg->getCabin()}</li>
+				        </ul>
+					{/foreach}
+				{/foreach}
+			{else}
+				<p>No flights available.</p>
+			{/if}
+		</div>
+	</div>

@@ -1,63 +1,18 @@
+{block #title}Plan new trip{/block}
+
+{block #header}
+	{widget locationsForm begin}
+		{$locationsForm['from']->label}
+		{$locationsForm['from']->control}
+		
+		{$locationsForm['to']->label}
+		{$locationsForm['to']->control}
+		
+		{$locationsForm['okFindDirections']->control}
+		{$locationsForm['okSubmit']->control}
+	{widget locationsForm end}
+{/block}
+
 {block #content}
 
-<p>Welcome to <strong>Travelbot</strong>. You can plan your trip here.</p>
-<p>Browser geolocation automatically fills the <strong>From</strong> field if enabled.</p>
-
-{widget locationsForm begin}
-	{widget locationsForm errors}
-
-<table>
-    <tr class="required">
-        <th>{$locationsForm['from']->label}</th>
-        <td>{$locationsForm['from']->control}</td>
-    </tr>
-
-    <tr class="required">
-        <th>{$locationsForm['to']->label}</th>
-        <td>{$locationsForm['to']->control}</td>
-    </tr>
-    <tr>
-        <td>{$locationsForm['oneWay']->control}</td>
-    </tr>
-    <tr>
-        <th>{$locationsForm['depart']->label}</th>
-        <td>{$locationsForm['depart']->control}</td>
-    </tr>
-    <tr>
-        <th>{$locationsForm['return']->label}</th>
-        <td>{$locationsForm['return']->control}</td>
-    </tr>
-    <tr>
-        <th>{$locationsForm['travelers']->label}</th>
-        <td>{$locationsForm['travelers']->control}</td>
-    </tr>
-    <tr>
-        <th>{$locationsForm['cabin']->label}</th>
-        <td>{$locationsForm['cabin']->control}</td>
-    </tr>
-    <tr>
-        <th>&nbsp;</th>
-        <td>
-			{$locationsForm['okFindDirections']->control} or <a href="{link this}">reset</a>
-        </td>
-    </tr>
-    <tr>
-        <td id="directions-text" colspan="2">
-            <p>Fill the locations and press <strong>Find directions</strong> button.</p>
-        </td>
-    </tr>
-</table>
-
-<div id="map_canvas"></div>
-<div id="panel"></div>
-
-<table>
-    <tr>
-        <th>...and...</th>
-        <td>
-			{$locationsForm['okSubmit']->control}
-        </td>
-    </tr>
-</table>
-
-{widget locationsForm end}
+<p>Start by typing the final destination of your trip and pressing <strong>Find&nbsp;route</strong>.</p>

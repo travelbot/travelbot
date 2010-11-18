@@ -5,7 +5,7 @@
  *
  * @author Petr
  */
-class FlightTrip
+class FlightTrip extends Nette\Object
 {
     private $price;
     private $currency;

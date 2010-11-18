@@ -13,6 +13,10 @@ class Event extends Nette\Object
 	
 	private $venue;
 	
+	private $latitude;
+	
+	private $longitude;
+	
 	public function getTitle()
 	{
 		return $this->title;
@@ -65,6 +69,28 @@ class Event extends Nette\Object
 	public function setVenue(Venue $venue)
 	{
 		$this->venue = $venue;
+		return $this;
+	}
+	
+	public function getLatitude()
+	{
+		return $this->latitude;
+	}
+	
+	public function setLatitude($latitude)
+	{
+		$this->latitude = (float) $latitude;
+		return $this;
+	}
+	
+	public function getLongitude()
+	{
+		return $this->longitude;
+	}
+	
+	public function setLongitude($longitude)
+	{
+		$this->longitude = (float) $longitude;
 		return $this;
 	}
 	

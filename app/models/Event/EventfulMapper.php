@@ -70,7 +70,9 @@ class EventfulMapper extends Nette\Object implements IEventMapper
 				->setUrl((string) $xmlEvent->url)
 				->setDescription((string) $xmlEvent->description)
 				->setDate(DateTime::createFromFormat('Y-m-d H:i:s', (string) $xmlEvent->start_time))
-				->setVenue(new Venue((string) $xmlEvent->venue_name, (string) $xmlEvent->venue_url));
+				->setVenue(new Venue((string) $xmlEvent->venue_name, (string) $xmlEvent->venue_url))
+				->setLatitude((string) $xmlEvent->latitude)
+				->setLongitude((string) $xmlEvent->longitude);
 			$events[] = $event;
 		}
 		
