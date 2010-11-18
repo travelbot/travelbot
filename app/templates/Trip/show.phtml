@@ -32,32 +32,33 @@
 <div id="panel"></div>
 
 <h2>Flights</h2>
-
-<table border="2" id="flights">
-    {foreach $flights as $flight}
-    <tr>
-    <td>
-<!--        <a href="http://kayak.com{$flight->getBook()}">{$flight->getPrice()} {$flight->getCurrency()}</a>-->
-<a href="{link booking, $iterator->getCounter()}">{$flight->getPrice()} {$flight->getCurrency()}</a>
-    </td>
-        
-        {foreach $flight->getLegs() as $leg}
+{ifset $flights}
+    <table border="2" id="flights">
+        {foreach $flights as $flight}
+        <tr>
         <td>
-            <p>Airline: <strong>{$leg->getAirlineDisplay()}</strong></p>
-            <p>From:  <strong>{$leg->getOrig()} {$leg->getFormatDepart()} </strong></p>
-            <p>To:  <strong>{$leg->getDest()} {$leg->getFormatArrive()} </strong></p>
-            <p>Duration: {$leg->getDurationTime()}</p>
-            <p>Cabin: {$leg->getCabin()}</p>
-
-            {foreach $leg->getSegments() as $segment}
-
-            {/foreach}
+    <!--        <a href="http://kayak.com{$flight->getBook()}">{$flight->getPrice()} {$flight->getCurrency()}</a>-->
+    <a href="{link booking, $iterator->getCounter()}">{$flight->getPrice()} {$flight->getCurrency()}</a>
         </td>
+
+            {foreach $flight->getLegs() as $leg}
+            <td>
+                <p>Airline: <strong>{$leg->getAirlineDisplay()}</strong></p>
+                <p>From:  <strong>{$leg->getOrig()} {$leg->getFormatDepart()} </strong></p>
+                <p>To:  <strong>{$leg->getDest()} {$leg->getFormatArrive()} </strong></p>
+                <p>Duration: {$leg->getDurationTime()}</p>
+                <p>Cabin: {$leg->getCabin()}</p>
+
+                {foreach $leg->getSegments() as $segment}
+
+                {/foreach}
+            </td>
+            {/foreach}
+
+        </tr>
         {/foreach}
-        
-    </tr>
-    {/foreach}
-</table>
+    </table>
+{/ifset}
 {ifset $flightsError}
 <div>    {$flightsError} </div>
 {/ifset}
