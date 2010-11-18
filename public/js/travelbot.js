@@ -40,18 +40,19 @@ var travelbot = {
 	},
 	
 	showPoi: function(latitude, longitude, icon, name, address, types) {
-		marker = new google.maps.Marker({
+		var marker = new google.maps.Marker({
 			position: new google.maps.LatLng(latitude, longitude),
 			icon: icon,
-			map: map
+			map: travelbot.map
 		});
 		travelbot.markers.push(marker);
 		infoWindow = new google.maps.InfoWindow();
 		
+		
 		// add a listener to open the tooltip when a user clicks on one of the markers
 		google.maps.event.addListener(marker, 'click', function() {
-			infoWindow.setContent(html='<b>'+name+'</b><br />'+address+'<br />'+types);
-			infoWindow.open(map, marker);
+			infoWindow.setContent('<b>'+name+'</b><br />'+address+'<br />'+types);
+			infoWindow.open(travelbot.map, marker);
 		});
 	},
 	
