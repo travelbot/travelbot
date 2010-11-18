@@ -96,38 +96,8 @@ $(function() {
 		
 		flights = $('#flights');
 		flights.before(createUnwrapLink('Flights', flights));
-	}
-});
-
-$("#pois-link").click(function(event) {
-	event.preventDefault();
-	link = $(this);
-	
-	if (link.hasClass('plus')) {
-		showSpinner(event);
-		travelbot.loadPois($('span.trip.arrival').text());
-		$("#showing-pois").show();
-		link.removeClass('plus');
-		link.addClass('minus');
 	} else {
-		travelbot.clearPois();
-		travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
-		$("#showing-pois").hide();
-		link.removeClass('minus');
-		link.addClass('plus');
-	}
-});
-
-$("#frmlocationsForm-from, #frmlocationsForm-to").keyup(function() {
-	$("#frmlocationsForm-okSubmit").attr('disabled', 'disabled');
-});
-
-/**
- * Geolocation callback handler.
- * @author mirteond 
- */
-$(function() {
-    $.geolocator.geolocate({
+		$.geolocator.geolocate({
         callback: function(data) {
             form = $("#frmlocationsForm-from");
             if (data.latitude == null || data.client !== undefined) {
@@ -155,7 +125,30 @@ $(function() {
             }
         }
     });
+	}
+});
 
+$("#pois-link").click(function(event) {
+	event.preventDefault();
+	link = $(this);
+	
+	if (link.hasClass('plus')) {
+		showSpinner(event);
+		travelbot.loadPois($('span.trip.arrival').text());
+		$("#showing-pois").show();
+		link.removeClass('plus');
+		link.addClass('minus');
+	} else {
+		travelbot.clearPois();
+		travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+		$("#showing-pois").hide();
+		link.removeClass('minus');
+		link.addClass('plus');
+	}
+});
+
+$("#frmlocationsForm-from, #frmlocationsForm-to").keyup(function() {
+	$("#frmlocationsForm-okSubmit").attr('disabled', 'disabled');
 });
 
 /**
