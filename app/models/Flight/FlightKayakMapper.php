@@ -8,10 +8,10 @@ define("APIMODE", '1');                    //must be "1"
 define("ACTION", 'doFlights');             //must be "doFlights"
 define("ANY_TIME", 'a');                   //Values:"a" = any time; "r"=early morning; "m"=morning; "12"=noon; "n"=afternoon; "e"=evening; "l"=night
 define("BASIC_MODE", 'true');              //must be "true"
-define("C", '20');                         //integer, the number of results to return
+define("C", '3');                         //integer, the number of results to return
 define("M", 'normal');                     //filter mode: normal or airline:?? where ?? is a two-letter airline code
-define("D", 'down');                       //sort direction: up, down
-define("S", 'duration');                   //sort key: price, duration, depart, arrive, airline
+define("D", 'up');                       //sort direction: up, down
+define("S", 'price');                   //sort key: price, duration, depart, arrive, airline
 
 /**
  * 
@@ -43,16 +43,17 @@ class FlightKayakMapper implements IFlightMapper
         $this->setSessrionId($result);
     }
 
-    public function searchFlights($from, $to, $depart_dat, $return_date,
-            $travelers, $cabin, $oneWay)
+    public function searchFlights($from, $to, DateTime $depart_date,
+            DateTime $return_date, $travelers, $cabin, $oneWay)
     {
-        $xml = $this->startFlightSearch($from, $to, $depart_dat, $return_date, $travelers, $cabin);
+        $xml = $this->startFlightSearch($from, $to, $depart_date, $return_date, $travelers, $cabin);
         $searchId = $this->getSearchId($xml);
+        sleep(20);
         return $this->getFlightResults($searchId);
     }
 
-    protected function startFlightSearch($from, $to, $depart_date, $return_date,
-            $travelers, $cabin, $oneWay = 'y')
+    protected function startFlightSearch($from, $to, DateTime $depart_date,
+            DateTime $return_date, $travelers, $cabin, $oneWay = 'y')
     {
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
@@ -65,11 +66,11 @@ class FlightKayakMapper implements IFlightMapper
             'oneway' => $oneWay,
             'origin' => $from,
             'destination' => $to,
-            'depart_date' => $depart_date,
+            'depart_date' => $depart_date->format("m/d/Y"),
         ));
         if ($return_date != null)
         {
-            $uri->appendQuery(array('$return_date' => $return_date));
+            $uri->appendQuery(array('$return_date' => $return_date->format("m/d/Y")));
         }
         $uri->appendQuery(array('depart_time' => ANY_TIME));
         if ($return_date != null)

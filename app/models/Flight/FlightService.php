@@ -9,10 +9,13 @@
 class FlightService extends EntityService
 {
 
-    public function buildFlights(IFlightMapper $mapper, $from, $to, $depart_dat,
-            $return_date, $travelers, $cabin, $oneWay)
+    public function buildFlights(IFlightMapper $mapper, $from, $to, DateTime $depart_date,
+            DateTime $return_date, $travelers, $cabin, $oneWay)
     {
-        $result = $mapper->searchFlights($from, $to, $depart_dat, $return_date, $travelers, $cabin, $oneWay);
+        $result = $mapper->searchFlights($from, $to, $depart_date, $return_date, $travelers, $cabin, $oneWay);
+        if(strpos($result, "<searchresult>") == false) {
+            throw new FlightException("Searing error", null, null);
+        }
         $xmlResult = new SimpleXMLElement($result);
         if (!$xmlResult)
         {
@@ -47,8 +50,8 @@ class FlightService extends EntityService
             $airlineDisplay = (string) $xmlLeg->airline_display;
             $orig = (string) $xmlLeg->orig;
             $dest = (string) $xmlLeg->dest;
-            $depart = (string) $xmlLeg->depart;
-            $arrive = (string) $xmlLeg->arrive;
+            $depart = DateTime::createFromFormat("Y/m/d H:i", (string) $xmlLeg->depart);     //2006/05/06 17:28
+            $arrive = DateTime::createFromFormat("Y/m/d H:i", (string) $xmlLeg->arrive);     //2006/05/06 17:28(string) $xmlLeg->arrive;
             $stops = (string) $xmlLeg->stop;
             $durationMinutes = (string) $xmlLeg->duration_minutes;
             $cabin = (string) $xmlLeg->cabin;

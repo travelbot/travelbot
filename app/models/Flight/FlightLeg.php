@@ -20,7 +20,8 @@ class FlightLeg
     private $segments;
 
     public function __construct($airline, $airlineDisplay, $orig, $dest,
-            $depart, $arrive, $stops, $durationMinutes, $cabin, $segments)
+            DateTime $depart, DateTime $arrive, $stops, $durationMinutes,
+            $cabin, $segments)
     {
         $this->airline = $airline;
         $this->airlineDisplay = $airlineDisplay;
@@ -54,6 +55,16 @@ class FlightLeg
         return $this->dest;
     }
 
+    public function getFormatDepart()
+    {
+        return $this->getDepart()->format("d/m/Y H:i");
+    }
+
+    public function getFormatArrive()
+    {
+        return $this->getArrive()->format("d/m/Y H:i");
+    }
+
     public function getDepart()
     {
         return $this->depart;
@@ -76,7 +87,8 @@ class FlightLeg
 
     public function getDurationTime()
     {
-        return floor($this->getDurationMinutes()/60) . "h " . $this->getDurationMinutes()%60 . "min";
+        $durationMinutes = ($this->getArrive()->getTimestamp() - $this->getDepart()->getTimestamp()) / 60;
+        return floor($durationMinutes / 60) . "h " . $durationMinutes % 60 . "min";
     }
 
     public function getCabin()
@@ -104,12 +116,12 @@ class FlightLeg
         $this->orig = $orig;
     }
 
-    protected function setDest($dest)
+    protected function setDest(DateTime $dest)
     {
         $this->dest = $dest;
     }
 
-    protected function setDepart($depart)
+    protected function setDepart(DateTime $depart)
     {
         $this->depart = $depart;
     }

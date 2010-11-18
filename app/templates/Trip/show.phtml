@@ -31,18 +31,21 @@
 <div id="map_canvas"></div>
 <div id="panel"></div>
 
+<h2>Flights</h2>
+
 <table border="2" id="flights">
     {foreach $flights as $flight}
     <tr>
     <td>
-        <a href="http://kayak.com{$flight->getBook()}">{$flight->getPrice()} {$flight->getCurrency()}</a>
+<!--        <a href="http://kayak.com{$flight->getBook()}">{$flight->getPrice()} {$flight->getCurrency()}</a>-->
+<a href="{link booking, $iterator->getCounter()}">{$flight->getPrice()} {$flight->getCurrency()}</a>
     </td>
         
         {foreach $flight->getLegs() as $leg}
         <td>
             <p>Airline: <strong>{$leg->getAirlineDisplay()}</strong></p>
-            <p>From:  <strong>{$leg->getOrig()} {$leg->getDepart()} </strong></p>
-            <p>To:  <strong>{$leg->getDest()} {$leg->getArrive()} </strong></p>
+            <p>From:  <strong>{$leg->getOrig()} {$leg->getFormatDepart()} </strong></p>
+            <p>To:  <strong>{$leg->getDest()} {$leg->getFormatArrive()} </strong></p>
             <p>Duration: {$leg->getDurationTime()}</p>
             <p>Cabin: {$leg->getCabin()}</p>
 
@@ -55,6 +58,9 @@
     </tr>
     {/foreach}
 </table>
+{ifset $flightsError}
+<div>    {$flightsError} </div>
+{/ifset}
 
 <h2>Events</h2>
 

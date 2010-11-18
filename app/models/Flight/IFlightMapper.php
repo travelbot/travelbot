@@ -7,7 +7,7 @@
  */
 interface IFlightMapper
 {
-    public function searchFlights($from, $to, $depart_dat, $return_date,
+    public function searchFlights($from, $to, DateTime $depart_date, DateTime $return_date,
             $travelers, $cabin, $oneWay);
 }
 

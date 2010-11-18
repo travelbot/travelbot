@@ -14,24 +14,29 @@ class TripPresenter extends BasePresenter
      * @author Petr Vales
      * @version 4.11.2010
      */
-    public function handlePois() {
+    public function handlePois()
+    {
         $location = $this->request->post['location'];
         $service = new LocationService;
         $coords = $service->getCoordinates($location);
-        
+
         $service = new PoiService($this->entityManager);
 
-        try {
-        	$key = Environment::getConfig('api')->gowallaKey;
+        try
+        {
+            $key = Environment::getConfig('api')->gowallaKey;
             $pois = $service->getPois($coords['latitude'], $coords['longitude'], new PoiGowallaMapper($key));
-        } catch (InvalidStateException $e) {
+        }
+        catch (InvalidStateException $e)
+        {
             $this->terminate(new JsonResponse(array(
-				'status' => 'FAIL',
-            )));
+                        'status' => 'FAIL',
+                    )));
         }
 
         $jsonResponse = array();
-        foreach ($pois as $poi) {
+        foreach ($pois as $poi)
+        {
             $jsonResponse['pois'][] = array(
                 'name' => $poi->name,
                 'types' => $poi->types,
@@ -43,51 +48,76 @@ class TripPresenter extends BasePresenter
             );
         }
 
-		$jsonResponse['status'] = 'OK';
-		$jsonResponse['latitude'] = $coords['latitude'];
-		$jsonResponse['longitude'] = $coords['longitude'];
+        $jsonResponse['status'] = 'OK';
+        $jsonResponse['latitude'] = $coords['latitude'];
+        $jsonResponse['longitude'] = $coords['longitude'];
         $this->terminate(new JsonResponse($jsonResponse));
     }
 
-	public function renderDefault()
-	{
-		$service = new TripService($this->entityManager);
-		$this->template->trips = $service->findAll();
-	}
-	
-	public function renderShow($id)
-	{
-		$service = new TripService($this->entityManager);
-		$trip = $service->find($id);
-		$this->template->trip = $trip;
+    public function renderDefault()
+    {
+        $service = new TripService($this->entityManager);
+        $this->template->trips = $service->findAll();
+    }
 
-		try {
-			// fallback in case of failed loading
-			$eventService = new EventService;
-			$config = Environment::getConfig('api');
-			$events = $eventService->getEvents(
-				$trip->arrival,
-				new DateTime,
-				new EventfulMapper($config->eventfulUser, $config->eventfulPassword, $config->eventfulKey)
-			);
-			$this->template->events = $events;
-		} catch (InvalidStateException $e) {
-			$this->template->events = array();
-		}
-		
+    public function renderShow($id)
+    {
+        $service = new TripService($this->entityManager);
+        $trip = $service->find($id);
+        $this->template->trip = $trip;
+
+        try
+        {
+            // fallback in case of failed loading
+            $eventService = new EventService;
+            $config = Environment::getConfig('api');
+            $events = $eventService->getEvents(
+                            $trip->arrival,
+                            new DateTime,
+                            new EventfulMapper($config->eventfulUser, $config->eventfulPassword, $config->eventfulKey)
+            );
+            $this->template->events = $events;
+        }
+        catch (InvalidStateException $e)
+        {
+            $this->template->events = array();
+        }
+
         $articleService = new ArticleService($this->entityManager);
         $this->template->article = $articleService->buildArticle(
-			$trip->arrival,
-			new ArticleWikipediaMapper()
-		);
-         try{
+                        $trip->arrival,
+                        new ArticleWikipediaMapper()
+        );
+        try
+        {
             $flightMapper = new FlightKayakMapper();
             $flightService = new FlightService($this->entityManager);
-            $this->template->flights = $flightService->buildFlights($flightMapper, 'PRG','PAR',"12/29/2010","12/30/2010",'1','e','n');
-         } catch(FlightException $e)  {
+            $depart_date = DateTime::createFromFormat("m/d/Y", "12/29/2010");
+            $return_date = DateTime::createFromFormat("m/d/Y", "12/30/2010");
+            $this->template->flights = $flightService->buildFlights($flightMapper, 'PRG', 'PAR', $depart_date, $return_date, '1', 'e', 'n');
+        }
+        catch (FlightException $e)
+        {
+            $this->template->flightsError = "Connection with search system <a href='http://kayak.com'>Kayak</a> failed.";
+        }
+    }
 
-         }
+    public function renderBooking($flightId)
+    {
+        try
+        {
+            $flightMapper = new FlightKayakMapper();
+            $flightService = new FlightService($this->entityManager);
+            $depart_date = DateTime::createFromFormat("m/d/Y", "12/29/2010");
+            $return_date = DateTime::createFromFormat("m/d/Y", "12/30/2010");
+            $flights = $flightService->buildFlights($flightMapper, 'PRG', 'PAR', $depart_date, $return_date, '1', 'e', 'n');
 
-	}
+            $this->redirectUri("http://kayak.com" . $flights[$flightId - 1]->getBook());
+        }
+        catch (FlightException $e)
+        {
+            $this->template->flightsError = "Connection with booking system failed.";
+        }
+    }
 
 }
