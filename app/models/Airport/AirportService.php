@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Description of AirportService
  *
  * @author Petr
  */
-class AirportService {
-
+class AirportService
+{
 
     public function searchNearestAirport(IAirportMapper $mapper, $lat, $log)
     {
@@ -17,7 +18,8 @@ class AirportService {
                 return $results[0];
             }
         }
-        throw new AirportException("Location " . $lat . ", " . $log." could not be found.", null, null);
+        throw new AirportException("Location " . $lat . ", " . $log . " could not be found.", null, null);
     }
+
 }
 
