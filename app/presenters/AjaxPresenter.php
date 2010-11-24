@@ -96,5 +96,42 @@ class AjaxPresenter extends BasePresenter
 			'steps' => $steps,
         )));
     }
+    
+    // AJAX handlers for asynchronous API requests
+    
+    public function handleArticle()
+	{
+		$location = $this->request->post['location'];
+		
+		$articleService = new ArticleService($this->entityManager);
+        $this->terminate(new JsonResponse(array(
+			'article' => $articleService->buildArticle(
+				$location,
+				new ArticleWikipediaMapper()
+			)->text,
+		)));
+	}
+	
+	public function handleEvents()
+	{
+		$location = $this->request->post['location'];
+		try {
+			$eventService = new EventService;
+			$config = Environment::getConfig('api');
+			$events = $eventService->getEvents(
+				$location,
+				new DateTime,
+				new EventfulMapper($config->eventfulUser, $config->eventfulPassword, $config->eventfulKey)
+			);
+		} catch (InvalidStateException $e) {
+			$events = array();
+		}
+		
+		$template = $this->createTemplate();
+		$template->setFile(__DIR__ . '/../templates/Ajax/events.phtml');
+		$template->events = $events;
+		
+		$this->terminate(new JsonResponse(array('events' => (string) $template)));
+	}
 
 }

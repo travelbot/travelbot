@@ -28,7 +28,7 @@
 	<p class="clear">The trip will take <strong>{$trip->duration |duration}</strong> to complete and its distance is <strong>{$trip->distance |distance}</strong>.</p>
 	
 	<div>
-		<div id="article">{!$article->text}</div>
+		<div id="article"></div>
 	</div>
 	
 	<div>
@@ -45,23 +45,7 @@
 	</div>
 	
 	<div>
-		<div id="events">
-		{if count($events) > 0}
-			{foreach $events as $event}
-				<div class="event" data-latitude="{$event->latitude}" data-longitude="{$event->longitude}" data-title="{$event->title}"
-					data-date="{$event->date->format('j. n. Y')}" data-venue="{$event->venue->name}">
-					<h3><a href="{$event->url}">{$event->title}</a> {$event->date->format('j. n. Y')}</h3>
-					<div class="small">
-						<p><strong>Where:</strong> <a href="{$event->venue->url}">{$event->venue->name}</a></p>
-						{!$event->description}
-					</div>
-				</div>
-				{sep}<hr />{/sep}
-			{/foreach}
-		{else}
-			<p>No events available.</p>
-		{/if}
-		</div>
+		<div id="events"></div>
 	</div>
 	
 	<div>

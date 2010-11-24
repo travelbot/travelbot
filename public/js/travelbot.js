@@ -77,9 +77,23 @@ var travelbot = {
 		}
 	},
 	
-	loadEvents: function() {
-		events = $('.event');
-		
+	loadEvents: function(arrival, event) {
+		events = $('#events');
+		if (events.children().size() == 0) {
+			showSpinner(event);
+			$.post(basePath + "/ajax/?do=events", {location: arrival}, function(data, textStatus) {
+				if (textStatus == 'success') {
+					events.html(data['events']);
+					travelbot.showEvents($(data['events']));
+				}
+			});
+		} else {
+			travelbot.showEvents(events.children('.event'));
+		}
+	},
+	
+	//showEvents on the map
+	showEvents: function(events) {
 		$.each(events, function(i, el) {
 			event = $(el);
 			if (i == 0) {
@@ -95,32 +109,48 @@ $(function() {
 	travelbot.getMap();
 	
 	if (isTripPage) {
-		travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+		departure = $('span.trip.departure').text();
+		arrival = $('span.trip.arrival').text();
+		travelbot.showTrip(departure, arrival);
 		
 		directions = $('#directions');
-		directions.before(createUnwrapLink('Directions', directions));
+		directions.hide();
+		directions.before(createUnwrapLink('Directions', function() {
+			directions.show();
+		}, function() {
+			directions.hide();
+		}));
 		
 		$("#showing-pois").hide();
 		
 		var shownEvents = false;
 		
 		events = $('#events');
-		eventsLink = createUnwrapLink('Events', events);
-		eventsLink.click(function(event) {
-			event.preventDefault();
+		events.before(createUnwrapLink('Events', function(event) {
+			$('#events').show();
 			travelbot.clearPois();
-			if (shownEvents) {
-				travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
-				shownEvents = false;
-			} else {
-				travelbot.loadEvents();
-				shownEvents = true;
-			}
-		});
-		events.before(eventsLink);
+			travelbot.loadEvents(arrival, event);
+		}, function() {
+			$('#events').hide();
+			travelbot.clearPois();
+			travelbot.showTrip(departure, arrival);
+		}));
 		
 		article = $('#article');
-		article.before(createUnwrapLink('Article', article));
+		article.before(createUnwrapLink('Article', function(event) {
+			if (article.children().size() == 0) {
+				showSpinner(event);
+				$.post(basePath + "/ajax/?do=article", {location: arrival}, function(data, textStatus) {
+					if (textStatus == 'success') {
+						article.html(data['article']);
+					}
+				}, 'json');
+			} else {
+				article.show();
+			}
+		}, function() {
+			article.hide();
+		}));
 		
 		flights = $('#flights');
 		flights.before(createUnwrapLink('Flights', flights));
@@ -241,19 +271,18 @@ $(function () {
     }).hide();
 });
 
-function createUnwrapLink(label, list) {
-	list.hide();
+function createUnwrapLink(label, callback, undoCallback) {
 	return $('<a class="unwrap plus" href="#">' + label + '</a>').click(function(event) {
 		event.preventDefault();
 		link = $(this);
 		if (link.hasClass('plus')) {
 			link.removeClass('plus');
 			link.addClass('minus');
-			list.show();
+			callback(event);
 		} else {
 			link.removeClass('minus');
 			link.addClass('plus');
-			list.hide();
+			undoCallback(event);
 		}
 	});
 }
