@@ -1,0 +1,18 @@
+{block #title}Plan new trip{/block}
+
+{block #header}
+	{widget locationsForm begin}
+		{$locationsForm['from']->label}
+		{$locationsForm['from']->control}
+		
+		{$locationsForm['to']->label}
+		{$locationsForm['to']->control}
+		
+		{$locationsForm['okFindDirections']->control}
+		{$locationsForm['okSubmit']->control}
+	{widget locationsForm end}
+{/block}
+
+{block #content}
+
+<p>Start by typing the final destination of your trip and pressing <strong>Find&nbsp;route</strong>.</p>

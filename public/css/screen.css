@@ -1,0 +1,173 @@
+.clear {
+	display: block;
+	clear: both;
+}
+
+body {
+	font-family: Trebuchet MS, Verdana, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 21px;
+	overflow: hidden;
+}
+
+#ajax-spinner {
+	margin: 15px 0 0 15px;
+	padding: 13px;
+	background: white url('../images/spinner.gif') no-repeat 50% 50%;
+	border: 1px solid #aaaaaa;
+	font-size: 0;
+	z-index: 123456;
+	display: none;
+}
+
+h1 {
+	font-size: 25px;
+	float: left;
+	margin-top: -5px;
+}
+
+h1 a {
+	color: #005e94;
+	text-decoration: none;
+}
+
+h1 span {
+	font-size: 11px;
+	display: block;
+	line-height: 1em;
+	text-align: right;
+	position: relative;
+	top: -24px;
+}
+
+#header {
+	color: #005e94;
+	font-size: 14px;
+	line-height: 81px;
+	padding: 0 15px 0;
+	background-color: #ceedff;
+	border-bottom: 1px solid #005688;
+	position: relative;
+	z-index: 5;
+	box-shadow: 0px 5px 6px #aeaeae;
+	-moz-box-shadow: 0px 5px 6px #aeaeae;
+	-webkit-box-shadow: 0px 5px 6px #aeaeae;
+}
+
+a {
+	color: #005e94;
+	text-decoration: none;
+}
+
+p, ol, ul {
+	margin-bottom: 12px;
+}
+
+ol {
+	list-style-type: decimal;
+	margin-left: 40px;
+}
+
+ul {
+	list-style-type: disc;
+	margin-left: 14px;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+#header .left {
+	float: left;
+	width: 160px;
+}
+
+#header label, #header strong {
+	padding-right: 10px;
+	font-weight: bold;
+}
+
+#header label[for=frmlocationsForm-to] {
+	margin-left: 20px;
+}
+
+#header input[type=text], #header span.trip {
+	font-size: 14px;
+	width: 250px;
+	padding: 5px 6px;
+	font-family: Trebuchet MS, Verdana, Arial, sans-serif;
+}
+
+#header span.trip {
+	margin-left: 2px;
+}
+
+#header strong.arrival {
+	margin-left: 40px;
+}
+
+#header input[type=submit] {
+	margin-left: 20px;
+	padding: 3px 7px;
+	width: 135px;
+}
+
+#left {
+	width: 33%;
+	float: left;
+	height: 100%;
+	position: relative;
+	overflow: hidden;
+	z-index: 10;
+}
+
+.inner {
+	padding: 12px 15px;
+	border-right: 1px solid #854e00;
+	height: 100%;
+	overflow: auto;
+	padding-bottom: 81px;
+}
+
+#map {
+	width: 67%;
+	float: left;
+	position: relative;
+	z-index: 1;
+	height: 100%;
+}
+
+a.unwrap {
+	padding-left: 15px;
+	background-repeat: no-repeat;
+	background-position: 0px 4px;
+}
+
+a.unwrap.plus {
+	background-image: url('../images/plus.gif');
+}
+
+a.unwrap.minus {
+	background-image: url('../images/minus.gif');
+}
+
+#left #events, #left #flights, #left #article, #left #showing-pois {
+	margin-left: 14px;
+}
+
+p.nav {
+	float: left;
+}
+
+#left iframe {
+	float: right;
+	position: relative;
+	top: 2px;
+}
+
+hr {
+	border: none;
+	height: 2px;
+	background-color: #cecece;
+	margin: 12px 0;
+}
