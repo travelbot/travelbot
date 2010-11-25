@@ -11,51 +11,64 @@ class PoiGowallaMapper extends Nette\Object implements IPoiMapper
 	private $apiKey;
 	private $radius = 50;
 	
+	/** @var CurlAsync */
+	private $curl;
+	
 	public function __construct($apiKey)
 	{
 		$this->apiKey = $apiKey;
+		$this->curl = new CurlAsync;
 	}
 
 	public function getPois($latitude, $longitude)
 	{
-		$pois = $this->getSpecificPois($latitude, $longitude);
-		/*$pois = array_merge($pois, $this->getSpecificPois($latitude + 0.015, $longitude + 0.02));
-		$pois = array_merge($pois, $this->getSpecificPois($latitude - 0.015, $longitude - 0.02));
-		$pois = array_merge($pois, $this->getSpecificPois($latitude + 0.015, $longitude - 0.02));
-		$pois = array_merge($pois, $this->getSpecificPois($latitude - 0.015, $longitude + 0.02));
+		$coordinates = array(
+			array($latitude, $longitude),
+			array($latitude + 0.015, $longitude + 0.02),
+			array($latitude - 0.015, $longitude - 0.02),
+			array($latitude + 0.015, $longitude - 0.02),
+			array($latitude - 0.015, $longitude + 0.02),
+			array($latitude, $longitude + 0.02),
+			array($latitude, $longitude - 0.02),
+			array($latitude + 0.015, $longitude),
+			array($latitude - 0.015, $longitude),
+		);
 		
-		$pois = array_merge($pois, $this->getSpecificPois($latitude, $longitude + 0.02));
-		$pois = array_merge($pois, $this->getSpecificPois($latitude, $longitude - 0.02));
-		$pois = array_merge($pois, $this->getSpecificPois($latitude + 0.015, $longitude));
-		$pois = array_merge($pois, $this->getSpecificPois($latitude - 0.015, $longitude));*/
+		foreach($coordinates as $coord) {
+			$this->beginCurl($coord[0], $coord[1]);
+		}
+		
+		$pois = array();
+		foreach($coordinates as $coord) {
+			$pois = array_merge($pois, $this->processCurl($coord[0], $coord[1]));
+		}
 		
 		return $pois;
         
 	}
 	
-	private function getSpecificPois($latitude, $longitude)
+	private function beginCurl($latitude, $longitude)
 	{
-		$c = curl_init();
-        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($c, CURLOPT_HTTPHEADER, array(
-			'Accept: application/json',
-			'Content-Type: application/json',
-			'X-Gowalla-API-Key: ' . $this->apiKey,
-		));
-        curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
-        
-        $uri = new Uri('http://api.gowalla.com/spots');
+		$uri = new Uri('http://api.gowalla.com/spots');
         $uri->setQuery(array(
             'lat' => (string) $latitude,
 			'lng' => (string) $longitude,
 			'radius' => (string) $this->radius,
         ));
         
-        curl_setopt($c, CURLOPT_URL, (string) $uri);
-        $result = curl_exec($c);
-        curl_close($c);
-
-        $json = json_decode($result);
+        return $this->curl->{$latitude . $longitude}((string) $uri, array(
+			CURLOPT_HTTPHEADER => array(
+				'Accept: application/json',
+				'Content-Type: application/json',
+				'X-Gowalla-API-Key: ' . $this->apiKey,
+			),
+			CURLOPT_FOLLOWLOCATION => TRUE,
+		));
+	}
+	
+	private function processCurl($latitude, $longitude)
+	{
+		$json = json_decode($this->curl->{$latitude . $longitude}());
         if ($json == FALSE) {
             throw new InvalidStateException('Malformed JSON response.');
         }
