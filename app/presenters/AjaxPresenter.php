@@ -134,5 +134,41 @@ class AjaxPresenter extends BasePresenter
 		
 		$this->terminate(new JsonResponse(array('events' => (string) $template)));
 	}
+	
+	public function handleFlights()
+	{
+		$departure = $this->request->post['departure'];
+		$arrival = $this->request->post['arrival'];
+		try {
+         	$airportMapper = new AirportTravelMathMapper();
+            $airportService = new AirportService();
+            $locationService = new LocationService();
+            $coordinates = $locationService->getCoordinates($departure);
+            $from = $airportService->searchNearestAirport($airportMapper, $coordinates['latitude'], $coordinates['longitude']);
+            $coordinates = $locationService->getCoordinates($arrival);
+            $to = $airportService->searchNearestAirport($airportMapper, $coordinates['latitude'], $coordinates['longitude']);
+         	
+            $flightMapper = new FlightKayakMapper();
+            $flightService = new FlightService($this->entityManager);
+            $depart_date = new DateTime('now');
+            $return_date = new DateTime('+1 week');
+            // @todo redo for JsonResponse
+            $flights = $flightService->buildFlights($flightMapper, $from, $to, $depart_date, $return_date, '1', 'e', 'n');
+        }
+        catch (FlightException $e)
+        {
+            $flights = array();
+        }
+        catch (AirportException $e)
+        {
+            $flights = array();
+        }
+        
+        $template = $this->createTemplate();
+        $template->setFile(__DIR__ . '/../templates/Ajax/flights.phtml');
+        $template->flights = $flights;
+        
+        $this->terminate(new JsonResponse(array('flights' => (string) $template)));
+	}
 
 }

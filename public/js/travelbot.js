@@ -73,12 +73,11 @@ var travelbot = {
     },
 
     addMarker: function(latitude, longitude, icon) {
-        var marker = new google.maps.Marker({
+        return new google.maps.Marker({
             position: new google.maps.LatLng(latitude, longitude),
             icon: icon,
             map: travelbot.map
         });
-        return marker;
     },
 	
     showPoi: function(latitude, longitude, icon, name, address, types) {
@@ -193,7 +192,19 @@ $(function() {
 		}));
 		
         flights = $('#flights');
-        flights.before(createUnwrapLink('Flights', flights));
+        flights.before(createUnwrapLink('Flights', function() {
+			if (flights.children().size() == 0) {
+				$.post(basePath + "/ajax/?do=flights", {departure: departure, arrival: arrival}, function(data, textStatus) {
+					if (textStatus == 'success') {
+						flights.html(data['flights']);
+					}
+				});
+			}
+			
+			flights.show();
+		}, function() {
+			flights.hide();
+		}));
     } else {
         $.geolocator.geolocate({
             callback: function(data) {

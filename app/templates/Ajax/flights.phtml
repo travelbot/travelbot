@@ -1,0 +1,16 @@
+{if count($flights) > 0}
+	{foreach $flights as $flight}
+		<h3><a href="{link booking, $iterator->getCounter()}">{$flight->price} {$flight->currency}</a></h3>
+		{foreach $flight->legs as $leg}
+			<ul>
+				<li>Airline: {$leg->getAirlineDisplay()}</li>
+	            <li>From: {$leg->getOrig()} {$leg->getDepart()->format('j. n. Y G:i')}</li>
+	            <li>To: {$leg->getDest()} {$leg->getArrive()->format('j. n. Y G:i')}</li>
+	            <li>Duration: {$leg->getDurationTime()}</li>
+	            <li>Cabin: {$leg->getCabin()}</li>
+	        </ul>
+		{/foreach}
+	{/foreach}
+{else}
+	<p>No flights available.</p>
+{/if}
