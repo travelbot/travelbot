@@ -192,8 +192,9 @@ $(function() {
 		}));
 		
         flights = $('#flights');
-        flights.before(createUnwrapLink('Flights', function() {
+        flights.before(createUnwrapLink('Flights', function(event) {
 			if (flights.children().size() == 0) {
+				showSpinner(event);
 				$.post(basePath + "/ajax/?do=flights", {departure: departure, arrival: arrival}, function(data, textStatus) {
 					if (textStatus == 'success') {
 						flights.html(data['flights']);
