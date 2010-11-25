@@ -21,25 +21,7 @@ class TripPresenter extends BasePresenter
 		$trip = $service->find($id);
 		$this->template->trip = $trip;
 
-		try {
-			$eventService = new EventService;
-			$config = Environment::getConfig('api');
-			$events = $eventService->getEvents(
-				$trip->arrival,
-				new DateTime,
-				new EventfulMapper($config->eventfulUser, $config->eventfulPassword, $config->eventfulKey)
-			);
-			$this->template->events = $events;
-		} catch (InvalidStateException $e) {
-			$this->template->events = array();
-		}
-		
-        $articleService = new ArticleService($this->entityManager);
-        $this->template->article = $articleService->buildArticle(
-			$trip->arrival,
-			new ArticleWikipediaMapper()
-		);
-		
+		/*
          try {
          	$airportMapper = new AirportTravelMathMapper();
             $airportService = new AirportService();
@@ -62,7 +44,8 @@ class TripPresenter extends BasePresenter
         catch (AirportException $e)
         {
             $this->template->flightsError = $e->getMessage();
-        }
+        }*/
+        $this->template->flights = array();
     }
 
     public function actionBooking($flightId)

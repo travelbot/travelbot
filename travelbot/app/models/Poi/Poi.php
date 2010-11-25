@@ -1,0 +1,162 @@
+<?php
+
+use Doctrine\Common\Collections\ArrayCollection;
+
+/**
+ * @author mirteond
+ *
+ * @entity
+ * @table(name="poi")
+ */
+
+class Poi extends SimpleEntity {
+
+        /**
+         * @var string
+         * @column
+         */
+        private $name;
+
+        /**
+        * @var string
+        * @column
+        */
+        private $types;
+
+        /**
+        * @var string
+        * @column
+        */
+        private $address;
+
+        /**
+         * @var float
+         * @column
+         */
+        private $latitude;
+
+         /**
+         * @var float
+         * @column
+         */
+        private $longitude;
+
+         /**
+         * @var string
+         * @column
+         */
+        private $url;
+
+
+         /**
+         * @var string
+         * @column
+         */
+        private $imageUrl;
+
+         /**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+         * @ManyToMany(targetEntity="Trip", mappedBy="pois",cascade={"persist"})
+	 * orderBy({sequenceOrder="ASC"})
+         */
+        private $trips;
+
+
+
+        public function getName()   {
+            return $this->name;
+        }
+
+        public function setName($name) {
+            $this->name = $name;
+        }
+
+        public function getTypes()   {
+            return $this->types;
+        }
+
+        public function setTypes($types) {
+            $this->types = $types;
+        }
+
+        public function getAddress()   {
+            return $this->address;
+        }
+
+        public function setAddress($address) {
+            $this->address = $address;
+        }
+
+        public function getLatitude()   {
+            return $this->latitude;
+        }
+
+        public function setLatitude($latitude) {
+            $this->latitude = (float) $latitude;
+        }
+
+        public function getLongitude()   {
+            return $this->longitude;
+        }
+
+        public function setLongitude($longitude) {
+            $this->longitude = (float) $longitude;
+        }
+
+        public function getUrl()   {
+            return $this->url;
+        }
+
+        public function setUrl($url) {
+            $this->url = $url;
+        }
+    
+        public function getImageUrl()
+        {
+            	return $this->imageUrl;
+	}
+	
+        public function setImageUrl($url)
+        {
+		$this->imageUrl = $url;
+	}
+
+        /**
+	 * @return Doctrine\Common\Collections\ArrayCollection
+	 */
+        public function getTrip()
+	{
+		return $this->trips;
+	}
+
+	/**
+	 * @param Trip
+	 * @return Poi Fluent interface
+	 */
+	public function addTrip (Trip $trip)
+	{
+		if (!$this->trips->contains($trip)) {
+			$this->trips->add($trip);
+                        if (!$trip->pois->contains($this)) {
+			$trip->pois->add ($this);
+		}}
+
+		return $this; // fluent interface
+	}
+
+	/**
+	 * @param Trip
+	 * @return Poi Fluent interface
+	 */
+	public function removeTrip(Trip $trip)
+	{
+		if ($this->trips->contains($trip)) {
+			$this->trips->removeElement($trip);
+                        if ($trip->pois->contains($this)) {
+			$trip->pois->removeElement($this);
+		}}
+
+		return $this; // fluent interface
+	}
+}
+

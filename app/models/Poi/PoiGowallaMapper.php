@@ -19,7 +19,7 @@ class PoiGowallaMapper extends Nette\Object implements IPoiMapper
 	public function getPois($latitude, $longitude)
 	{
 		$pois = $this->getSpecificPois($latitude, $longitude);
-		$pois = array_merge($pois, $this->getSpecificPois($latitude + 0.015, $longitude + 0.02));
+		/*$pois = array_merge($pois, $this->getSpecificPois($latitude + 0.015, $longitude + 0.02));
 		$pois = array_merge($pois, $this->getSpecificPois($latitude - 0.015, $longitude - 0.02));
 		$pois = array_merge($pois, $this->getSpecificPois($latitude + 0.015, $longitude - 0.02));
 		$pois = array_merge($pois, $this->getSpecificPois($latitude - 0.015, $longitude + 0.02));
@@ -27,7 +27,7 @@ class PoiGowallaMapper extends Nette\Object implements IPoiMapper
 		$pois = array_merge($pois, $this->getSpecificPois($latitude, $longitude + 0.02));
 		$pois = array_merge($pois, $this->getSpecificPois($latitude, $longitude - 0.02));
 		$pois = array_merge($pois, $this->getSpecificPois($latitude + 0.015, $longitude));
-		$pois = array_merge($pois, $this->getSpecificPois($latitude - 0.015, $longitude));
+		$pois = array_merge($pois, $this->getSpecificPois($latitude - 0.015, $longitude));*/
 		
 		return $pois;
         

@@ -117,51 +117,80 @@ var travelbot = {
         }
     },
 	
-    loadEvents: function() {
-        events = $('.event');
-		
-        $.each(events, function(i, el) {
-            event = $(el);
-            if (i == 0) {
-                travelbot.getMap().panTo(new google.maps.LatLng(event.attr('data-latitude'), event.attr('data-longitude')));
-                travelbot.getMap().setZoom(12);
-            }
-            travelbot.showPoi(parseFloat(event.attr('data-latitude')) + (Math.random()/100), parseFloat(event.attr('data-longitude')) + (Math.random()/100), null, event.attr('data-title'), event.attr('data-venue'), event.attr('data-date'));
-        });
-    }
+	loadEvents: function(arrival, event) {
+		events = $('#events');
+		if (events.children().size() == 0) {
+			showSpinner(event);
+			$.post(basePath + "/ajax/?do=events", {location: arrival}, function(data, textStatus) {
+				if (textStatus == 'success') {
+					events.html(data['events']);
+					travelbot.showEvents($(data['events']));
+				}
+			});
+		} else {
+			travelbot.showEvents(events.children('.event'));
+		}
+	},
+	
+	//showEvents on the map
+	showEvents: function(events) {
+		$.each(events, function(i, el) {
+			event = $(el);
+			if (i == 0) {
+				travelbot.getMap().panTo(new google.maps.LatLng(event.attr('data-latitude'), event.attr('data-longitude')));
+				travelbot.getMap().setZoom(12);
+			}
+			travelbot.showPoi(parseFloat(event.attr('data-latitude')) + (Math.random()/100), parseFloat(event.attr('data-longitude')) + (Math.random()/100), null, event.attr('data-title'), event.attr('data-venue'), event.attr('data-date'));
+		});
+	}
 }
 
 $(function() {
     travelbot.getMap();
 	
-    if (isTripPage) {
-        travelbot.loadTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+	if (isTripPage) {
+		departure = $('span.trip.departure').text();
+		arrival = $('span.trip.arrival').text();
+		travelbot.loadTrip(departure, arrival);
 		
-        directions = $('#directions');
-        directions.before(createUnwrapLink('Directions', directions));
+		directions = $('#directions');
+		directions.hide();
+		directions.before(createUnwrapLink('Directions', function() {
+			directions.show();
+		}, function() {
+			directions.hide();
+		}));
 		
         $("#showing-pois").hide();
 		
         var shownEvents = false;
 		
-        events = $('#events');
-        eventsLink = createUnwrapLink('Events', events);
-        eventsLink.click(function(event) {
-            event.preventDefault();
-            travelbot.clearPois();
-            if (shownEvents) {
-//                travelbot.loadTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
-                travelbot.centerMap();
-                shownEvents = false;
-            } else {
-                travelbot.loadEvents();
-                shownEvents = true;
-            }
-        });
-        events.before(eventsLink);
+		events = $('#events');
+		events.before(createUnwrapLink('Events', function(event) {
+			$('#events').show();
+			travelbot.clearPois();
+			travelbot.loadEvents(arrival, event);
+		}, function() {
+			$('#events').hide();
+			travelbot.clearPois();
+			travelbot.loadTrip(departure, arrival);
+		}));
 		
-        article = $('#article');
-        article.before(createUnwrapLink('Article', article));
+		article = $('#article');
+		article.before(createUnwrapLink('Article', function(event) {
+			if (article.children().size() == 0) {
+				showSpinner(event);
+				$.post(basePath + "/ajax/?do=article", {location: arrival}, function(data, textStatus) {
+					if (textStatus == 'success') {
+						article.html(data['article']);
+					}
+				}, 'json');
+			} else {
+				article.show();
+			}
+		}, function() {
+			article.hide();
+		}));
 		
         flights = $('#flights');
         flights.before(createUnwrapLink('Flights', flights));
@@ -291,21 +320,20 @@ $(function () {
     }).hide();
 });
 
-function createUnwrapLink(label, list) {
-    list.hide();
-    return $('<a class="unwrap plus" href="#">' + label + '</a>').click(function(event) {
-        event.preventDefault();
-        link = $(this);
-        if (link.hasClass('plus')) {
-            link.removeClass('plus');
-            link.addClass('minus');
-            list.show();
-        } else {
-            link.removeClass('minus');
-            link.addClass('plus');
-            list.hide();
-        }
-    });
+function createUnwrapLink(label, callback, undoCallback) {
+	return $('<a class="unwrap plus" href="#">' + label + '</a>').click(function(event) {
+		event.preventDefault();
+		link = $(this);
+		if (link.hasClass('plus')) {
+			link.removeClass('plus');
+			link.addClass('minus');
+			callback(event);
+		} else {
+			link.removeClass('minus');
+			link.addClass('plus');
+			undoCallback(event);
+		}
+	});
 }
 
 
