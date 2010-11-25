@@ -10,7 +10,8 @@ CREATE TABLE step (
 	sequenceorder INTEGER NOT NULL DEFAULT 0,
 	distance INTEGER NOT NULL,
 	duration INTEGER NOT NULL,
-	instructions TEXT NOT NULL
+	instructions TEXT NOT NULL,
+        polyline TEXT NOT NULL
 ) WITHOUT OIDS;
 
 CREATE TABLE article (

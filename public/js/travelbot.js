@@ -1,182 +1,224 @@
 var travelbot = {
-	map: null,
-	directionsRenderer: null,
-	markers: new Array(),
+    map: null,
+    directionsRenderer: null,
+    markers: new Array(),
+    center: null,
+    zoom: null,
 	
-	getMap: function() {
-		if (travelbot.map == null) {
-			map = new google.maps.Map(document.getElementById("map"), {
-		        zoom:7,
-		        mapTypeId: google.maps.MapTypeId.ROADMAP,
-		        center: new google.maps.LatLng(50.093847, 14.413261)
-	    	});
-	    	travelbot.map = map;
-    	}
-    	return travelbot.map;
-	},
+    getMap: function() {
+        if (travelbot.map == null) {
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom:7,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                center: new google.maps.LatLng(50.093847, 14.413261)
+            });
+            travelbot.map = map;
+        }
+        return travelbot.map;
+    },
+
+    clearMap: function() {
+        map = new google.maps.Map(document.getElementById("map"), {
+                zoom:7,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                center: new google.maps.LatLng(50.093847, 14.413261)
+        });
+        travelbot.map = map;
+    },
+
+    showTrip: function(path) {
+          polylineOptions = {
+              clickable: true,
+              geodesic:	true,
+              map: travelbot.map,
+              path: path,
+              strokeColor: "#00009F",
+              strokeOpacity: 0.6,
+              strokeWeight: 4,
+              zIndex: 10
+          };
+          new google.maps.Polyline(polylineOptions);
+
+          travelbot.addMarker(polylineOptions.path.getAt(0).lat(), polylineOptions.path.getAt(0).lng(), "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=A|0000DF|000000");
+          last = polylineOptions.path.getLength() - 1;
+          travelbot.addMarker(polylineOptions.path.getAt(last).lat(), polylineOptions.path.getAt(last).lng(), "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=B|0000DF|000000");
+
+          travelbot.center = polylineOptions.path.getAt(0);
+          travelbot.centerMap();
+    },
+
+    centerMap: function() {
+        travelbot.map.panTo(travelbot.center);
+        travelbot.map.setZoom(8);
+    },
+
+    loadTrip: function(from, to) {
+        $.post(basePath + "/ajax/?do=directions", {
+            from: from,
+            to: to
+        }, function(data, textStatus) {
+            if (data.status == 'OK') {
+                path = new google.maps.MVCArray();
+                $.each(data.steps, function(i, el) {
+                    var points;
+                    points = decodeLine(el['polyline']);
+                    for(j=0; j < points.length; j++) {
+                      point = new google.maps.LatLng(points[j][0], points[j][1], true);
+                      path.push(point);
+                    }
+                });
+                travelbot.showTrip(path);
+            }
+        });
+    },
+
+    addMarker: function(latitude, longitude, icon) {
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(latitude, longitude),
+            icon: icon,
+            map: travelbot.map
+        });
+        return marker;
+    },
 	
-	getDirectionsRenderer: function() {
-		if (travelbot.directionsRenderer == null) {
-	    	directionsRenderer = new google.maps.DirectionsRenderer();
-		    directionsRenderer.setMap(travelbot.getMap());
-		    travelbot.directionsRenderer = directionsRenderer;
-	    }
-	    return travelbot.directionsRenderer;
-	},
-	
-	showTrip: function(from, to) {
-	    service = new google.maps.DirectionsService();
-	    service.route({
-	        origin:from,
-	        destination:to,
-	        travelMode: google.maps.DirectionsTravelMode.DRIVING
-	    }, function(response, status) {
-	        if (status == google.maps.DirectionsStatus.OK) {
-	        	travelbot.getDirectionsRenderer().setMap(null);
-	        	travelbot.getDirectionsRenderer().setMap(travelbot.map);
-	            travelbot.getDirectionsRenderer().setDirections(response);
-	        }
-	    });
-	},
-	
-	showPoi: function(latitude, longitude, icon, name, address, types) {
-		var marker = new google.maps.Marker({
-			position: new google.maps.LatLng(latitude, longitude),
-			icon: icon,
-			map: travelbot.map
-		});
-		travelbot.markers.push(marker);
-		infoWindow = new google.maps.InfoWindow();
+    showPoi: function(latitude, longitude, icon, name, address, types) {
+        marker = travelbot.addMarker(latitude, longitude, icon);
+        travelbot.markers.push(marker);
+        infoWindow = new google.maps.InfoWindow();
 		
 		
-		// add a listener to open the tooltip when a user clicks on one of the markers
-		google.maps.event.addListener(marker, 'click', function() {
-			infoWindow.setContent('<b>'+name+'</b><br />'+address+'<br />'+types);
-			infoWindow.open(travelbot.map, marker);
-		});
-	},
+        // add a listener to open the tooltip when a user clicks on one of the markers
+        google.maps.event.addListener(marker, 'click', function() {
+            infoWindow.setContent('<b>'+name+'</b><br />'+address+'<br />'+types);
+            infoWindow.open(travelbot.map, marker);
+        });
+    },
 	
-	loadPois: function(location) {
-		$.post(basePath + "/ajax/?do=pois", { location: location }, function(data, textStatus) {
-			if (data['status'] != 'FAIL') {
-				travelbot.getMap().panTo(new google.maps.LatLng(data['latitude'], data['longitude']));
-				travelbot.getMap().setZoom(15);
-				$.each(data['pois'], function(i, el) {
-					travelbot.showPoi(el.latitude, el.longitude, el.icon, '<a href="' + el.url + '">' + el.name + '</a>', el.address, el.types);
-				});
-				return data['pois'];
-			} else {
+    loadPois: function(location) {
+        $.post(basePath + "/ajax/?do=pois", {
+            location: location
+        }, function(data, textStatus) {
+            if (data['status'] != 'FAIL') {
+                travelbot.getMap().panTo(new google.maps.LatLng(data['latitude'], data['longitude']));
+                travelbot.getMap().setZoom(15);
+                $.each(data['pois'], function(i, el) {
+                    travelbot.showPoi(el.latitude, el.longitude, el.icon, '<a href="' + el.url + '">' + el.name + '</a>', el.address, el.types);
+                });
+                return data['pois'];
+            } else {
 				
-			}
-		}, "json");
-	},
+        }
+        }, "json");
+    },
 	
-	clearPois: function() {
-		for (i in travelbot.markers) {
-			travelbot.markers[i].setMap(null);
-		}
-	},
+    clearPois: function() {
+        for (i in travelbot.markers) {
+            travelbot.markers[i].setMap(null);
+        }
+    },
 	
-	loadEvents: function() {
-		events = $('.event');
+    loadEvents: function() {
+        events = $('.event');
 		
-		$.each(events, function(i, el) {
-			event = $(el);
-			if (i == 0) {
-				travelbot.getMap().panTo(new google.maps.LatLng(event.attr('data-latitude'), event.attr('data-longitude')));
-				travelbot.getMap().setZoom(12);
-			}
-			travelbot.showPoi(parseFloat(event.attr('data-latitude')) + (Math.random()/100), parseFloat(event.attr('data-longitude')) + (Math.random()/100), null, event.attr('data-title'), event.attr('data-venue'), event.attr('data-date'));
-		});
-	}
+        $.each(events, function(i, el) {
+            event = $(el);
+            if (i == 0) {
+                travelbot.getMap().panTo(new google.maps.LatLng(event.attr('data-latitude'), event.attr('data-longitude')));
+                travelbot.getMap().setZoom(12);
+            }
+            travelbot.showPoi(parseFloat(event.attr('data-latitude')) + (Math.random()/100), parseFloat(event.attr('data-longitude')) + (Math.random()/100), null, event.attr('data-title'), event.attr('data-venue'), event.attr('data-date'));
+        });
+    }
 }
 
 $(function() {
-	travelbot.getMap();
+    travelbot.getMap();
 	
-	if (isTripPage) {
-		travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+    if (isTripPage) {
+        travelbot.loadTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
 		
-		directions = $('#directions');
-		directions.before(createUnwrapLink('Directions', directions));
+        directions = $('#directions');
+        directions.before(createUnwrapLink('Directions', directions));
 		
-		$("#showing-pois").hide();
+        $("#showing-pois").hide();
 		
-		var shownEvents = false;
+        var shownEvents = false;
 		
-		events = $('#events');
-		eventsLink = createUnwrapLink('Events', events);
-		eventsLink.click(function(event) {
-			event.preventDefault();
-			travelbot.clearPois();
-			if (shownEvents) {
-				travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
-				shownEvents = false;
-			} else {
-				travelbot.loadEvents();
-				shownEvents = true;
-			}
-		});
-		events.before(eventsLink);
-		
-		article = $('#article');
-		article.before(createUnwrapLink('Article', article));
-		
-		flights = $('#flights');
-		flights.before(createUnwrapLink('Flights', flights));
-	} else {
-		$.geolocator.geolocate({
-        callback: function(data) {
-            form = $("#frmlocationsForm-from");
-            if (data.latitude == null || data.client !== undefined) {
-                if (form.val() == "" && data.client != null) {
-                    $("#frmlocationsForm-from").val(data.client.address.city + ", " + data.client.address.country)
-                    $("#frmlocationsForm-to").focus();
-                } else {
-                    $("#frmlocationsForm-from").focus();
-                }
+        events = $('#events');
+        eventsLink = createUnwrapLink('Events', events);
+        eventsLink.click(function(event) {
+            event.preventDefault();
+            travelbot.clearPois();
+            if (shownEvents) {
+//                travelbot.loadTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+                travelbot.centerMap();
+                shownEvents = false;
             } else {
-                $.post(basePath + "/ajax/?do=location", {
-                    latitude: data.latitude,
-                    longitude: data.longitude
-                }, function(gData, textStatus) {
-                    if (gData.status == 'OK') {
-                        if (form.val() == "") {
-                            $("#frmlocationsForm-from").val(gData['location']);
-                        }
-						
+                travelbot.loadEvents();
+                shownEvents = true;
+            }
+        });
+        events.before(eventsLink);
+		
+        article = $('#article');
+        article.before(createUnwrapLink('Article', article));
+		
+        flights = $('#flights');
+        flights.before(createUnwrapLink('Flights', flights));
+    } else {
+        $.geolocator.geolocate({
+            callback: function(data) {
+                form = $("#frmlocationsForm-from");
+                if (data.latitude == null || data.client !== undefined) {
+                    if (form.val() == "" && data.client != null) {
+                        $("#frmlocationsForm-from").val(data.client.address.city + ", " + data.client.address.country)
                         $("#frmlocationsForm-to").focus();
                     } else {
                         $("#frmlocationsForm-from").focus();
                     }
-                }, "json");
+                } else {
+                    $.post(basePath + "/ajax/?do=location", {
+                        latitude: data.latitude,
+                        longitude: data.longitude
+                    }, function(gData, textStatus) {
+                        if (gData.status == 'OK') {
+                            if (form.val() == "") {
+                                $("#frmlocationsForm-from").val(gData['location']);
+                            }
+						
+                            $("#frmlocationsForm-to").focus();
+                        } else {
+                            $("#frmlocationsForm-from").focus();
+                        }
+                    }, "json");
+                }
             }
-        }
-    });
-	}
+        });
+    }
 });
 
 $("#pois-link").click(function(event) {
-	event.preventDefault();
-	link = $(this);
+    event.preventDefault();
+    link = $(this);
 	
-	if (link.hasClass('plus')) {
-		showSpinner(event);
-		travelbot.loadPois($('span.trip.arrival').text());
-		$("#showing-pois").show();
-		link.removeClass('plus');
-		link.addClass('minus');
-	} else {
-		travelbot.clearPois();
-		travelbot.showTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
-		$("#showing-pois").hide();
-		link.removeClass('minus');
-		link.addClass('plus');
-	}
+    if (link.hasClass('plus')) {
+        showSpinner(event);
+        travelbot.loadPois($('span.trip.arrival').text());
+        $("#showing-pois").show();
+        link.removeClass('plus');
+        link.addClass('minus');
+    } else {
+        travelbot.clearPois();
+//        travelbot.loadTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+        travelbot.centerMap();
+        $("#showing-pois").hide();
+        link.removeClass('minus');
+        link.addClass('plus');
+    }
 });
 
 $("#frmlocationsForm-from, #frmlocationsForm-to").keyup(function() {
-	$("#frmlocationsForm-okSubmit").attr('disabled', 'disabled');
+    $("#frmlocationsForm-okSubmit").attr('disabled', 'disabled');
 });
 
 /**
@@ -185,7 +227,8 @@ $("#frmlocationsForm-from, #frmlocationsForm-to").keyup(function() {
  */
 $("#frmlocationsForm-okFindDirections").live("click", function(event) {
     event.preventDefault();
-	
+
+    travelbot.clearMap();
     from = $("#frmlocationsForm-from");
     to = $("#frmlocationsForm-to");
     if (nette.validateForm(this)) {
@@ -197,16 +240,27 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
             from: from.val(),
             to: to.val()
         }, function(data, textStatus) {
-        	showMap = false;
+//            showMap = false;
         	
-        	panel = $("#content");
+            panel = $("#content");
         	
             if (data.status == 'OK') {
                 ol = $('<ol>');
+                mvcArrayPath = new google.maps.MVCArray();
                 $.each(data.steps, function(i, el) {
                     ol.append($('<li>').html(el['instructions'] + ' (' + formatDistance(el['distance']) + ')'));
+
+                    var points;
+                    points = decodeLine(el['polyline']);
+                    for(i=0; i < points.length; i++) {
+                      point = new google.maps.LatLng(points[i][0], points[i][1], true);
+                      mvcArrayPath.push(point);
+                    }
+
                 });
                 
+                travelbot.showTrip(mvcArrayPath);
+
                 panel.html('');
                 panel.append($('<p>The trip will take <strong>' + formatDuration(data['duration']) + '</strong> to complete and its distance is <strong>' + formatDistance(data['distance']) + '.</strong></p>'));
                 panel.append($("<p>If you're satisfied with the trip, click on <strong>Save trip</strong> for further modifications.</p>"));
@@ -214,8 +268,7 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
                 panel.append(createUnwrapLink('Directions', ol));
                 panel.append(ol);
                 
-                travelbot.showTrip(from.val(), to.val());
-				$("#frmlocationsForm-okSubmit").removeAttr('disabled');
+                $("#frmlocationsForm-okSubmit").removeAttr('disabled');
             } else {
                 panel.html('<p>Error occured. Please try again.</p>');
             }
@@ -225,9 +278,6 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
     }
 });
 
-// --------------------------------------
-// --------------------------------------
-// --------------------------------------
 
 
 // AJAX spinner appending and hiding
@@ -242,20 +292,20 @@ $(function () {
 });
 
 function createUnwrapLink(label, list) {
-	list.hide();
-	return $('<a class="unwrap plus" href="#">' + label + '</a>').click(function(event) {
-		event.preventDefault();
-		link = $(this);
-		if (link.hasClass('plus')) {
-			link.removeClass('plus');
-			link.addClass('minus');
-			list.show();
-		} else {
-			link.removeClass('minus');
-			link.addClass('plus');
-			list.hide();
-		}
-	});
+    list.hide();
+    return $('<a class="unwrap plus" href="#">' + label + '</a>').click(function(event) {
+        event.preventDefault();
+        link = $(this);
+        if (link.hasClass('plus')) {
+            link.removeClass('plus');
+            link.addClass('minus');
+            list.show();
+        } else {
+            link.removeClass('minus');
+            link.addClass('plus');
+            list.hide();
+        }
+    });
 }
 
 
@@ -290,4 +340,39 @@ function formatDuration(value) {
     }
     return hours + '&nbsp;hours and ' + (minutes%60) + '&nbsp;minutes';
 };
+
+function decodeLine (encoded) {
+  var len = encoded.length;
+  var index = 0;
+  var array = [];
+  var lat = 0;
+  var lng = 0;
+
+  while (index < len) {
+    var b;
+    var shift = 0;
+    var result = 0;
+    do {
+      b = encoded.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    var dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    lat += dlat;
+
+    shift = 0;
+    result = 0;
+    do {
+      b = encoded.charCodeAt(index++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    var dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+    lng += dlng;
+
+    array.push([lat * 1e-5, lng * 1e-5]);
+  }
+
+  return array;
+}
 

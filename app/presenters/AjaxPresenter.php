@@ -86,6 +86,7 @@ class AjaxPresenter extends BasePresenter
             $arr = array();
             $arr['distance'] = $step->distance;
             $arr['instructions'] = $step->instructions;
+            $arr['polyline'] = $step->getPolyline();
             $steps[] = $arr;
         }
 
