@@ -34,7 +34,7 @@
 	<div>
 		<ol id="directions">
 			{foreach $trip->steps as $step}
-				<li>{!$step->instructions} ({$step->distance |distance}).</li>
+                            <li class="step" data-polyline="{$step->polyline}">{!$step->instructions} ({$step->distance |distance}).</li>
 			{/foreach}
 		</ol>
 	</div>

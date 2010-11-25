@@ -19,32 +19,32 @@ var travelbot = {
 
     clearMap: function() {
         map = new google.maps.Map(document.getElementById("map"), {
-                zoom:7,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                center: new google.maps.LatLng(50.093847, 14.413261)
+            zoom:7,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            center: new google.maps.LatLng(50.093847, 14.413261)
         });
         travelbot.map = map;
     },
 
     showTrip: function(path) {
-          polylineOptions = {
-              clickable: true,
-              geodesic:	true,
-              map: travelbot.map,
-              path: path,
-              strokeColor: "#00009F",
-              strokeOpacity: 0.6,
-              strokeWeight: 4,
-              zIndex: 10
-          };
-          new google.maps.Polyline(polylineOptions);
+        polylineOptions = {
+            clickable: true,
+            geodesic:	true,
+            map: travelbot.map,
+            path: path,
+            strokeColor: "#00009F",
+            strokeOpacity: 0.6,
+            strokeWeight: 4,
+            zIndex: 10
+        };
+        new google.maps.Polyline(polylineOptions);
 
-          travelbot.addMarker(polylineOptions.path.getAt(0).lat(), polylineOptions.path.getAt(0).lng(), "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=A|0000DF|000000");
-          last = polylineOptions.path.getLength() - 1;
-          travelbot.addMarker(polylineOptions.path.getAt(last).lat(), polylineOptions.path.getAt(last).lng(), "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=B|0000DF|000000");
+        travelbot.addMarker(polylineOptions.path.getAt(0).lat(), polylineOptions.path.getAt(0).lng(), "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=A|0000DF|000000");
+        last = polylineOptions.path.getLength() - 1;
+        travelbot.addMarker(polylineOptions.path.getAt(last).lat(), polylineOptions.path.getAt(last).lng(), "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=B|0000DF|000000");
 
-          travelbot.center = polylineOptions.path.getAt(0);
-          travelbot.centerMap();
+        travelbot.center = polylineOptions.path.getAt(0);
+        travelbot.centerMap();
     },
 
     centerMap: function() {
@@ -53,23 +53,17 @@ var travelbot = {
     },
 
     loadTrip: function(from, to) {
-        $.post(basePath + "/ajax/?do=directions", {
-            from: from,
-            to: to
-        }, function(data, textStatus) {
-            if (data.status == 'OK') {
-                path = new google.maps.MVCArray();
-                $.each(data.steps, function(i, el) {
-                    var points;
-                    points = decodeLine(el['polyline']);
-                    for(j=0; j < points.length; j++) {
-                      point = new google.maps.LatLng(points[j][0], points[j][1], true);
-                      path.push(point);
-                    }
-                });
-                travelbot.showTrip(path);
+        path = new google.maps.MVCArray();
+        $.each($('#directions .step'), function(i, el) {
+            step = $(el);
+            var points;
+            points = decodeLine(step.attr('data-polyline'));
+            for(j=0; j < points.length; j++) {
+                point = new google.maps.LatLng(points[j][0], points[j][1], true);
+                path.push(point);
             }
         });
+        travelbot.showTrip(path);
     },
 
     addMarker: function(latitude, longitude, icon) {
@@ -116,96 +110,103 @@ var travelbot = {
         }
     },
 	
-	loadEvents: function(arrival, event) {
-		events = $('#events');
-		if (events.children().size() == 0) {
-			showSpinner(event);
-			$.post(basePath + "/ajax/?do=events", {location: arrival}, function(data, textStatus) {
-				if (textStatus == 'success') {
-					events.html(data['events']);
-					travelbot.showEvents($(data['events']));
-				}
-			});
-		} else {
-			travelbot.showEvents(events.children('.event'));
-		}
-	},
+    loadEvents: function(arrival, event) {
+        events = $('#events');
+        if (events.children().size() == 0) {
+            showSpinner(event);
+            $.post(basePath + "/ajax/?do=events", {
+                location: arrival
+            }, function(data, textStatus) {
+                if (textStatus == 'success') {
+                    events.html(data['events']);
+                    travelbot.showEvents($(data['events']));
+                }
+            });
+        } else {
+            travelbot.showEvents(events.children('.event'));
+        }
+    },
 	
-	//showEvents on the map
-	showEvents: function(events) {
-		$.each(events, function(i, el) {
-			event = $(el);
-			if (i == 0) {
-				travelbot.getMap().panTo(new google.maps.LatLng(event.attr('data-latitude'), event.attr('data-longitude')));
-				travelbot.getMap().setZoom(12);
-			}
-			travelbot.showPoi(parseFloat(event.attr('data-latitude')) + (Math.random()/100), parseFloat(event.attr('data-longitude')) + (Math.random()/100), null, event.attr('data-title'), event.attr('data-venue'), event.attr('data-date'));
-		});
-	}
+    //showEvents on the map
+    showEvents: function(events) {
+        $.each(events, function(i, el) {
+            event = $(el);
+            if (i == 0) {
+                travelbot.getMap().panTo(new google.maps.LatLng(event.attr('data-latitude'), event.attr('data-longitude')));
+                travelbot.getMap().setZoom(12);
+            }
+            travelbot.showPoi(parseFloat(event.attr('data-latitude')) + (Math.random()/100), parseFloat(event.attr('data-longitude')) + (Math.random()/100), null, event.attr('data-title'), event.attr('data-venue'), event.attr('data-date'));
+        });
+    }
 }
 
 $(function() {
     travelbot.getMap();
 	
-	if (isTripPage) {
-		departure = $('span.trip.departure').text();
-		arrival = $('span.trip.arrival').text();
-		travelbot.loadTrip(departure, arrival);
+    if (isTripPage) {
+        departure = $('span.trip.departure').text();
+        arrival = $('span.trip.arrival').text();
+        travelbot.loadTrip(departure, arrival);
 		
-		directions = $('#directions');
-		directions.hide();
-		directions.before(createUnwrapLink('Directions', function() {
-			directions.show();
-		}, function() {
-			directions.hide();
-		}));
+        directions = $('#directions');
+        directions.hide();
+        directions.before(createUnwrapLink('Directions', function() {
+            directions.show();
+        }, function() {
+            directions.hide();
+        }));
 		
         $("#showing-pois").hide();
 		
         var shownEvents = false;
 		
-		events = $('#events');
-		events.before(createUnwrapLink('Events', function(event) {
-			$('#events').show();
-			travelbot.clearPois();
-			travelbot.loadEvents(arrival, event);
-		}, function() {
-			$('#events').hide();
-			travelbot.clearPois();
-			travelbot.loadTrip(departure, arrival);
-		}));
+        events = $('#events');
+        events.before(createUnwrapLink('Events', function(event) {
+            $('#events').show();
+            travelbot.clearPois();
+            travelbot.loadEvents(arrival, event);
+        }, function() {
+            $('#events').hide();
+            travelbot.clearPois();
+            travelbot.loadTrip(departure, arrival);
+        }));
 		
-		article = $('#article');
-		article.before(createUnwrapLink('Article', function(event) {
-			if (article.children().size() == 0) {
-				showSpinner(event);
-				$.post(basePath + "/ajax/?do=article", {location: arrival}, function(data, textStatus) {
-					if (textStatus == 'success') {
-						article.html(data['article']);
-					}
-				}, 'json');
-			} else {
-				article.show();
-			}
-		}, function() {
-			article.hide();
-		}));
+        article = $('#article');
+        article.before(createUnwrapLink('Article', function(event) {
+            if (article.children().size() == 0) {
+                showSpinner(event);
+                $.post(basePath + "/ajax/?do=article", {
+                    location: arrival
+                }, function(data, textStatus) {
+                    if (textStatus == 'success') {
+                        article.html(data['article']);
+                    }
+                }, 'json');
+            } else {
+                article.show();
+            }
+        }, function() {
+            article.hide();
+        }));
 		
         flights = $('#flights');
         flights.before(createUnwrapLink('Flights', function(event) {
-			if (flights.children().size() == 0) {
-				showSpinner(event);
-				$.post(basePath + "/ajax/?do=flights", {departure: departure, arrival: arrival}, function(data, textStatus) {
-					if (textStatus == 'success') {
-						flights.html(data['flights']);
-					}
-				});
-			}
+            if (flights.children().size() == 0) {
+                showSpinner(event);
+                $.post(basePath + "/ajax/?do=flights", {
+                    departure: departure,
+                    arrival: arrival
+                }, function(data, textStatus) {
+                    if (textStatus == 'success') {
+                        flights.html(data['flights']);
+                    }
+                });
+            }
 			
-			flights.show();
-		}, function() {
-			flights.hide();
-		}));
+            flights.show();
+        }, function() {
+            flights.hide();
+        }));
     } else {
         $.geolocator.geolocate({
             callback: function(data) {
@@ -250,7 +251,7 @@ $("#pois-link").click(function(event) {
         link.addClass('minus');
     } else {
         travelbot.clearPois();
-//        travelbot.loadTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
+        //        travelbot.loadTrip($('span.trip.departure').text(), $('span.trip.arrival').text());
         travelbot.centerMap();
         $("#showing-pois").hide();
         link.removeClass('minus');
@@ -263,9 +264,9 @@ $("#frmlocationsForm-from, #frmlocationsForm-to").keyup(function() {
 });
 
 /**
- * Find directions handler.
- * @author mirteond 
- */
+* Find directions handler.
+* @author mirteond 
+*/
 $("#frmlocationsForm-okFindDirections").live("click", function(event) {
     event.preventDefault();
 
@@ -281,7 +282,7 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
             from: from.val(),
             to: to.val()
         }, function(data, textStatus) {
-//            showMap = false;
+            //            showMap = false;
         	
             panel = $("#content");
         	
@@ -294,8 +295,8 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
                     var points;
                     points = decodeLine(el['polyline']);
                     for(i=0; i < points.length; i++) {
-                      point = new google.maps.LatLng(points[i][0], points[i][1], true);
-                      mvcArrayPath.push(point);
+                        point = new google.maps.LatLng(points[i][0], points[i][1], true);
+                        mvcArrayPath.push(point);
                     }
 
                 });
@@ -308,12 +309,12 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
                 
                 ol.hide();
                 panel.append(createUnwrapLink('Directions', function() {
-					ol.show();
-				}, function() {
-					ol.hide();
-				}));
+                    ol.show();
+                }, function() {
+                    ol.hide();
+                }));
 				
-				panel.append(ol);                
+                panel.append(ol);
                 
                 $("#frmlocationsForm-okSubmit").removeAttr('disabled');
             } else {
@@ -339,19 +340,19 @@ $(function () {
 });
 
 function createUnwrapLink(label, callback, undoCallback) {
-	return $('<a class="unwrap plus" href="#">' + label + '</a>').click(function(event) {
-		event.preventDefault();
-		link = $(this);
-		if (link.hasClass('plus')) {
-			link.removeClass('plus');
-			link.addClass('minus');
-			callback(event);
-		} else {
-			link.removeClass('minus');
-			link.addClass('plus');
-			undoCallback(event);
-		}
-	});
+    return $('<a class="unwrap plus" href="#">' + label + '</a>').click(function(event) {
+        event.preventDefault();
+        link = $(this);
+        if (link.hasClass('plus')) {
+            link.removeClass('plus');
+            link.addClass('minus');
+            callback(event);
+        } else {
+            link.removeClass('minus');
+            link.addClass('plus');
+            undoCallback(event);
+        }
+    });
 }
 
 
@@ -388,37 +389,37 @@ function formatDuration(value) {
 };
 
 function decodeLine (encoded) {
-  var len = encoded.length;
-  var index = 0;
-  var array = [];
-  var lat = 0;
-  var lng = 0;
+    var len = encoded.length;
+    var index = 0;
+    var array = [];
+    var lat = 0;
+    var lng = 0;
 
-  while (index < len) {
-    var b;
-    var shift = 0;
-    var result = 0;
-    do {
-      b = encoded.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
-    var dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
-    lat += dlat;
+    while (index < len) {
+        var b;
+        var shift = 0;
+        var result = 0;
+        do {
+            b = encoded.charCodeAt(index++) - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+        } while (b >= 0x20);
+        var dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lat += dlat;
 
-    shift = 0;
-    result = 0;
-    do {
-      b = encoded.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
-    var dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
-    lng += dlng;
+        shift = 0;
+        result = 0;
+        do {
+            b = encoded.charCodeAt(index++) - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+        } while (b >= 0x20);
+        var dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lng += dlng;
 
-    array.push([lat * 1e-5, lng * 1e-5]);
-  }
+        array.push([lat * 1e-5, lng * 1e-5]);
+    }
 
-  return array;
+    return array;
 }
 
