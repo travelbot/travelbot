@@ -81,7 +81,7 @@ var travelbot = {
     },
 	
     showPoi: function(latitude, longitude, icon, name, address, types) {
-        marker = travelbot.addMarker(latitude, longitude, icon);
+        var marker = travelbot.addMarker(latitude, longitude, icon);
         travelbot.markers.push(marker);
         infoWindow = new google.maps.InfoWindow();
 		
