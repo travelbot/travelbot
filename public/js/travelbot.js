@@ -274,7 +274,7 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
             panel = $("#content");
         	
             if (data.status == 'OK') {
-                ol = $('<ol>');
+                ol = $('<ol id="directions">');
                 mvcArrayPath = new google.maps.MVCArray();
                 $.each(data.steps, function(i, el) {
                     ol.append($('<li>').html(el['instructions'] + ' (' + formatDistance(el['distance']) + ')'));
@@ -294,8 +294,14 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
                 panel.append($('<p>The trip will take <strong>' + formatDuration(data['duration']) + '</strong> to complete and its distance is <strong>' + formatDistance(data['distance']) + '.</strong></p>'));
                 panel.append($("<p>If you're satisfied with the trip, click on <strong>Save trip</strong> for further modifications.</p>"));
                 
-                panel.append(createUnwrapLink('Directions', ol));
-                panel.append(ol);
+                ol.hide();
+                panel.append(createUnwrapLink('Directions', function() {
+					ol.show();
+				}, function() {
+					ol.hide();
+				}));
+				
+				panel.append(ol);                
                 
                 $("#frmlocationsForm-okSubmit").removeAttr('disabled');
             } else {
