@@ -1,77 +1,164 @@
 <?php
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
- * Description of PointOfInterest
+ * @author mirteond
  *
- * @author Petr Vales
+ * @entity
+ * @table(name="poi")
  */
-class Poi extends Nette\Object {
 
-    private $name;
-    private $types;
-    private $address;
-    private $latitude;
-    private $longitude;
-    private $url;
-    private $imageUrl;
+class Poi extends SimpleEntity {
 
-    public function getName()   {
-        return $this->name;
-    }
+        /**
+         * @var string
+         * @column
+         */
+        private $name;
 
-    public function setName($name) {
-        $this->name = $name;
-    }
+        /**
+        * @var string
+        * @column
+        */
+        private $types;
 
-    public function getTypes()   {
-        return $this->types;
-    }
+        /**
+        * @var string
+        * @column
+        */
+        private $address;
 
-    public function setTypes($types) {
-        $this->types = $types;
-    }
+        /**
+         * @var float
+         * @column
+         */
+        private $latitude;
 
-    public function getAddress()   {
-        return $this->address;
-    }
+         /**
+         * @var float
+         * @column
+         */
+        private $longitude;
 
-    public function setAddress($address) {
-        $this->address = $address;
-    }
+         /**
+         * @var string
+         * @column
+         */
+        private $url;
 
-    public function getLatitude()   {
-        return $this->latitude;
-    }
+         /**
+         * @var string
+         * @column
+         */
+        private $imageUrl;
 
-    public function setLatitude($latitude) {
-        $this->latitude = (float) $latitude;
-    }
+         /**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+         * @ManyToMany(targetEntity="Trip", mappedBy="pois",cascade={"persist"})
+	 * orderBy({sequenceOrder="ASC"})
+         */
+        private $trips;
 
-    public function getLongitude()   {
-        return $this->longitude;
-    }
 
-    public function setLongitude($longitude) {
-        $this->longitude = (float) $longitude;
-    }
+        public function __construct() {
+		$this->trips = new ArrayCollection;
+	}
 
-    public function getUrl()   {
-        return $this->url;
-    }
+        public function getName()   {
+            return $this->name;
+        }
 
-    public function setUrl($url) {
-        $this->url = $url;
-    }
+        public function setName($name) {
+            $this->name = $name;
+        }
+
+        public function getTypes()   {
+            return $this->types;
+        }
+
+        public function setTypes($types) {
+            $this->types = $types;
+        }
+
+        public function getAddress()   {
+            return $this->address;
+        }
+
+        public function setAddress($address) {
+            $this->address = $address;
+        }
+
+        public function getLatitude()   {
+            return $this->latitude;
+        }
+
+        public function setLatitude($latitude) {
+            $this->latitude = (float) $latitude;
+        }
+
+        public function getLongitude()   {
+            return $this->longitude;
+        }
+
+        public function setLongitude($longitude) {
+            $this->longitude = (float) $longitude;
+        }
+
+        public function getUrl()   {
+            return $this->url;
+        }
+
+        public function setUrl($url) {
+            $this->url = $url;
+        }
     
-    public function getImageUrl()
-    {
-		return $this->imageUrl;
+        public function getImageUrl()
+        {
+            	return $this->imageUrl;
 	}
 	
-	public function setImageUrl($url)
-	{
+        public function setImageUrl($url)
+        {
 		$this->imageUrl = $url;
 	}
 
+        /**
+	 * @return Doctrine\Common\Collections\ArrayCollection
+	 */
+        public function getTrips()
+	{
+		return $this->trips;
+	}
+
+	/**
+	 * @param Trip
+	 * @return Poi Fluent interface
+	 */
+	public function addTrip (Trip $trip)
+	{
+		if (!$this->trips->contains($trip)) {
+			$this->trips->add($trip);
+                        if (!$trip->pois->contains($this)) {
+			$trip->pois->add ($this);
+		}}
+
+		return $this; // fluent interface
+	}
+
+	/**
+	 * @param Trip
+	 * @return Poi Fluent interface
+	 */
+	public function removeTrip(Trip $trip)
+	{
+		if ($this->trips->contains($trip)) {
+			$this->trips->removeElement($trip);
+                        if ($trip->pois->contains($this)) {
+			$trip->pois->removeElement($this);
+		}}
+
+		return $this; // fluent interface
+	}
 }
 

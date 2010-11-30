@@ -26,8 +26,7 @@ class TripService extends EntityService
 			$steps[] = new Step(
 				$step->distance->value,
 				$step->duration->value,
-				htmlspecialchars_decode($step->html_instructions, ENT_QUOTES),
-                                $step->polyline->points
+				htmlspecialchars_decode($step->html_instructions, ENT_QUOTES)
 			);
 		}
 		return new Trip($departure, $arrival, $steps);
