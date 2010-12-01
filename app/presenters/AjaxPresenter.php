@@ -1,10 +1,23 @@
 <?php
 
+use Nette\Application\AppForm;
 use Nette\Application\JsonResponse;
 use Nette\Environment;
 
 class AjaxPresenter extends BasePresenter
 {
+
+	protected function createComponentEventsForm()
+	{
+		$form = new AppForm;
+		//$form->addCheckbox('event');
+		
+		$form->addHidden('tripId');
+		$form->addSubmit('okSubmit', 'Save preferences');
+		$form->onSubmit[] = array($this, 'submitEventForm');
+		
+		return $form;
+	}
 
 	/**
      * @author Petr Vales
@@ -131,6 +144,7 @@ class AjaxPresenter extends BasePresenter
 		$template = $this->createTemplate();
 		$template->setFile(__DIR__ . '/../templates/Ajax/events.phtml');
 		$template->events = $events;
+		$template->form = $this['eventsForm'];
 		
 		$this->terminate(new JsonResponse(array('events' => (string) $template)));
 	}

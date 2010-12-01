@@ -120,6 +120,7 @@ var travelbot = {
                 if (textStatus == 'success') {
                     events.html(data['events']);
                     travelbot.showEvents($(data['events']));
+                    $('#frmeventsForm-tripId').val();
                 }
             });
         } else {

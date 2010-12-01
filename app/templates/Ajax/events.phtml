@@ -1,8 +1,13 @@
 {if count($events) > 0}
+	{widget eventsForm begin}
+	
+	{$form['okSubmit']->control}
+
 	{foreach $events as $event}
 		<div class="event" data-latitude="{$event->latitude}" data-longitude="{$event->longitude}" data-title="{$event->title}"
 			data-date="{$event->date->format('j. n. Y')}" data-venue="{$event->venue->name}">
-			<h3><a href="{$event->url}">{$event->title}</a> {$event->date->format('j. n. Y')}</h3>
+			{? $form->addCheckbox('event' . $iterator->counter); }
+			<h3>{$form['event' . $iterator->counter]->control} <a href="{$event->url}">{$event->title}</a> {$event->date->format('j. n. Y')}</h3>
 			<div class="small">
 				<p><strong>Where:</strong> <a href="{$event->venue->url}">{$event->venue->name}</a></p>
 				{!$event->description}
@@ -10,6 +15,9 @@
 		</div>
 		{sep}<hr />{/sep}
 	{/foreach}
+	
+	{? }
+	{widget eventsForm end}
 {else}
 	<p>No events available.</p>
 {/if}
