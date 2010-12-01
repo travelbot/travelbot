@@ -117,7 +117,7 @@ class AjaxPresenter extends BasePresenter
 	{
 		$location = $this->request->post['location'];
 		try {
-			$eventService = new EventService;
+			$eventService = new EventService($this->entityManager);
 			$config = Environment::getConfig('api');
 			$events = $eventService->getEvents(
 				$location,
