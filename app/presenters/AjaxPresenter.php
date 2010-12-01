@@ -148,8 +148,8 @@ class AjaxPresenter extends BasePresenter
             $coordinates = $locationService->getCoordinates($arrival);
             $to = $airportService->searchNearestAirport($airportMapper, $coordinates['latitude'], $coordinates['longitude']);
          	
-//            $flightMapper = new FlightKayakMapper();
-            $flightMapper = new FlightMockMapper();
+            $flightMapper = new FlightKayakMapper();
+//            $flightMapper = new FlightMockMapper();
             $flightService = new FlightService($this->entityManager);
             $depart_date = new DateTime('now');
             $return_date = new DateTime('+1 week');
