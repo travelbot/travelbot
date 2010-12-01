@@ -3,7 +3,6 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Class representing trip with origin, destination and steps.
  * @author mirteond 
  *  
  * @entity
@@ -27,10 +26,24 @@ class Trip extends SimpleEntity
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @oneToMany(targetEntity="Step", mappedBy="trip", cascade={"persist"})
-	 * orderBy({sequenceOrder="ASC"})	 	 
+	 * orderBy({sequenceOrder="ASC"})
 	 */
 	private $steps;
-	
+
+         /**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+         * @ManyToMany(targetEntity="Event", mappedBy="trips",cascade={"persist"})
+	 * orderBy({sequenceOrder="ASC"})
+         */
+        private $events;
+
+         /**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+         * @ManyToMany(targetEntity="Poi", mappedBy="trips",cascade={"persist"})
+	 * orderBy({sequenceOrder="ASC"})
+         */
+	private $pois;
+
 	/**
 	 * @var int
 	 */
@@ -46,6 +59,8 @@ class Trip extends SimpleEntity
 		$this->arrival = (string) $arrival;
 		
 		$this->steps = new ArrayCollection;
+                $this->events = new ArrayCollection;
+                $this->pois = new ArrayCollection;
 		
 		foreach($steps as $step) {
 			$this->addStep($step);	
@@ -105,10 +120,10 @@ class Trip extends SimpleEntity
 	{
 		return $this->steps;
 	}
-	
+
 	/**
 	 * @param Step
-	 * @return Trip Fluent interface	 
+	 * @return Trip Fluent interface
 	 */
 	public function addStep(Step $step)
 	{
@@ -117,13 +132,13 @@ class Trip extends SimpleEntity
 			$this->steps->add($step);
 			$step->trip = $this;
 		}
-		
+
 		return $this; // fluent interface
 	}
-	
+
 	/**
 	 * @param Step
-	 * @return Trip Fluent interface	 
+	 * @return Trip Fluent interface
 	 */
 	public function removeStep(Step $step)
 	{
@@ -131,8 +146,88 @@ class Trip extends SimpleEntity
 			$this->steps->removeElement($step);
 			$step->trip = NULL;
 		}
-		
+
 		return $this; // fluent interface
 	}
 
+        /**
+	 * @return Doctrine\Common\Collections\ArrayCollection
+	 */
+ 	public function getEvents()
+	{
+		return $this->events;
+	}
+
+	/**
+	 * @param Event
+	 * @return Trip Fluent interface
+	 */
+	public function addEvent(Event $event)
+	{
+		if (!$this->events->contains($event)) {
+			$this->events->add($event);
+                        if (!$event->trips->contains($this)) {
+                            $event->trips->add($this);
+                        }
+                }
+
+		return $this; // fluent interface
+	}
+
+	/**
+	 * @param Event
+	 * @return Trip Fluent interface
+	 */
+	public function removeEvent(Event $event)
+	{
+		if ($this->events->contains($event)) {
+			$this->events->removeElement($event);
+			if ($event->trips->contains($this)) {
+                            $event->trips->removeElement($this);
+                        }
+		}
+
+		return $this; // fluent interface
+	}
+
+        /**
+	 * @return Doctrine\Common\Collections\ArrayCollection
+	 */
+	public function getPois()
+	{
+		return $this->pois;
+	}
+
+	/**
+	 * @param Poi
+	 * @return Trip Fluent interface
+	 */
+	public function addPoi(Poi $poi)
+	{
+		if (!$this->pois->contains($poi)) {
+			$this->pois->add($poi);
+			if (!$poi->trips->contains($this)) {
+                            $poi->trips->add($this);
+                        }
+		}
+
+		return $this; // fluent interface
+	}
+
+	/**
+	 * @param   Poi
+	 * @return Trip Fluent interface
+	 */
+	public function removePoi(Poi $poi)
+	{
+		if ($this->pois->contains($poi)) {
+			$this->pois->removeElement($poi);
+			if ($poi->trips->contains($this)) {
+                            $poi->trips->removeElement($this);
+                        }
+		}
+
+		return $this; // fluent interface
+	}
+     
 }

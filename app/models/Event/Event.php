@@ -1,22 +1,67 @@
 <?php
 
-class Event extends Nette\Object
-{
+use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * Class representing trip with origin, destination and steps.
+ * @author javi.cullera
+ *
+ * @entity
+ * @table(name="event")
+ */
+class Event extends SimpleEntity
+{
+        /**
+	 * @var string
+	 * @column
+	 */
 	private $title;
-	
+	/**
+	 * @var string
+	 * @column
+	 */
 	private $url;
-	
+	/**
+	 * @var string
+	 * @column
+	 */
 	private $description;
-	
+	/**
+	 * @var DateTime
+	 * @column
+	 */
 	private $date;
-	
-	private $venue;
-	
-	private $latitude;
-	
+
+        /**
+	 * @var float
+	 * @column
+	 */
+        private $latitude;
+
+        /**
+	 * @var float
+	 * @column
+	 */
 	private $longitude;
-	
+
+       /**
+	 * @var Venue
+	 * @manyToOne(targetEntity="Venue", inversedBy="events", cascade={"persist"})
+	 */
+	private $venue;
+
+        /**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+         * @ManyToMany(targetEntity="Trip", mappedBy="events",cascade={"persist"})
+	 * orderBy({sequenceOrder="ASC"})
+        */
+	private $trips;
+        
+
+        public function __construct() {
+		$this->trips = new ArrayCollection;
+	}
+
 	public function getTitle()
 	{
 		return $this->title;
@@ -27,7 +72,31 @@ class Event extends Nette\Object
 		$this->title = $title;
 		return $this;
 	}
-	
+
+
+        public function getLatitude()
+	{
+		return $this->latitude;
+	}
+
+	public function setLatitude($latitude)
+	{
+		$this->latitude = $latitude;
+		return $this;
+	}
+
+         public function getLongitude()
+	{
+		return $this->longitude;
+	}
+
+	public function setLongitude($longitude)
+	{
+		$this->longitude = $longitude;
+		return $this;
+	}
+
+
 	public function getUrl()
 	{
 		return $this->url;
@@ -60,39 +129,63 @@ class Event extends Nette\Object
 		$this->date = $date;
 		return $this;
 	}
-	
+	 /**
+	 * @return Venue Fluent interface
+	 */
 	public function getVenue()
 	{
 		return $this->venue;
 	}
-	
+	/**
+	 * @param Venue|NULl
+	 * @return Event Fluent interface
+	 */
 	public function setVenue(Venue $venue)
 	{
 		$this->venue = $venue;
 		return $this;
 	}
-	
-	public function getLatitude()
+
+        /**
+	 * @return Doctrine\Common\Collections\ArrayCollection
+	 */
+        public function getTrips()
 	{
-		return $this->latitude;
+		return $this->trips;
 	}
-	
-	public function setLatitude($latitude)
+
+	/**
+	 * @param Trip
+	 * @return Event Fluent interface
+	 */
+	public function addTrip (Trip $trip)
 	{
-		$this->latitude = (float) $latitude;
-		return $this;
+		if (!$this->trips->contains($trip)) {
+			$this->trips->add($trip);
+                        if (!$trip->events->contains($this)) 
+                            $trip->events->add ($this);
+		}
+
+		return $this; // fluent interface
 	}
-	
-	public function getLongitude()
+
+	/**
+	 * @param Trip
+	 * @return Event Fluent interface
+	 */
+	public function removeTrip(Trip $trip)
 	{
-		return $this->longitude;
+		if ($this->trips->contains($trip)) {
+			$this->trips->removeElement($trip);
+                        if ($trip->events->contains($this)) 
+                            $trip->events->removeElement($this);
+                }
+
+		return $this; // fluent interface
 	}
-	
-	public function setLongitude($longitude)
-	{
-		$this->longitude = (float) $longitude;
-		return $this;
-	}
+
+
+
 	
 
 }
