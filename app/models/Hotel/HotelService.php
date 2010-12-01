@@ -18,14 +18,16 @@ class HotelService
             DateTime $startdate, DateTime $enddate, $rooms, $adults, $children)
     {
         $result = $mapper->searchHotels($lat, $log, $startdate, $enddate, $rooms, $adults, $children);
-        if(strpos($result, "<Hotwire>") == false) {
+        if (strpos($result, "<Hotwire>") == false) {
             throw new BadRequestException('Hotel not found.');
         }
-        $xmlResult = new SimpleXMLElement($results);
-        if(!$xmlResult) {
+        $xmlHotwire = new SimpleXMLElement($result);
+        if (!$xmlHotwire) {
             throw new BadRequestException('Hotel not found.');
         }
-        return $this->parseResult($xmlResult->Result, $xmlResult->MetaData);
+        $xmlResult = $xmlHotwire->Result;
+        $xmlMetaData = $xmlHotwire->MetaData;
+        return $this->parseResult($xmlResult, $xmlMetaData);
     }
 
     private function parseResult($xmlResult, $xmlMetaData)
@@ -42,8 +44,11 @@ class HotelService
         $currency = $xmlHotelResult->CurrencyCode;
         $link = $xmlHotelResult->DeepLink;
         $totalPrice = $xmlHotelResult->TotalPrice;
-        $amenity = $this->getAmenities($xmlHotelResult->AmenityCodes, $xmlMetaData);
-        $lodgingType = $this->lodgingTypes[$xmlHotelResult->LodgingTypeCode];
+        $xmlAmenityCodes = $xmlHotelResult->AmenityCodes;
+        $amenity = $this->getAmenities($xmlAmenityCodes, $xmlMetaData);
+        $xmlLodgingTypeCode = $xmlHotelResult->LodgingTypeCode;
+        $lodgingTypeCode = (string)$xmlLodgingTypeCode;
+        $lodgingType = $this->lodgingTypes[$lodgingTypeCode];
         $starRating = $xmlHotelResult->StarRating;
         return new Hotel($currency, $link, $totalPrice, $amenity, $lodgingType, $starRating);
     }
@@ -59,8 +64,10 @@ class HotelService
 
     private function findAmenity($code, $xmlMetaData)
     {
-        foreach ($xmlMetaData->HotelMetaData->Amenities->Amenity as $amenity) {
-            if(strcmp($amenity->Code, $code) == 0) {
+        $xmlHotelMetaData = $xmlMetaData->HotelMetaData;
+        $xmlAmenities = $xmlHotelMetaData->Amenities;
+        foreach ($xmlAmenities->Amenity as $amenity) {
+            if (strcmp($amenity->Code, $code) == 0) {
                 return $amenity->Name;
             }
         }

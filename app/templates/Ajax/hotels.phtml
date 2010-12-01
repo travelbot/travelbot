@@ -1,13 +1,15 @@
 {if count($hotels) > 0}
 	{foreach $hotels as $hotel}
-                <div>$hotel->lodgingType</div>
-                <div>Star rating: {$hotel->starRating}</div>
-                <a href="{$hotel->link}">{$hotel->totalPrice $hotel->currency} </a>
+            <div class="hotel">
+                <div>{$hotel->getLodgingType()}</div>
+                <div>Star rating: {$hotel->getStarRating()}</div>
                 <ul>
-		{foreach $hotel->amenities as $amenity}
+		{foreach $hotel->getAmenities() as $amenity}
                     <li>{$amenity}</li>
 		{/foreach}
                 </ul>
+                <a href="{$hotel->getLink()}">{$hotel->getTotalPrice()} {$hotel->getCurrency()} </a>
+            </div>
 	{/foreach}
 {else}
 	<p>No hotels available.</p>

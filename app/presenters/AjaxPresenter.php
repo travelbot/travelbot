@@ -148,7 +148,8 @@ class AjaxPresenter extends BasePresenter
             $coordinates = $locationService->getCoordinates($arrival);
             $to = $airportService->searchNearestAirport($airportMapper, $coordinates['latitude'], $coordinates['longitude']);
          	
-            $flightMapper = new FlightKayakMapper();
+//            $flightMapper = new FlightKayakMapper();
+            $flightMapper = new FlightMockMapper();
             $flightService = new FlightService($this->entityManager);
             $depart_date = new DateTime('now');
             $return_date = new DateTime('+1 week');
@@ -176,8 +177,8 @@ class AjaxPresenter extends BasePresenter
             	$destination = $this->request->post['arrival'];
                 $locationService = new LocationService();
                 $coordinates = $locationService->getCoordinates($destination);
-                $depart_date = new DateTime('now');
-                $return_date = new DateTime('+1 week');
+                $startdate = new DateTime('now');
+                $enddate = new DateTime('+1 week');
 		try {
 			$hotelService = new HotelService;
 			$config = Environment::getConfig('api');
@@ -194,7 +195,6 @@ class AjaxPresenter extends BasePresenter
 		} catch (BadRequestException $e) {
 			$hotels = array();
 		}
-
 		$template = $this->createTemplate();
 		$template->setFile(__DIR__ . '/../templates/Ajax/hotels.phtml');
 		$template->hotels = $hotels;

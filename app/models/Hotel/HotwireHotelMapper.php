@@ -1,5 +1,6 @@
 <?php
 
+use Nette\Web\Uri;
 /**
  * Description of HotwireHotelMapper
  *
@@ -24,10 +25,10 @@ class HotwireHotelMapper implements IHotelMapper
 
         $uri = new Uri('http://api.hotwire.com/v1/search/hotel');
         $uri->setQuery(array(
-            'apikey' => $key,
+            'apikey' => $this->key,
             'dest' => $lat . ',' . $log,
-            'startdate' => $startdate->format("MM/DD/YYYY"),
-            'enddate' => $enddate->format("MM/DD/YYYY"),
+            'startdate' => $startdate->format("m/d/Y"),
+            'enddate' => $enddate->format("m/d/Y"),
             'rooms' => $rooms,
             'adults' => $adults,
             'children' => $children
