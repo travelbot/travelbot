@@ -207,6 +207,24 @@ $(function() {
         }, function() {
             flights.hide();
         }));
+
+        hotels = $('#hotels');
+        hotels.before(createUnwrapLink('Hotels', function(hotel) {
+            if (hotels.children().size() == 0) {
+                showSpinner(hotel);
+                $.post(basePath + "/ajax/?do=hotels", {
+                    arrival: arrival
+                }, function(data, textStatus) {
+                    if (textStatus == 'success') {
+                        hotels.html(data['hotels']);
+                    }
+                });
+            }
+            hotels.show();
+        }, function() {
+            hotels.hide();
+        }));
+
     } else {
         $.geolocator.geolocate({
             callback: function(data) {
@@ -366,14 +384,14 @@ function showSpinner(event) {
         return true;
     }
     return false;
-};
+}
 
 function formatDistance(value) {
     if ((value / 1000) > 1) {
         return Math.round(value / 1000) + ' kilometers';
     }
     return value + '&nbsp;meters';
-};
+}
 
 function formatDuration(value) {
     seconds = value;
@@ -386,7 +404,7 @@ function formatDuration(value) {
         return minutes + ' minutes';
     }
     return hours + '&nbsp;hours and ' + (minutes%60) + '&nbsp;minutes';
-};
+}
 
 function decodeLine (encoded) {
     var len = encoded.length;

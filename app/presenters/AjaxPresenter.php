@@ -171,4 +171,35 @@ class AjaxPresenter extends BasePresenter
         $this->terminate(new JsonResponse(array('flights' => (string) $template)));
 	}
 
+        public function handleHotels()
+        {
+            	$destination = $this->request->post['arrival'];
+                $locationService = new LocationService();
+                $coordinates = $locationService->getCoordinates($destination);
+                $depart_date = new DateTime('now');
+                $return_date = new DateTime('+1 week');
+		try {
+			$hotelService = new HotelService;
+			$config = Environment::getConfig('api');
+                        $hotelMapper = new HotwireHotelMapper($config->hotwireKey);
+			$hotels = $hotelService->getHotels($hotelMapper,
+                                                            $coordinates['latitude'],
+                                                            $coordinates['longitude'],
+                                                            $startdate,
+                                                            $enddate,
+                                                            1,  //rooms
+                                                            2,  //adults
+                                                            0); //children
+                               
+		} catch (BadRequestException $e) {
+			$hotels = array();
+		}
+
+		$template = $this->createTemplate();
+		$template->setFile(__DIR__ . '/../templates/Ajax/hotels.phtml');
+		$template->hotels = $hotels;
+
+		$this->terminate(new JsonResponse(array('hotels' => (string) $template)));
+        }
+
 }
