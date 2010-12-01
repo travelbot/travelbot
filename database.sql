@@ -59,5 +59,6 @@ CREATE TABLE step
   sequenceorder INTEGER NOT NULL DEFAULT 0,
   distance INTEGER NOT NULL,
   duration INTEGER NOT NULL,
-  instructions text NOT NULL
+  instructions text NOT NULL,
+  polyline TEXT NOT NULL
 ) WITHOUT OIDS;
