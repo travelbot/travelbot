@@ -29,10 +29,16 @@ class TripTest extends TestCase
 		$this->assertEquals(1, $a->steps[0]->sequenceOrder);
 		$this->assertEquals(2, $a->steps[1]->sequenceOrder);
 
-		// removing first step
+		// removing steps
 		$a->removeStep($a->steps[0]);
+                $this->assertEquals(1, count($a->steps));
+
+                $a->removeStep($a->steps[1]);
+                $this->assertEquals(0, count($a->steps));
 
 		// distance and duration of the second step
+
+                $a->addStep(new Step(60, 75, 'turn left'));
 		$this->assertEquals(1, count($a->steps));
 		$this->assertEquals(60, $a->distance);
 		$this->assertEquals(75, $a->duration);
@@ -50,9 +56,12 @@ class TripTest extends TestCase
 		$a->addEvent($event2);
                 $this->assertEquals($event2, $a->events[1]);
 
-		// removing first event
+		// removing event
 		$a->removeEvent($a->events[0]);
-	}
+                $this->assertEquals(1, count($a->events));
+                $a->removeEvent($a->events[1]);
+                $this->assertEquals(0, count($a->events));
+        }
 
         public function testPois()
 	{
@@ -66,10 +75,10 @@ class TripTest extends TestCase
 		$a->addPoi($poi2);
                 $this->assertEquals($poi2, $a->pois[1]);
 
-		// removing first event
+		// removing pois
 		$a->removePoi($a->pois[0]);
+                $this->assertEquals(1, count($a->pois));
+                $a->removePoi($a->pois[1]);
+                $this->assertEquals(0, count($a->pois));
 	}
-
-
-
 }

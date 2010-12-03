@@ -24,7 +24,9 @@ class VenueTest extends TestCase
 
 		// removing  events
 		$a->removeEvent($a->events[0]);
+                 $this->assertEquals(1, count($a->events));
                 $a->removeEvent($a->events[1]);
+                 $this->assertEquals(0, count($a->events));
 	}
 
 }

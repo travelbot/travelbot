@@ -6,6 +6,26 @@ class PoiTest extends PHPUnit_Framework_TestCase
 	public function testRegularEvent()
 	{
 		$a = new Poi();
+                $a->setName('event1');
+                $this->assertEquals('event1', $a->getName());
+                
+                $a->setAddress('address1');
+                $this->assertEquals('address1', $a->getAddress());
+                
+                $a->setImageUrl('url1');
+                $this->assertEquals('url1', $a->getImageUrl());
+                
+                $a->setLatitude('5');
+                $this->assertEquals('5', $a->getLatitude());
+                
+                $a->setLongitude('5');
+                $this->assertEquals('5', $a->getLongitude());
+                
+                $a->setTypes('types1');
+                $this->assertEquals('types1', $a->getTypes());
+
+                $a->setUrl('URL1');
+                $this->assertEquals('URL1', $a->getUrl());
 	}
 	
 	public function testTrips()
@@ -29,7 +49,10 @@ class PoiTest extends PHPUnit_Framework_TestCase
 		// removing trip
 		
                $a->removeTrip($a->trips[0]);
+               $this->assertEquals(1, count($a->trips));
+
                $a->removeTrip($a->trips[1]);
+               $this->assertEquals(0, count($a->trips));
 	}
 
 }

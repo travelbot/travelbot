@@ -17,7 +17,9 @@ class StepTest extends TestCase
 		$a->trip = $trip = new Trip('Praha', 'Brno');
 		
 		$this->assertEquals($trip, $a->trip);
-		$this->assertEquals($a, $trip->steps[0]);
+                $this->assertEquals($a, $trip->steps[0]);
+                $this->assertEquals(1, count($trip->steps));
+                
 	}
 	
 	public function testSequenceOrder()
