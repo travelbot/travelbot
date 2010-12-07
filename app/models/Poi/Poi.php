@@ -31,13 +31,13 @@ class Poi extends SimpleEntity {
 
         /**
          * @var float
-         * @column
+         * @column(type="decimal")
          */
         private $latitude;
 
          /**
          * @var float
-         * @column
+         * @column(type="decimal")
          */
         private $longitude;
 

@@ -16,6 +16,9 @@ class MockTripMapper extends Nette\Object implements ITripMapper
 							'value' => '2',
 						),
 						'html_instructions' => 'text',
+						'polyline' => (object) array(
+							'points' => 'poly',
+						),
 					),
 					(object) array(
 						'distance' => (object) array(
@@ -25,6 +28,9 @@ class MockTripMapper extends Nette\Object implements ITripMapper
 							'value' => '2',
 						),
 						'html_instructions' => 'text',
+						'polyline' => (object) array(
+							'points' => 'poly',
+						),
 					),
 					(object) array(
 						'distance' => (object) array(
@@ -34,6 +40,9 @@ class MockTripMapper extends Nette\Object implements ITripMapper
 							'value' => '2',
 						),
 						'html_instructions' => 'text',
+						'polyline' => (object) array(
+							'points' => 'poly',
+						),
 					),
 				)
 			)))));

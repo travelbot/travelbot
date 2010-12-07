@@ -28,19 +28,11 @@ class TripServiceTest extends TestCase
 
        //testsave and testfindall
         public function testSave(){
-        $service = new TripService($this->entityManager);
-        $trip1 = $service->buildTrip('Praha', 'Brno', new MockTripMapper);
-        $trip2 = $service->buildTrip('Praha', 'Dresden', new MockTripMapper);
-
-        $count=count($service->findAll());
-        $service->save($trip1);
-        $service->save($trip2);
-        $this->assertEquals($count+2, count($service->findAll()));
-        }
-
-        public function testFind(){
-        $service = new TripService($this->entityManager);
-        $trip1=$service->find(1);
-        $this->assertEquals($trip1->getId(),1);
+	        $service = new TripService($this->entityManager);
+	        $trip1 = $service->buildTrip('Praha', 'Brno', new MockTripMapper);
+	        $service->save($trip1);
+	
+	        $tripFound = $service->find($trip1->id);
+	        $this->assertEquals($trip1, $tripFound);
         }
 }

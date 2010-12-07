@@ -12,6 +12,7 @@ class EventServiceTest extends TestCase
         $event1->setUrl('Url1');
         $event1->setDescription('descripcion1');
         $event1->setVenue(new Venue('Desc', 'Url2'));
+        $event1->setDate(new DateTime('07.12.1988 04:20'));
 
         $trip1 = new Trip('Praha', 'Brno');
 
@@ -20,16 +21,11 @@ class EventServiceTest extends TestCase
         $trip2 = new Trip('Praha', 'Dresden');
 
         $event1->addTrip($trip2);
-        
-        $count=count($service->findAll());
-        $service->save($event1);
-        $this->assertEquals($count+1, count($service->findAll()));
-        }
 
-     // Proof example Event with id=2 witch already exists on database.
-        public function testFind(){
-        $service = new EventService($this->entityManager);
-        $event2=$service->find(2);
-        $this->assertEquals($event2->getId(),2);
+        $service->save($event1);
+        
+        $eventFound = $service->find($event1->id);
+        $this->assertEquals($event1, $eventFound);
+        
         }
 }

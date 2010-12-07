@@ -28,19 +28,19 @@ class Event extends SimpleEntity
 	private $description;
 	/**
 	 * @var DateTime
-	 * @column
+	 * @column(type="datetimetz")
 	 */
 	private $date;
 
         /**
 	 * @var float
-	 * @column
+	 * @column(type="decimal")
 	 */
         private $latitude;
 
         /**
 	 * @var float
-	 * @column
+	 * @column(type="decimal")
 	 */
 	private $longitude;
 
