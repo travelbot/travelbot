@@ -31,25 +31,25 @@ class Trip extends SimpleEntity
 
 	private $steps;
 
-        /**
-        * @var Doctrine\Common\Collections\ArrayCollection
-        * @ManyToMany(targetEntity="Trip", cascade={"persist"})
-        * @JoinTable(name="event_trip",
-        * joinColumns={@JoinColumn(name="trip_id", referencedColumnName="id")},
-        * inverseJoinColumns={@JoinColumn(name="event_id", referencedColumnName="id", unique=true)}
-        * )
-        */
-        private $events;
+    /**
+     * @var Doctrine\Common\Collections\ArrayCollection
+     * @ManyToMany(targetEntity="Event", inversedBy="trips", cascade={"persist"})
+     * @JoinTable(name="event_trip",
+     *   joinColumns={@JoinColumn(name="trip_id", referencedColumnName="id")},
+     *   inverseJoinColumns={@JoinColumn(name="event_id", referencedColumnName="id")}
+     * )
+    */
+    private $events;
 
       
-         /**
-        * @var Doctrine\Common\Collections\ArrayCollection
-        * @ManyToMany(targetEntity="Trip", cascade={"persist"})
-        * @JoinTable(name="poi_trip",
-        * joinColumns={@JoinColumn(name="trip_id", referencedColumnName="id")},
-        * inverseJoinColumns={@JoinColumn(name="poi_id", referencedColumnName="id", unique=true)}
-        * )
-        */
+     /**
+      * @var Doctrine\Common\Collections\ArrayCollection
+      * @ManyToMany(targetEntity="Trip", cascade={"persist"})
+      * @JoinTable(name="poi_trip",
+      *   joinColumns={@JoinColumn(name="trip_id", referencedColumnName="id")},
+      *   inverseJoinColumns={@JoinColumn(name="poi_id", referencedColumnName="id")}
+      * )
+      */
 	private $pois;
 
 	/**
@@ -174,10 +174,8 @@ class Trip extends SimpleEntity
 	{
 		if (!$this->events->contains($event)) {
 			$this->events->add($event);
-                        if (!$event->trips->contains($this)) {
-                            $event->trips->add($this);
-                        }
-                }
+            $event->addTrip($this);
+        }
 
 		return $this; // fluent interface
 	}
@@ -190,9 +188,7 @@ class Trip extends SimpleEntity
 	{
 		if ($this->events->contains($event)) {
 			$this->events->removeElement($event);
-			if ($event->trips->contains($this)) {
-                            $event->trips->removeElement($this);
-                        }
+            $event->removeTrip($this);
 		}
 
 		return $this; // fluent interface

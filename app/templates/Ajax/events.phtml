@@ -6,8 +6,8 @@
 	{foreach $events as $event}
 		<div class="event" data-latitude="{$event->latitude}" data-longitude="{$event->longitude}" data-title="{$event->title}"
 			data-date="{$event->date->format('j. n. Y')}" data-venue="{$event->venue->name}">
-			{? $form->addCheckbox('event' . $iterator->counter); }
-			<h3>{$form['event' . $iterator->counter]->control} <a href="{$event->url}">{$event->title}</a> {$event->date->format('j. n. Y')}</h3>
+			{? $checkbox = $form->addCheckbox('event' . $event->id); if ($trip->events->contains($event)) $checkbox->setValue(TRUE); }
+			<h3>{$checkbox->control} <a href="{$event->url}">{$event->title}</a> {$event->date->format('j. n. Y')}</h3>
 			<div class="small">
 				<p><strong>Where:</strong> <a href="{$event->venue->url}">{$event->venue->name}</a></p>
 				{!$event->description}

@@ -44,17 +44,16 @@ class Event extends SimpleEntity
 	 */
 	private $longitude;
 
-       /**
+    /**
 	 * @var Venue
 	 * @manyToOne(targetEntity="Venue", inversedBy="events", cascade={"persist"})
 	 */
 	private $venue;
 
-        /**
+    /**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-         * @ManyToMany(targetEntity="Trip", mappedBy="events",cascade={"persist"})
-	 * orderBy({sequenceOrder="ASC"})
-        */
+	 * @ManyToMany(targetEntity="Trip", mappedBy="events", cascade={"persist"})
+     */
 	private $trips;
 	
 	/**
@@ -168,8 +167,7 @@ class Event extends SimpleEntity
 	{
 		if (!$this->trips->contains($trip)) {
 			$this->trips->add($trip);
-                        if (!$trip->events->contains($this)) 
-                            $trip->events->add ($this);
+        	$trip->addEvent($this);
 		}
 
 		return $this; // fluent interface
@@ -183,9 +181,8 @@ class Event extends SimpleEntity
 	{
 		if ($this->trips->contains($trip)) {
 			$this->trips->removeElement($trip);
-                        if ($trip->events->contains($this)) 
-                            $trip->events->removeElement($this);
-                }
+            $trip->removeEvent($this);
+        }
 
 		return $this; // fluent interface
 	}

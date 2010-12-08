@@ -115,7 +115,8 @@ var travelbot = {
         if (events.children().size() == 0) {
             showSpinner(event);
             $.post(basePath + "/ajax/?do=events", {
-                location: arrival
+                location: arrival,
+                tripId: $('#tripid').text()
             }, function(data, textStatus) {
                 if (textStatus == 'success') {
                     events.html(data['events']);
@@ -147,6 +148,7 @@ $(function() {
     if (isTripPage) {
         departure = $('span.trip.departure').text();
         arrival = $('span.trip.arrival').text();
+        tripId = $("#tripid");
         travelbot.loadTrip(departure, arrival);
 		
         directions = $('#directions');
@@ -225,7 +227,6 @@ $(function() {
         }, function() {
             hotels.hide();
         }));
-
     } else {
         $.geolocator.geolocate({
             callback: function(data) {
@@ -345,7 +346,10 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
     }
 });
 
-
+$("form.ajax").live("submit",function (e) {
+	showSpinner(e);
+	$(this).ajaxSubmit(e);
+});
 
 // AJAX spinner appending and hiding
 $(function () {

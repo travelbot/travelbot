@@ -11,12 +11,40 @@ class AjaxPresenter extends BasePresenter
 	{
 		$form = new AppForm;
 		//$form->addCheckbox('event');
+		$form->elementPrototype->class('ajax');
 		
 		$form->addHidden('tripId');
 		$form->addSubmit('okSubmit', 'Save preferences');
 		$form->onSubmit[] = array($this, 'submitEventForm');
 		
 		return $form;
+	}
+	
+	public function submitEventForm(AppForm $form)
+	{
+		$data = $form->httpData;
+		
+		$tripService = new TripService($this->entityManager);
+		$trip = $tripService->find($data['tripId']);
+		
+		$eventService = new EventService($this->entityManager);
+		
+		foreach($trip->events as $event) {
+			$trip->removeEvent($event);
+		}
+		
+		$this->entityManager->flush();
+		
+		foreach($data as $key => $value) {
+			if (substr($key, 0, 5) == 'event') {
+				$event = $eventService->find(substr($key, 5));
+				$trip->addEvent($event);
+			}
+		}
+		
+		$tripService->save($trip);
+		
+		$this->terminate();
 	}
 
 	/**
@@ -129,6 +157,7 @@ class AjaxPresenter extends BasePresenter
 	public function handleEvents()
 	{
 		$location = $this->request->post['location'];
+		$tripId = $this->request->post['tripId'];
 		try {
 			$eventService = new EventService($this->entityManager);
 			$config = Environment::getConfig('api');
@@ -141,9 +170,13 @@ class AjaxPresenter extends BasePresenter
 			$events = array();
 		}
 		
+		$tripService = new TripService($this->entityManager);
+		
+		
 		$template = $this->createTemplate();
 		$template->setFile(__DIR__ . '/../templates/Ajax/events.phtml');
 		$template->events = $events;
+		$template->trip = $tripService->find($tripId);
 		$template->form = $this['eventsForm'];
 		
 		$this->terminate(new JsonResponse(array('events' => (string) $template)));
