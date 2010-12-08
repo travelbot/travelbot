@@ -44,7 +44,7 @@ class Trip extends SimpleEntity
       
      /**
       * @var Doctrine\Common\Collections\ArrayCollection
-      * @ManyToMany(targetEntity="Trip", cascade={"persist"})
+      * @ManyToMany(targetEntity="Poi", inversedBy="trips", cascade={"persist"})
       * @JoinTable(name="poi_trip",
       *   joinColumns={@JoinColumn(name="trip_id", referencedColumnName="id")},
       *   inverseJoinColumns={@JoinColumn(name="poi_id", referencedColumnName="id")}
@@ -210,9 +210,7 @@ class Trip extends SimpleEntity
 	{
 		if (!$this->pois->contains($poi)) {
 			$this->pois->add($poi);
-			if (!$poi->trips->contains($this)) {
-                            $poi->trips->add($this);
-                        }
+			$poi->addTrip($this);
 		}
 
 		return $this; // fluent interface
@@ -226,9 +224,7 @@ class Trip extends SimpleEntity
 	{
 		if ($this->pois->contains($poi)) {
 			$this->pois->removeElement($poi);
-			if ($poi->trips->contains($this)) {
-                            $poi->trips->removeElement($this);
-                        }
+			$poi->removeTrip($this);
 		}
 
 		return $this; // fluent interface

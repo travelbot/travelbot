@@ -54,11 +54,16 @@ class Poi extends SimpleEntity {
         private $imageUrl;
 
          /**
-	 * @var Doctrine\Common\Collections\ArrayCollection
-         * @ManyToMany(targetEntity="Trip", mappedBy="pois",cascade={"persist"})
-	 * orderBy({sequenceOrder="ASC"})
+	      * @var Doctrine\Common\Collections\ArrayCollection
+          * @ManyToMany(targetEntity="Trip", mappedBy="pois",cascade={"persist"})
          */
         private $trips;
+        
+        /**
+         * @var PoiGroup
+         * @manyToOne(targetEntity="PoiGroup", inversedBy="pois", cascade={"persist"})         
+         */		         
+        private $group;
 
 
         public function __construct() {
@@ -139,9 +144,8 @@ class Poi extends SimpleEntity {
 	{
 		if (!$this->trips->contains($trip)) {
 			$this->trips->add($trip);
-                        if (!$trip->pois->contains($this)) {
-			$trip->pois->add ($this);
-		}}
+			$trip->addPoi($this);
+		}
 
 		return $this; // fluent interface
 	}
@@ -154,11 +158,23 @@ class Poi extends SimpleEntity {
 	{
 		if ($this->trips->contains($trip)) {
 			$this->trips->removeElement($trip);
-                        if ($trip->pois->contains($this)) {
-			$trip->pois->removeElement($this);
-		}}
+			$trip->removePoi($this);
+		}
 
 		return $this; // fluent interface
+	}
+	
+	public function getGroup()
+	{
+		return $this->group;
+	}
+	
+	public function setGroup(PoiGroup $group)
+	{
+		$this->group = $group;
+		$group->addPoi($this);
+		
+		return $this;
 	}
 }
 

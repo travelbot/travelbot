@@ -12,8 +12,7 @@ class AjaxPresenter extends BasePresenter
 		$form = new AppForm;
 		//$form->addCheckbox('event');
 		$form->elementPrototype->class('ajax');
-		
-		$form->addHidden('tripId');
+
 		$form->addSubmit('okSubmit', 'Save preferences');
 		$form->onSubmit[] = array($this, 'submitEventForm');
 		
@@ -46,6 +45,72 @@ class AjaxPresenter extends BasePresenter
 		
 		$this->terminate();
 	}
+	
+	public function handleEvents()
+	{
+		$location = $this->request->post['location'];
+		$tripId = $this->request->post['tripId'];
+		try {
+			$eventService = new EventService($this->entityManager);
+			$config = Environment::getConfig('api');
+			$events = $eventService->getEvents(
+				$location,
+				new DateTime,
+				new EventfulMapper($config->eventfulUser, $config->eventfulPassword, $config->eventfulKey)
+			);
+		} catch (InvalidStateException $e) {
+			$events = array();
+		}
+		
+		$tripService = new TripService($this->entityManager);
+		
+		$template = $this->createTemplate();
+		$template->setFile(__DIR__ . '/../templates/Ajax/events.phtml');
+		$template->events = $events;
+		$template->trip = $tripService->find($tripId);
+		$template->form = $this['eventsForm'];
+		
+		$this->terminate(new JsonResponse(array('events' => (string) $template)));
+	}
+	
+	protected function createComponentPoisForm()
+	{
+		$form = new AppForm;
+		//$form->addCheckbox('event');
+		$form->elementPrototype->class('ajax');
+
+		$form->addSubmit('okSubmit', 'Save preferences');
+		$form->onSubmit[] = array($this, 'submitPoiForm');
+		
+		return $form;
+	}
+	
+	public function submitPoiForm(AppForm $form)
+	{
+		$data = $form->httpData;
+		
+		$tripService = new TripService($this->entityManager);
+		$trip = $tripService->find($data['tripId']);
+		
+		$poiService = new PoiService($this->entityManager);
+		
+		foreach($trip->pois as $poi) {
+			$trip->removePoi($poi);
+		}
+		
+		$this->entityManager->flush();
+		
+		foreach($data as $key => $value) {
+			if (substr($key, 0, 3) == 'poi') {
+				$poi = $poiService->find(substr($key, 3));
+				$trip->addPoi($poi);
+			}
+		}
+		
+		$tripService->save($trip);
+		
+		$this->terminate();
+	}
 
 	/**
      * @author Petr Vales
@@ -53,6 +118,8 @@ class AjaxPresenter extends BasePresenter
      */
     public function handlePois() {
         $location = $this->request->post['location'];
+        $tripId = $this->request->post['tripId'];
+        
         $service = new LocationService;
         $coords = $service->getCoordinates($location);
         
@@ -66,24 +133,20 @@ class AjaxPresenter extends BasePresenter
 				'status' => 'FAIL',
             )));
         }
-
-        $jsonResponse = array();
-        foreach ($pois as $poi) {
-            $jsonResponse['pois'][] = array(
-                'name' => $poi->name,
-                'types' => $poi->types,
-                'address' => $poi->address,
-                'latitude' => $poi->latitude,
-                'longitude' => $poi->longitude,
-                'url' => $poi->url,
-                'icon' => $poi->imageUrl,
-            );
-        }
-
-		$jsonResponse['status'] = 'OK';
-		$jsonResponse['latitude'] = $coords['latitude'];
-		$jsonResponse['longitude'] = $coords['longitude'];
-        $this->terminate(new JsonResponse($jsonResponse));
+        
+        $tripService = new TripService($this->entityManager);
+        
+        $template = $this->createTemplate();
+		$template->setFile(__DIR__ . '/../templates/Ajax/pois.phtml');
+		$template->pois = $pois;
+		$template->trip = $tripService->find($tripId);
+		$template->form = $this['poisForm'];
+		
+		$this->terminate(new JsonResponse(array(
+			'pois' => (string) $template,
+			'latitude' => $coords['latitude'],
+			'longitude' => $coords['longitude'],
+		)));
     }
 
 	/**
@@ -152,34 +215,6 @@ class AjaxPresenter extends BasePresenter
 				new ArticleWikipediaMapper()
 			)->text,
 		)));
-	}
-	
-	public function handleEvents()
-	{
-		$location = $this->request->post['location'];
-		$tripId = $this->request->post['tripId'];
-		try {
-			$eventService = new EventService($this->entityManager);
-			$config = Environment::getConfig('api');
-			$events = $eventService->getEvents(
-				$location,
-				new DateTime,
-				new EventfulMapper($config->eventfulUser, $config->eventfulPassword, $config->eventfulKey)
-			);
-		} catch (InvalidStateException $e) {
-			$events = array();
-		}
-		
-		$tripService = new TripService($this->entityManager);
-		
-		
-		$template = $this->createTemplate();
-		$template->setFile(__DIR__ . '/../templates/Ajax/events.phtml');
-		$template->events = $events;
-		$template->trip = $tripService->find($tripId);
-		$template->form = $this['eventsForm'];
-		
-		$this->terminate(new JsonResponse(array('events' => (string) $template)));
 	}
 	
 	public function handleFlights()

@@ -1,0 +1,26 @@
+{if count($pois) > 0}
+	{widget poisForm begin}
+	
+	{$form['okSubmit']->control}
+
+	{foreach $pois as $poi}
+		<div class="poi"
+			data-name="{$poi->name}"
+			data-types="{$poi->types}"
+			data-address="{$poi->address}"
+			data-latitude="{$poi->latitude}"
+			data-longitude="{$poi->longitude}"
+			data-url="{$poi->url}"
+			data-icon="{$poi->imageUrl}"
+		 >
+			{? $checkbox = $form->addCheckbox('poi' . $poi->id); if ($trip->pois->contains($poi)) $checkbox->setValue(TRUE); }
+			<h3>{$checkbox->control} <a href="{$poi->url}">{$poi->name}</a></h3>
+			<div class="small">{$poi->address}</div>
+		</div>
+		{sep}<hr />{/sep}
+	{/foreach}
+
+	{widget poisForm end}
+{else}
+	<p>No POIs available.</p>
+{/if}

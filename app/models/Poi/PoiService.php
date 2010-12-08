@@ -11,7 +11,28 @@ class PoiService extends EntityService {
 
 
     public function getPois($lat, $lng, IPoiMapper $mapper) {
-        return $mapper->getPois($lat, $lng);
+    	try {
+			return $this->entityManager->createQuery('SELECT e FROM PoiGroup e WHERE e.latitude = ?1 AND e.longitude = ?2')
+				->setParameter('1', $lat)
+				->setParameter('2', $lng)
+				->setMaxResults(1)
+				->getSingleResult()
+				->getPois();
+		} catch (Doctrine\ORM\NoResultException $e) {
+			$pois = $mapper->getPois($lat, $lng);
+			$group = new PoiGroup;
+			$group->latitude = $lat;
+			$group->longitude = $lng;
+			
+			foreach($pois as $poi) {
+				$group->addPoi($poi);
+			}
+			
+			$this->entityManager->persist($group);
+			$this->entityManager->flush();
+			
+			return $pois;
+		}
     }
 
     public function save(Poi $poi)

@@ -87,22 +87,44 @@ var travelbot = {
         });
     },
 	
-    loadPois: function(location) {
-        $.post(basePath + "/ajax/?do=pois", {
-            location: location
-        }, function(data, textStatus) {
-            if (data['status'] != 'FAIL') {
-                travelbot.getMap().panTo(new google.maps.LatLng(data['latitude'], data['longitude']));
-                travelbot.getMap().setZoom(15);
-                $.each(data['pois'], function(i, el) {
-                    travelbot.showPoi(el.latitude, el.longitude, el.icon, '<a href="' + el.url + '">' + el.name + '</a>', el.address, el.types);
-                });
-                return data['pois'];
-            } else {
-				
+    loadPois: function(location, event) {
+        pois = $('#pois');
+        if (pois.children().size() == 0) {
+            showSpinner(event);
+            $.post(basePath + "/ajax/?do=pois", {
+                location: location,
+                tripId: $('#tripid').text()
+            }, function(data, textStatus) {
+                if (textStatus == 'success' && data['status'] != 'FAIL') {
+                	travelbot.getMap().panTo(new google.maps.LatLng(data['latitude'], data['longitude']));
+                	travelbot.getMap().setZoom(15);
+                    pois.html(data['pois']);
+                    pois.attr('data-latitude', data['latitude']);
+                    pois.attr('data-longitude', data['longitude']);
+                    travelbot.showPois($(data['pois']).children('.poi'));
+                }
+            });
+        } else {
+			pois = $('#pois');
+        	travelbot.getMap().panTo(new google.maps.LatLng(pois.attr('data-latitude'), pois.attr('data-longitude')));
+            travelbot.getMap().setZoom(15);
+            travelbot.showPois($('.poi'));
         }
-        }, "json");
     },
+    
+    showPois: function(pois) {
+		$.each(pois, function(i, el) {
+			poi = $(el);
+			travelbot.showPoi(
+				poi.attr('data-latitude'),
+				poi.attr('data-longitude'),
+				poi.attr('data-icon'),
+				'<a href="' + poi.attr('data-url') + '">' + poi.attr('data-name') + '</a>',
+				poi.attr('address'),
+				poi.attr('types')
+			);
+		});
+	},
 	
     clearPois: function() {
         for (i in travelbot.markers) {
@@ -121,7 +143,6 @@ var travelbot = {
                 if (textStatus == 'success') {
                     events.html(data['events']);
                     travelbot.showEvents($(data['events']).children('.event'));
-                    $('#frmeventsForm-tripId').val();
                 }
             });
         } else {
@@ -159,9 +180,16 @@ $(function() {
             directions.hide();
         }));
 		
-        $("#showing-pois").hide();
-		
-        var shownEvents = false;
+        pois = $('#pois');
+        pois.before(createUnwrapLink('Points of interest', function(event) {
+            $('#pois').show();
+            travelbot.clearPois();
+            travelbot.loadPois(arrival, event);
+        }, function() {
+            $('#pois').hide();
+            travelbot.clearPois();
+            travelbot.loadTrip(departure, arrival);
+        }));
 		
         events = $('#events');
         events.before(createUnwrapLink('Events', function(event) {
@@ -347,7 +375,6 @@ $("#frmlocationsForm-okFindDirections").live("click", function(event) {
 });
 
 $("form.ajax").live("submit",function (e) {
-	showSpinner(e);
 	$(this).ajaxSubmit(e);
 });
 
