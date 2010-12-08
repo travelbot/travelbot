@@ -119,7 +119,7 @@ var travelbot = {
             }, function(data, textStatus) {
                 if (textStatus == 'success') {
                     events.html(data['events']);
-                    travelbot.showEvents($(data['events']));
+                    travelbot.showEvents($(data['events']).children('.event'));
                     $('#frmeventsForm-tripId').val();
                 }
             });
