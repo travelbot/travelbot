@@ -28,20 +28,28 @@ class Trip extends SimpleEntity
 	 * @oneToMany(targetEntity="Step", mappedBy="trip", cascade={"persist"})
 	 * orderBy({sequenceOrder="ASC"})
 	 */
+
 	private $steps;
 
-         /**
-	 * @var Doctrine\Common\Collections\ArrayCollection
-         * @ManyToMany(targetEntity="Event", mappedBy="trips",cascade={"persist"})
-	 * orderBy({sequenceOrder="ASC"})
-         */
+        /**
+        * @var Doctrine\Common\Collections\ArrayCollection
+        * @ManyToMany(targetEntity="Trip", cascade={"persist"})
+        * @JoinTable(name="event_trip",
+        * joinColumns={@JoinColumn(name="trip_id", referencedColumnName="id")},
+        * inverseJoinColumns={@JoinColumn(name="event_id", referencedColumnName="id", unique=true)}
+        * )
+        */
         private $events;
 
+      
          /**
-	 * @var Doctrine\Common\Collections\ArrayCollection
-         * @ManyToMany(targetEntity="Poi", mappedBy="trips",cascade={"persist"})
-	 * orderBy({sequenceOrder="ASC"})
-         */
+        * @var Doctrine\Common\Collections\ArrayCollection
+        * @ManyToMany(targetEntity="Trip", cascade={"persist"})
+        * @JoinTable(name="poi_trip",
+        * joinColumns={@JoinColumn(name="trip_id", referencedColumnName="id")},
+        * inverseJoinColumns={@JoinColumn(name="poi_id", referencedColumnName="id", unique=true)}
+        * )
+        */
 	private $pois;
 
 	/**
