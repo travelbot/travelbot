@@ -120,8 +120,8 @@ var travelbot = {
 				poi.attr('data-longitude'),
 				poi.attr('data-icon'),
 				'<a href="' + poi.attr('data-url') + '">' + poi.attr('data-name') + '</a>',
-				poi.attr('address'),
-				poi.attr('types')
+				poi.attr('data-address'),
+				poi.attr('data-types')
 			);
 		});
 	},
