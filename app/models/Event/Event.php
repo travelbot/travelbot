@@ -56,6 +56,12 @@ class Event extends SimpleEntity
 	 * orderBy({sequenceOrder="ASC"})
         */
 	private $trips;
+	
+	/**
+	 * @var EventGroup	
+	 * @manyToOne(targetEntity="EventGroup", inversedBy="events", cascade={"persist"})
+	 */
+	private $group;
         
 
         public function __construct() {
@@ -184,8 +190,17 @@ class Event extends SimpleEntity
 		return $this; // fluent interface
 	}
 
-
-
+	public function getGroup()
+	{
+		return $this->group;
+	}
 	
-
+	public function setGroup(EventGroup $group)
+	{
+		$this->group = $group;
+		$group->addEvent($this);
+		
+		return $this;
+	}
+	
 }

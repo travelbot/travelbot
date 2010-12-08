@@ -124,7 +124,7 @@ var travelbot = {
                 }
             });
         } else {
-            travelbot.showEvents(events.children('.event'));
+            travelbot.showEvents($('.event'));
         }
     },
 	
