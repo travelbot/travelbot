@@ -1,0 +1,39 @@
+.clear {
+	display: block;
+	clear: both;
+}
+
+body {
+	font-family: Trebuchet MS, Verdana, Arial, sans-serif;
+	font-size: 15px;
+	line-height: 21px;
+	line-height: 1.6em;
+}
+
+h1 {
+	font-size: 26px;
+	margin-bottom: 15px;
+}
+
+h2 {
+	font-size: 20px;
+	margin-top: 25px;
+	margin-bottom: 12px;
+}
+
+#content {
+	margin: 18px;
+}
+
+p {
+	margin-bottom: 8px;
+}
+
+p.small {
+	font-size: 13px;
+}
+
+ol {
+	list-style-type: decimal;
+	margin-left: 30px;
+}

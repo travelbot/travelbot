@@ -1,0 +1,40 @@
+{extends '../@layout.simple.phtml'}
+{block #content}
+
+<p class="small"><a href="{link show}">← Back to full view</a></p>
+
+<h1>{block #title}Trip from {$trip->departure} to {$trip->arrival}{/block}</h1>
+
+<p class="small">From Travelbot - <a href="{link //Homepage:}">{link //Homepage:}</a></p>
+
+{!$article}
+
+<h2>Directions</h2>
+
+<ol>
+	{foreach $trip->steps as $step}
+		<li>{!$step->instructions} ({!$step->instructions} ({$step->distance |distance})</li>		
+	{/foreach}
+</ol>
+
+{if count($trip->pois) > 0}
+	<h2>Points of interest</h2>
+	
+	<ul>
+	{foreach $trip->pois as $poi}
+		<li><a href="{$poi->url}">{$poi->name}</a> ({$poi->types})</li>
+	{/foreach}
+	</ul>
+{/if}
+
+{if count($trip->events) > 0}
+	<h2>Events</h2>
+	
+	<ul>
+	{foreach $trip->events as $event}
+		<li><h3><a href="{$event->url}">{$event->title}</a></h3>
+			<p>{!$event->description}</p>
+		</li>
+	{/foreach}
+	</ul>
+{/if}

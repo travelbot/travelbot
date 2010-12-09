@@ -27,6 +27,12 @@ class TripPresenter extends BasePresenter
 		parent::beforeRender();
 		$this->template->trip = $this->trip;
 	}
+	
+	public function renderSummary()
+	{
+		$articleService = new ArticleService($this->entityManager);
+        $this->template->article = $articleService->buildArticle($this->trip->arrival, new ArticleWikipediaMapper())->text;
+	}
 
     public function actionBooking($flightId)
     {
