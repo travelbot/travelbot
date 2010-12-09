@@ -72,6 +72,7 @@ $doctrineConfig->setMetadataDriverImpl($doctrineConfig->newDefaultAnnotationDriv
 $doctrineConfig->setProxyNamespace('DoctrineProxy');
 $doctrineConfig->setProxyDir(TEMP_DIR . '/cache');
 //$doctrineConfig->setSQLLogger(Doctrine2Panel::getAndRegister());
+$doctrineConfig->setSQLLogger(new NetteLogger);
 
 $entityManager = EntityManager::create(Environment::getConfig('database')->toArray(), $doctrineConfig);
 $application->getContext()->addService('Doctrine\ORM\EntityManager', $entityManager);

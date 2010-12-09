@@ -44,7 +44,7 @@ class Venue extends SimpleEntity
 	
 	public function setName($name)
 	{
-		$this->name = $name;
+		$this->name = substr($name, 0, 255);
 		return $this;
 	}
 	
