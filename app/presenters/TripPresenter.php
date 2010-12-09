@@ -73,9 +73,12 @@ class TripPresenter extends BasePresenter
 	
 	public function renderShow()
 	{
+		$dt = new DateTime;
+		$to = clone $dt;
+		$to->modify('+1 week');
 		$this['dateForm']->setDefaults(array(
-			'fromDate' => $this->trip->departureDate->format('d.m.Y'),
-			'toDate' => $this->trip->arrivalDate->format('d.m.Y'),
+			'fromDate' => $this->trip->departureDate != NULL ? $this->trip->departureDate->format('d.m.Y') : $dt->format('d.m.Y'),
+			'toDate' => $this->trip->arrivalDate != NULL ? $this->trip->arrivalDate->format('d.m.Y') : $to->format('d.m.Y'),
 		));
 		$this->template->dateForm = $this['dateForm'];
 	}
