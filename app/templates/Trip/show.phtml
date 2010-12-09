@@ -29,6 +29,16 @@
 	
 	<p class="clear">The trip will take <strong>{$trip->duration |duration}</strong> to complete and its distance is <strong>{$trip->distance |distance}</strong>.</p>
 	
+	{widget dateForm begin}
+		{$dateForm['fromDate']->label}
+		{$dateForm['fromDate']->control}
+		
+		{$dateForm['toDate']->label}
+		{$dateForm['toDate']->control}
+		
+		{$dateForm['okSubmit']->control}
+	{widget dateForm end}
+	
 	<div>
 		<div id="article"></div>
 	</div>

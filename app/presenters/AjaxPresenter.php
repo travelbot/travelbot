@@ -50,24 +50,26 @@ class AjaxPresenter extends BasePresenter
 	{
 		$location = $this->request->post['location'];
 		$tripId = $this->request->post['tripId'];
+		
+		$tripService = new TripService($this->entityManager);
+		$trip = $tripService->find($tripId);
+		
 		try {
 			$eventService = new EventService($this->entityManager);
 			$config = Environment::getConfig('api');
 			$events = $eventService->getEvents(
 				$location,
-				new DateTime,
+				$trip->departureDate != NULL ? $trip->departureDate : new DateTime,
 				new EventfulMapper($config->eventfulUser, $config->eventfulPassword, $config->eventfulKey)
 			);
 		} catch (InvalidStateException $e) {
 			$events = array();
 		}
 		
-		$tripService = new TripService($this->entityManager);
-		
 		$template = $this->createTemplate();
 		$template->setFile(__DIR__ . '/../templates/Ajax/events.phtml');
 		$template->events = $events;
-		$template->trip = $tripService->find($tripId);
+		$template->trip = $trip;
 		$template->form = $this['eventsForm'];
 		
 		$this->terminate(new JsonResponse(array('events' => (string) $template)));
@@ -221,6 +223,8 @@ class AjaxPresenter extends BasePresenter
 	{
 		$departure = $this->request->post['departure'];
 		$arrival = $this->request->post['arrival'];
+		$tripId = $this->request->post['tripId'];
+		
 		try {
          	$airportMapper = new AirportTravelMathMapper();
             $airportService = new AirportService();
@@ -233,8 +237,12 @@ class AjaxPresenter extends BasePresenter
             $flightMapper = new FlightKayakMapper();
 //            $flightMapper = new FlightMockMapper();
             $flightService = new FlightService($this->entityManager);
-            $depart_date = new DateTime('now');
-            $return_date = new DateTime('+1 week');
+            
+            $tripService = new TripService($this->entityManager);
+            $trip = $tripService->find($tripId);
+            
+            $depart_date = $trip->departureDate != NULL ? $trip->departureDate : new DateTime;
+            $return_date = $trip->arrivalDate != NULL ? $trip->arrivalDate : new DateTime('+1 week');
             // @todo redo for JsonResponse
             $flights = $flightService->buildFlights($flightMapper, $from, $to, $depart_date, $return_date, '1', 'e', 'n');
         }

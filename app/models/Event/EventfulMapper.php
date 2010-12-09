@@ -41,6 +41,9 @@ class EventfulMapper extends Nette\Object implements IEventMapper
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
 		//curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 		
+		$to = clone $date;
+		$to->modify('+1 month');
+		
 		// using Nette\Web\Uri for escaping GET parameters
 		$uri = new Uri('http://api.eventful.com/rest/events/search');
 		$uri->setQuery(array(
@@ -50,9 +53,12 @@ class EventfulMapper extends Nette\Object implements IEventMapper
 			'location' => $location,
 			'within' => '10',
 			'units' => 'km',
+			'date' => $date->format('Ymd') . '00-' . $to->format('Ymd') . '00',
 			//'sort_order' => 'date',
 			//'sort_direction' => 'ascending',
 		));
+		
+		//dump((string) $uri); die;
 		
 		curl_setopt($c, CURLOPT_URL, (string) $uri);
 		$result = curl_exec($c);

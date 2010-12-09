@@ -183,3 +183,28 @@ hr {
     margin-bottom: 1px;
     padding-bottom: 1px;
 }
+
+#frm-dateForm {
+	margin-top: 3px;
+	margin-bottom: 15px;
+}
+
+#frmdateForm-fromDate, #frmdateForm-toDate {
+	width: 70px;
+}
+
+label[for=frmdateForm-fromDate] {
+	font-weight: bold;
+	margin-left: 29px;
+	margin-right: 5px;
+}
+
+label[for=frmdateForm-toDate] {
+	font-weight: bold;
+	margin-left: 10px;
+	margin-right: 5px;
+}
+
+#frmdateForm-okSubmit {
+	margin-left: 8px;
+}

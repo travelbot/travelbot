@@ -24,6 +24,18 @@ class Trip extends SimpleEntity
 	private $arrival;
 	
 	/**
+	 * @var DateTime
+	 * @column(type="datetimetz")	 
+	 */
+	private $departureDate;
+	
+	/**
+	 * @var DateTime
+	 * @column(type="datetimetz")	 
+	 */
+	private $arrivalDate;
+	
+	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @oneToMany(targetEntity="Step", mappedBy="trip", cascade={"persist"})
 	 * orderBy({sequenceOrder="ASC"})
@@ -77,6 +89,9 @@ class Trip extends SimpleEntity
 		if ($this->steps->last() != NULL) {
 			$this->lastSequenceOrder = $this->steps->last()->sequenceOrder;
 		}
+		
+		$this->departureDate = new DateTime;
+		$this->arrivalDate = new DateTime('+1 week');
 	}
 	
 	/**
@@ -119,6 +134,28 @@ class Trip extends SimpleEntity
 	public function getArrival()
 	{
 		return $this->arrival;
+	}
+	
+	public function getDepartureDate()
+	{
+		return $this->departureDate;
+	}
+	
+	public function setDepartureDate(DateTime $date)
+	{
+		$this->departureDate = $date;
+		return $this;
+	}
+	
+	public function getArrivalDate()
+	{
+		return $this->arrivalDate;
+	}
+	
+	public function setArrivalDate(DateTime $date)
+	{
+		$this->arrivalDate = $date;
+		return $this;
 	}
 	
 	/**

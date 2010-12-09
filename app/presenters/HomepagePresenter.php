@@ -16,33 +16,13 @@ class HomepagePresenter extends BasePresenter {
         $form = new AppForm;
 
         $form->addText('from', 'From')
-                ->setRequired('Fill the "from" location, please.');
+            ->setRequired('Fill the "from" location, please.');
 
         $form->addText('to', 'To')
-                ->setRequired('Fill the "to" location, please.');
+            ->setRequired('Fill the "to" location, please.');
 
-        $form->addRadioList('oneWay', null, array('One way', 'Round trip'));
-
-        $form->addText('depart', 'Depart');
-        $form->addText('return', 'Return');
-
-        $form->addSelect('travelers', 'How many travelers', array('1 traveler',
-                                                                  '2 travelers',
-                                                                  '3 travelers',
-                                                                  '4 travelers',
-                                                                  '5 travelers',
-                                                                  '6 travelers',
-                                                                  '7 travelers',
-                                                                  '8 travelers'));
-
-        $form->addSelect('cabin', 'Cabin', array('Economy',
-                                                  'Premium economy',
-                                                  'Business',
-                                                  'First'));
-
-        $form->addSubmit('okSubmit', 'Save trip')
-        	->setDisabled();
-        $form->addSubmit('okFindDirections', 'Find route');
+		$form->addSubmit('okSubmit', 'Save trip');
+        $form->addSubmit('okFindDirections', 'Find directions');
         $form->onSubmit[] = array($this, 'submitLocationsForm');
 
         return $form;

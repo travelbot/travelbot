@@ -226,7 +226,8 @@ $(function() {
                 showSpinner(event);
                 $.post(basePath + "/ajax/?do=flights", {
                     departure: departure,
-                    arrival: arrival
+                    arrival: arrival,
+                    tripId: $('#tripid').text()
                 }, function(data, textStatus) {
                     if (textStatus == 'success') {
                         flights.html(data['flights']);
