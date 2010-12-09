@@ -17,7 +17,7 @@ class ArticleWikipediaMapper extends Nette\Object implements IArticleMapper {
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
 		curl_setopt($c, CURLOPT_USERAGENT, 'Travelbot 1.0 beta');
-		curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+		//curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_setopt($c, CURLOPT_MAXREDIRS, 100);
 		
 		// using Nette\Web\Uri for escaping GET parameters
@@ -57,7 +57,7 @@ class ArticleWikipediaMapper extends Nette\Object implements IArticleMapper {
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
 		curl_setopt($c, CURLOPT_USERAGENT, 'Travelbot 1.0 beta');
-		curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+		//curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_setopt($c, CURLOPT_MAXREDIRS, 100);
 		
 		$uri = new Uri('http://en.wikipedia.org/w/api.php');
@@ -88,7 +88,7 @@ class ArticleWikipediaMapper extends Nette\Object implements IArticleMapper {
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
 		curl_setopt($c, CURLOPT_USERAGENT, 'Travelbot 1.0 beta');
-		curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+		//curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_setopt($c, CURLOPT_MAXREDIRS, 100);
 		
 		$uri = new Uri('http://en.wikipedia.org/w/api.php');

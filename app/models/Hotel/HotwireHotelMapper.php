@@ -21,7 +21,7 @@ class HotwireHotelMapper implements IHotelMapper
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/xml', 'Content-Type: application/xml'));
-        curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+        //curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
         $uri = new Uri('http://api.hotwire.com/v1/search/hotel');
         $uri->setQuery(array(

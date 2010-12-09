@@ -39,7 +39,7 @@ class EventfulMapper extends Nette\Object implements IEventMapper
 		$c = curl_init();
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
-		curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+		//curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 		
 		// using Nette\Web\Uri for escaping GET parameters
 		$uri = new Uri('http://api.eventful.com/rest/events/search');

@@ -28,7 +28,7 @@ class FlightKayakMapper implements IFlightMapper
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
-        curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+        //curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
         $uri = new Uri('http://www.kayak.com/k/ident/apisession');
         $uri->setQuery(array(
@@ -58,7 +58,7 @@ class FlightKayakMapper implements IFlightMapper
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
-        curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+        //curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
         $uri = new Uri('http://www.kayak.com/s/apisearch');
         $uri->setQuery(array(
@@ -95,7 +95,7 @@ class FlightKayakMapper implements IFlightMapper
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
-        curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+        //curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
         $uri = new Uri('http://www.kayak.com/s/apibasic/flight');
         $uri->setQuery(array(

@@ -5,7 +5,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Entity for grouping events by search terms.
  * @author ondrej
- * @entity  
+ * @entity
+ * @table(name="eventgroup") 
  */
 class EventGroup extends SimpleEntity
 {

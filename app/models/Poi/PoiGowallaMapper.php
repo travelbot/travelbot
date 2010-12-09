@@ -62,7 +62,7 @@ class PoiGowallaMapper extends Nette\Object implements IPoiMapper
 				'Content-Type: application/json',
 				'X-Gowalla-API-Key: ' . $this->apiKey,
 			),
-			CURLOPT_FOLLOWLOCATION => TRUE,
+			//CURLOPT_FOLLOWLOCATION => TRUE,
 		));
 	}
 	

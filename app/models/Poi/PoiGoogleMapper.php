@@ -49,7 +49,7 @@ class PoiGoogleMapper extends Nette\Object implements IPoiMapper {
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
-        curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+        //curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
         $uri = new Uri('https://maps.googleapis.com/maps/api/place/search/json');
         $uri->setQuery(array(
@@ -78,7 +78,7 @@ class PoiGoogleMapper extends Nette\Object implements IPoiMapper {
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($c, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
-        curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
+        //curl_setopt($c, CURLOPT_FOLLOWLOCATION, TRUE);
 
         $uri = new Uri('https://maps.googleapis.com/maps/api/place/details/json');
         $uri->setQuery(array(

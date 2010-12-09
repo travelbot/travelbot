@@ -15,7 +15,6 @@
 		 >
 			{? $checkbox = $form->addCheckbox('poi' . $poi->id); if ($trip->pois->contains($poi)) $checkbox->setValue(TRUE); }
 			<h3>{$checkbox->control} <a href="{$poi->url}">{$poi->name}</a></h3>
-			<div class="small">{$poi->address}</div>
 		</div>
 		{sep}<hr />{/sep}
 	{/foreach}
