@@ -172,13 +172,13 @@ hr {
 	margin: 12px 0;
 }
 
-.hotel {
+.hotel, .flight {
     border-top: 3px solid #ceedff;
     margin-left: 3em;
     margin-right: 3em;
 }
 
-.hotel > ul {
+.hotel > ul, .flight > ul {
     margin-left: 2em;
     margin-bottom: 1px;
     padding-bottom: 1px;

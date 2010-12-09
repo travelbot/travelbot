@@ -2,13 +2,15 @@
 	{foreach $hotels as $hotel}
             <div class="hotel">
                 <div>{$hotel->getLodgingType()}</div>
-                <div>Star rating: {$hotel->getStarRating()}</div>
+                <div>{$hotel->getStarRating()}</div>
                 <ul>
 		{foreach $hotel->getAmenities() as $amenity}
                     <li>{$amenity}</li>
 		{/foreach}
                 </ul>
-                <a href="{$hotel->getLink()}">{$hotel->getTotalPrice()} {$hotel->getCurrency()} </a>
+                <div>Price per night: {$hotel->getPricePerNight()} {$hotel->getCurrency()}</div>
+                <div>Total price: {$hotel->getTotalPrice()} {$hotel->getCurrency()} </div>
+                <div>For booking continue <a href="{$hotel->getLink()}">here</a>.</div>
             </div>
 	{/foreach}
 {else}

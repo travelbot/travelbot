@@ -14,16 +14,18 @@ class Hotel
     private $amenities;
     private $lodgingType;
     private $starRating;
+    private $pricePerNight;
 
     public function __construct($currency, $link, $totalPrice, $amenities,
-            $lodgingType, $starRating)
+            $lodgingType, $starRating, $pricePerNight)
     {
         $this->setCurrency($currency)
                 ->setLink($link)
                 ->setTotalPrice($totalPrice)
                 ->setAmenities($amenities)
                 ->setLodgingType($lodgingType)
-                ->setStarRating($starRating);
+                ->setStarRating($starRating)
+                ->setPricePerNight($pricePerNight);
     }
 
     private function setCurrency($currency)
@@ -58,7 +60,22 @@ class Hotel
 
     private function setStarRating($starRating)
     {
-        $this->starRating = $starRating;
+        $this->starRating = "";
+        $floorRating = floor($starRating);
+        for ($index = 0; $index < ($floorRating-1); $index++) {
+            $this->starRating = $this->starRating . "☆";
+        }
+        if($starRating > $floorRating) {
+            $this->starRating = $this->starRating . "★";
+        } else {
+            $this->starRating = $this->starRating . "☆";
+        }
+        return $this;
+    }
+
+    private function setPricePerNight($pricePerNight)
+    {
+        $this->pricePerNight = $pricePerNight;
         return $this;
     }
 
@@ -90,6 +107,11 @@ class Hotel
     public function getStarRating()
     {
         return $this->starRating;
+    }
+
+    public function getPricePerNight()
+    {
+        return $this->pricePerNight;
     }
 
 }

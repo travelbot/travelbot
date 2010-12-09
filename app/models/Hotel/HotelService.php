@@ -50,7 +50,8 @@ class HotelService
         $lodgingTypeCode = (string)$xmlLodgingTypeCode;
         $lodgingType = $this->lodgingTypes[$lodgingTypeCode];
         $starRating = $xmlHotelResult->StarRating;
-        return new Hotel($currency, $link, $totalPrice, $amenity, $lodgingType, $starRating);
+        $pricePerNight = $xmlHotelResult->AveragePricePerNight;
+        return new Hotel($currency, $link, $totalPrice, $amenity, $lodgingType, $starRating, $pricePerNight);
     }
 
     private function getAmenities($xmlAmenityCodes, $xmlMetaData)
