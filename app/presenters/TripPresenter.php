@@ -9,33 +9,37 @@ use Nette\Environment;
 class TripPresenter extends BasePresenter
 {
 
-	public function renderDefault()
+	/** @persistent */
+	public $id;
+	
+	/** @var Trip */
+	private $trip;
+	
+	public function startup()
 	{
+		parent::startup();
 		$service = new TripService($this->entityManager);
-		$this->template->trips = $service->findAll();
+		$this->trip = $service->find($this->id);
 	}
 	
-	public function renderShow($id)
+	protected function beforeRender()
 	{
-		$service = new TripService($this->entityManager);
-		$trip = $service->find($id);
-		$this->template->trip = $trip;
-    }
+		parent::beforeRender();
+		$this->template->trip = $this->trip;
+	}
 
     public function actionBooking($flightId)
     {
-        try
-        {
+        try {
         	//@todo refactor (add access to trip)
             $flightMapper = new FlightKayakMapper();
             $flightService = new FlightService($this->entityManager);
-            $depart_date = DateTime::createFromFormat("m/d/Y", "12/29/2010");
-            $return_date = DateTime::createFromFormat("m/d/Y", "12/30/2010");
+            $depart_date = new DateTime;
+            $return_date = new DateTime('+1 week');
             $flights = $flightService->buildFlights($flightMapper, 'PRG', 'PAR', $depart_date, $return_date, '1', 'e', 'n');
 
             $this->redirectUri("http://kayak.com" . $flights[$flightId - 1]->getBook());
-        }
-        catch (FlightException $e)
+        } catch (FlightException $e)
         {
             $this->flashMessage('Redirect failed', 'error');
         }
